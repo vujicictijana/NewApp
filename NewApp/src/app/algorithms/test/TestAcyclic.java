@@ -2,15 +2,14 @@ package app.algorithms.test;
 
 import java.text.DecimalFormat;
 
+import app.data.generators.*;
 import app.file.io.Writer;
-import app.graph.generators.DataGenerator;
-import app.graph.generators.Generator;
 import app.algorithms.asymmetric.*;
 
 public class TestAcyclic {
 	public double[] testTrain(int no, int maxIter) {
-		double[][] s = Generator.getSMatrixAcyclic(no);
-		double[] r = DataGenerator.generateR(no);
+		double[][] s = GraphGenerator.generateDirectedAcyclicGraph(5);
+		double[] r = ArrayGenerator.generateArray(200,5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 		double[] y = c.y(5, 1, 0.05);
 		double alpha = 0.1;
@@ -31,8 +30,8 @@ public class TestAcyclic {
 		//
 		System.out.println();
 
-		double[][] sTest = Generator.getSMatrixAcyclic(no);
-		double[] rTest = DataGenerator.generateR(500);
+		double[][] sTest = GraphGenerator.generateDirectedAcyclicGraph(5);
+		double[] rTest = ArrayGenerator.generateArray(200,5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(sTest, rTest);
 		double[] yTest = c.y(5, 1, 0.05);
 
@@ -61,13 +60,13 @@ public class TestAcyclic {
 		String[] text = new String[times];
 		String textA = "";
 		for (int i = 1; i <= times; i++) {
-			s = Generator.getSMatrixAcyclic(no);
-			r = DataGenerator.generateR(no);
+			s = GraphGenerator.generateDirectedAcyclicGraph(5);
+			r = ArrayGenerator.generateArray(200,5);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
-				sT = Generator.getSMatrixAcyclic(no);
+				sT = GraphGenerator.generateDirectedAcyclicGraph(5);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT);
 			}
@@ -107,7 +106,7 @@ public class TestAcyclic {
 		double betaT = params[1];
 
 		System.out.println();
-		double[] rT = DataGenerator.generateR(s.length);
+		double[] rT = ArrayGenerator.generateArray(200,5);
 
 		CalculationsAsymmetric c1 = new CalculationsAsymmetric(sT, rT);
 		double[] yT = c1.y(5, 1, 0.05);

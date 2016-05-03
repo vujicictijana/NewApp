@@ -2,9 +2,10 @@ package app.algorithms.test;
 
 import java.text.DecimalFormat;
 
+import app.data.generators.ArrayGenerator;
+import app.data.generators.GraphGenerator;
 import app.file.io.Reader;
 import app.file.io.Writer;
-import app.graph.generators.DataGenerator;
 import app.algorithms.symmetric.*;
 
 public class TestSymmetric {
@@ -51,7 +52,7 @@ public class TestSymmetric {
 	private double runSymmetricDif(double alpha, double beta, double lr,
 			double[][] s, double[] r, int maxIter, double[][] sT, double[] rT) {
 
-		double[][] sS = DataGenerator.converteSMatrixToSymmetric(s);
+		double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 		CalculationsSymmetric cS = new CalculationsSymmetric(sS, r);
 		double[] yS = cS.y(5, 1, 0.05);
 		GradientDescentSymmetric gS = new GradientDescentSymmetric(alpha, beta,
@@ -60,7 +61,7 @@ public class TestSymmetric {
 		double alphaT = paramsS[0];
 		double betaT = paramsS[1];
 
-		double[][] sST = DataGenerator.converteSMatrixToSymmetric(sT);
+		double[][] sST = GraphGenerator.converteGraphToUndirected(sT);
 		CalculationsSymmetric cS1 = new CalculationsSymmetric(sST, rT);
 		double[] yTest = cS1.y(5, 1, 0.05);
 
@@ -70,7 +71,7 @@ public class TestSymmetric {
 
 	private double runSymmetric(double alpha, double beta, double lr,
 			double[][] s, double[] r, int maxIter) {
-		double[][] sS = DataGenerator.converteSMatrixToSymmetric(s);
+		double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 
 		CalculationsSymmetric cS = new CalculationsSymmetric(sS, r);
 		double[] yS = cS.y(5, 1, 0.05);
@@ -85,8 +86,8 @@ public class TestSymmetric {
 	}
 
 	public void testSymmetric(int no, int maxIter) {
-		double[][] s = DataGenerator.generateS(no);
-		double[] r = DataGenerator.generateR(no);
+		double[][] s = GraphGenerator.generateDirectedGraph(no);
+		double[] r = ArrayGenerator.generateArray(200,5);
 		double alpha = 1;
 		double beta = 1;
 		double lr = 0.0001;

@@ -2,13 +2,14 @@ package app.algorithms.test;
 
 import app.algorithms.asymmetric.*;
 import app.algorithms.symmetric.*;
-import app.graph.generators.DataGenerator;
+import app.data.generators.ArrayGenerator;
+import app.data.generators.GraphGenerator;
 
 public class Test {
 
 	public void runAsymmetric() {
-		double[][] s = DataGenerator.generateS(200);
-		double[] r = DataGenerator.generateR(200);
+		double[][] s = GraphGenerator.generateDirectedGraph(200);
+		double[] r = ArrayGenerator.generateArray(200,5);
 
 		double alpha = 1;
 		double beta = 1;
@@ -36,8 +37,8 @@ public class Test {
 		// double betaT = 3.319428679648353;
 		double alphaT = 5.738379778398131;
 		double betaT = 11.471458640825238;
-		double[][] sT = DataGenerator.generateS(200);
-		double[] rT = DataGenerator.generateR(200);
+		double[][] sT = GraphGenerator.generateDirectedGraph(200);
+		double[] rT = ArrayGenerator.generateArray(200,5);
 
 		CalculationsAsymmetric c1 = new CalculationsAsymmetric(sT, rT);
 		double[] yTest = c1.y(1, 2, 0.05);
@@ -47,9 +48,9 @@ public class Test {
 	}
 
 	public void runSymmetric() {
-		double[][] sa = DataGenerator.generateS(200);
-		double[][] s = DataGenerator.converteSMatrixToSymmetric(sa);
-		double[] r = DataGenerator.generateR(200);
+		double[][] sa = GraphGenerator.generateDirectedGraph(200);
+		double[][] s = GraphGenerator.converteGraphToUndirected(sa);
+		double[] r = ArrayGenerator.generateArray(200,5);
 
 		double alpha = 1;
 		double beta = 1;
@@ -75,9 +76,9 @@ public class Test {
 	public void testSymmetric() {
 		double alphaT = 12.315045670766596;
 		double betaT = 2.0593994019727586;
-		double[][] s = DataGenerator.generateS(200);
-		double[][] sT = DataGenerator.converteSMatrixToSymmetric(s);
-		double[] rT = DataGenerator.generateR(200);
+		double[][] s = GraphGenerator.generateDirectedGraph(200);
+		double[][] sT = GraphGenerator.converteGraphToUndirected(s);
+		double[] rT = ArrayGenerator.generateArray(200,5);
 
 		CalculationsSymmetric c1 = new CalculationsSymmetric(sT, rT);
 		double[] yTest = c1.y(5, 1, 0.05);

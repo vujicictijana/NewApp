@@ -2,14 +2,15 @@ package app.algorithms.test;
 
 import java.text.DecimalFormat;
 
+import app.data.generators.ArrayGenerator;
+import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
-import app.graph.generators.DataGenerator;
 import app.algorithms.asymmetric.*;
 
 public class TestAsymmetric {
 
 	public void testDataGenerator() {
-		double[][] s = DataGenerator.generateS(3);
+		double[][] s = GraphGenerator.generateDirectedGraph(3);
 		for (int i = 0; i < s.length; i++) {
 			for (int j = 0; j < s.length; j++) {
 				System.out.print(s[i][j] + "\t");
@@ -17,7 +18,7 @@ public class TestAsymmetric {
 			System.out.println();
 		}
 		System.out.println();
-		double[] r = DataGenerator.generateR(3);
+		double[] r = ArrayGenerator.generateArray(200,5);
 		for (int i = 0; i < r.length; i++) {
 			System.out.println(r[i]);
 		}
@@ -44,8 +45,8 @@ public class TestAsymmetric {
 	}
 
 	public double[] testTrain(int no, int maxIter, boolean show) {
-		double[][] s = DataGenerator.generateS(no);
-		double[] r = DataGenerator.generateR(no);
+		double[][] s = GraphGenerator.generateDirectedGraph(no);
+		double[] r = ArrayGenerator.generateArray(200,5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 		double[] y = c.y(5, 1, 0.05);
 		double alpha = 0.1;
@@ -66,8 +67,8 @@ public class TestAsymmetric {
 		//
 		System.out.println();
 
-		double[][] sTest = DataGenerator.generateS(500);
-		double[] rTest = DataGenerator.generateR(500);
+		double[][] sTest = GraphGenerator.generateDirectedGraph(500);
+		double[] rTest = ArrayGenerator.generateArray(200,5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(sTest, rTest);
 		double[] yTest = c.y(5, 1, 0.05);
 
@@ -85,7 +86,7 @@ public class TestAsymmetric {
 			System.out.println();
 		}
 		System.out.println("\nSymmetric:");
-		double[][] matrixS = DataGenerator.converteSMatrixToSymmetric(matrix);
+		double[][] matrixS = GraphGenerator.converteGraphToUndirected(matrix);
 		for (int i = 0; i < matrixS.length; i++) {
 			for (int j = 0; j < matrixS.length; j++) {
 				System.out.print(matrixS[i][j] + "\t");
@@ -149,16 +150,16 @@ public class TestAsymmetric {
 		String[] text = new String[times];
 		String textA = "";
 		for (int i = 1; i <= times; i++) {
-			s = DataGenerator.generateS(no);
+			s = GraphGenerator.generateDirectedGraph(no);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
-			r = DataGenerator.generateR(no);
+			r =ArrayGenerator.generateArray(200,5);
 			Writer.writeR(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
-				sT = DataGenerator.generateS(no);
+				sT = GraphGenerator.generateDirectedGraph(no);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
-				rT = DataGenerator.generateR(no);
+				rT = ArrayGenerator.generateArray(200,5);
 				Writer.writeR(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
@@ -192,16 +193,16 @@ public class TestAsymmetric {
 		String[] text = new String[times];
 		String textA = "";
 		for (int i = 1; i <= times; i++) {
-			s = DataGenerator.generateSWithProbability(no, probability);
+			s = GraphGenerator.generateDirectedGraphWithEdgeProbability(no, probability);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
-			r = DataGenerator.generateR(no);
+			r = ArrayGenerator.generateArray(200,5);
 			Writer.writeR(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
-				sT = DataGenerator.generateSWithProbability(no, probability);
+				sT = GraphGenerator.generateDirectedGraphWithEdgeProbability(no, probability);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
-				rT = DataGenerator.generateR(no);
+				rT = ArrayGenerator.generateArray(200,5);
 				Writer.writeR(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
