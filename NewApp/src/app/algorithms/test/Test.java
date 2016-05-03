@@ -21,7 +21,7 @@ public class Test {
 
 		GradientDescentAsymmetric g = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		double[] params = g.learn(maxIter, true);
+		double[] params = g.learn(maxIter, true,null);
 
 		double alphaT = params[0];
 		double betaT = params[1];

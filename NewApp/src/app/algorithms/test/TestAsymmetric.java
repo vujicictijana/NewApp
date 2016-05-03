@@ -18,7 +18,7 @@ public class TestAsymmetric {
 			System.out.println();
 		}
 		System.out.println();
-		double[] r = ArrayGenerator.generateArray(200,5);
+		double[] r = ArrayGenerator.generateArray(200, 5);
 		for (int i = 0; i < r.length; i++) {
 			System.out.println(r[i]);
 		}
@@ -46,7 +46,7 @@ public class TestAsymmetric {
 
 	public double[] testTrain(int no, int maxIter, boolean show) {
 		double[][] s = GraphGenerator.generateDirectedGraph(no);
-		double[] r = ArrayGenerator.generateArray(200,5);
+		double[] r = ArrayGenerator.generateArray(200, 5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 		double[] y = c.y(5, 1, 0.05);
 		double alpha = 0.1;
@@ -55,7 +55,7 @@ public class TestAsymmetric {
 
 		GradientDescentAsymmetric g = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		return g.learn(maxIter, show);
+		return g.learn(maxIter, show, null);
 	}
 
 	public void testNewGCRF(int no, int maxIter) {
@@ -68,11 +68,12 @@ public class TestAsymmetric {
 		System.out.println();
 
 		double[][] sTest = GraphGenerator.generateDirectedGraph(500);
-		double[] rTest = ArrayGenerator.generateArray(200,5);
+		double[] rTest = ArrayGenerator.generateArray(200, 5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(sTest, rTest);
 		double[] yTest = c.y(5, 1, 0.05);
 
-		AlgorithmAsymmetric g = new AlgorithmAsymmetric(alpha, beta, sTest, rTest, yTest);
+		AlgorithmAsymmetric g = new AlgorithmAsymmetric(alpha, beta, sTest,
+				rTest, yTest);
 		System.err.println("R^2:" + g.rSquared());
 	}
 
@@ -128,7 +129,8 @@ public class TestAsymmetric {
 	// Writer.write(fileName, text);
 	// }
 
-	public void testTrainAndTestMore(int no, int maxIter, int times, boolean same) {
+	public void testTrainAndTestMore(int no, int maxIter, int times,
+			boolean same) {
 		DecimalFormat df = new DecimalFormat("#.######");
 		double[][] s = null;
 		double[][] sT = null;
@@ -152,14 +154,14 @@ public class TestAsymmetric {
 		for (int i = 1; i <= times; i++) {
 			s = GraphGenerator.generateDirectedGraph(no);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
-			r =ArrayGenerator.generateArray(200,5);
+			r = ArrayGenerator.generateArray(200, 5);
 			Writer.writeR(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
 				sT = GraphGenerator.generateDirectedGraph(no);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
-				rT = ArrayGenerator.generateArray(200,5);
+				rT = ArrayGenerator.generateArray(200, 5);
 				Writer.writeR(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
@@ -193,16 +195,18 @@ public class TestAsymmetric {
 		String[] text = new String[times];
 		String textA = "";
 		for (int i = 1; i <= times; i++) {
-			s = GraphGenerator.generateDirectedGraphWithEdgeProbability(no, probability);
+			s = GraphGenerator.generateDirectedGraphWithEdgeProbability(no,
+					probability);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
-			r = ArrayGenerator.generateArray(200,5);
+			r = ArrayGenerator.generateArray(200, 5);
 			Writer.writeR(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
-				sT = GraphGenerator.generateDirectedGraphWithEdgeProbability(no, probability);
+				sT = GraphGenerator.generateDirectedGraphWithEdgeProbability(
+						no, probability);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
-				rT = ArrayGenerator.generateArray(200,5);
+				rT = ArrayGenerator.generateArray(200, 5);
 				Writer.writeR(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
@@ -220,11 +224,11 @@ public class TestAsymmetric {
 
 		GradientDescentAsymmetric g = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		double[] params = g.learn(maxIter, false);
+		double[] params = g.learn(maxIter, false, null);
 
 		double alphaT = params[0];
 		double betaT = params[1];
-		
+
 		AlgorithmAsymmetric g1 = new AlgorithmAsymmetric(alphaT, betaT, s, r, y);
 		return g1.rSquared();
 	}
@@ -236,15 +240,16 @@ public class TestAsymmetric {
 
 		GradientDescentAsymmetric g = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		double[] params = g.learn(maxIter, false);
+		double[] params = g.learn(maxIter, false, null);
 
 		double alphaT = params[0];
 		double betaT = params[1];
-		
+
 		CalculationsAsymmetric c1 = new CalculationsAsymmetric(sT, rT);
 		double[] yTest = c1.y(5, 1, 0.05);
 
-		AlgorithmAsymmetric g1 = new AlgorithmAsymmetric(alphaT, betaT, sT, rT, yTest);
+		AlgorithmAsymmetric g1 = new AlgorithmAsymmetric(alphaT, betaT, sT, rT,
+				yTest);
 		return g1.rSquared();
 	}
 

@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
 import app.gui.panels.TrainPanel;
+import app.gui.panels.TrainRandomPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -31,6 +32,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuFile;
 	private JMenuItem menuParameters;
 	private JFrame frame;
+	private JPanel mainPanel;
 
 	/**
 	 * Launch the application.
@@ -59,6 +61,7 @@ public class MainFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		contentPane.add(getMenuBar_1());
+		setLocationRelativeTo(null);
 		frame = this;
 	}
 
@@ -94,9 +97,16 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					TrainPanel t = new TrainPanel();
 					t.setBounds(0, 61, 900, 500);
-					contentPane.add(t);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
 					contentPane.repaint();
 					contentPane.revalidate();
+
 				}
 			});
 		}
@@ -107,6 +117,23 @@ public class MainFrame extends JFrame {
 		if (menuTrainRandom == null) {
 			menuTrainRandom = new JMenuItem("Train on random data");
 			menuTrainRandom.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuTrainRandom
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
+							TrainRandomPanel t = new TrainRandomPanel(frame);
+							t.setBounds(0, 61, 900, 500);
+							if (mainPanel != null) {
+								contentPane.remove(mainPanel);
+								contentPane.repaint();
+								contentPane.revalidate();
+							}
+							mainPanel = t;
+							contentPane.add(mainPanel);
+							contentPane.repaint();
+							contentPane.revalidate();
+						}
+					});
 		}
 		return menuTrainRandom;
 	}
@@ -177,5 +204,4 @@ public class MainFrame extends JFrame {
 		}
 		return menuParameters;
 	}
-
 }
