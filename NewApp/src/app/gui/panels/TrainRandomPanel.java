@@ -222,16 +222,16 @@ public class TrainRandomPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						ProgressBar frame = new ProgressBar(1000);
-						frame.pack();
-						frame.setVisible(true);
-						frame.setLocationRelativeTo(null);
-
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						double alpha = Double.parseDouble(txtAlpha.getText());
 						double beta = Double.parseDouble(txtBeta.getText());
 						double lr = Double.parseDouble(txtLr.getText());
 						int maxIter = Integer.parseInt(txtMaxIter.getText());
+						
+						ProgressBar frame = new ProgressBar(maxIter);
+						frame.pack();
+						frame.setVisible(true);
+						frame.setLocationRelativeTo(null);
 
 						double[][] s = generateGraph(noOfNodes);
 						double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
