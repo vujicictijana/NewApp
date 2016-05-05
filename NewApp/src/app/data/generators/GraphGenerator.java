@@ -64,8 +64,9 @@ public class GraphGenerator {
 		double weight[] = null;
 		weight = new double[m + 1];
 
-		int k = GraphGenerator.randomGraph(noOfNodes, m, seed, simple, directed, acyclic,
-				weighted, minweight, maxweight, nodei, nodej, weight);
+		int k = GraphGenerator.randomGraph(noOfNodes, m, seed, simple,
+				directed, acyclic, weighted, minweight, maxweight, nodei,
+				nodej, weight);
 		if (k != 0)
 			System.out.println("Invalid input data, error code = " + k);
 		else {
@@ -80,6 +81,23 @@ public class GraphGenerator {
 		}
 		return null;
 
+	}
+
+	public static double[][] generateGraphNoFeedback(int noOfNodes) {
+		double[][] graph = generateDirectedGraph(noOfNodes);
+		double[][] finalGraph = new double[noOfNodes][noOfNodes];
+		for (int i = 0; i < finalGraph.length; i++) {
+			for (int j = i + 1; j < finalGraph.length; j++) {
+				if (graph[i][j] > graph[j][i]) {
+					finalGraph[i][j] = Math.random();
+					finalGraph[j][i] = 0;
+				} else {
+					finalGraph[i][j] = 0;
+					finalGraph[j][i] = Math.random();
+				}
+			}
+		}
+		return finalGraph;
 	}
 
 	public static int randomGraph(int n, int m, long seed, boolean simple,

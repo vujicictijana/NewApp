@@ -291,6 +291,7 @@ public class TrainRandomPanel extends JPanel {
 			cmbGraphType.addItem("directed graph");
 			cmbGraphType.addItem("directed graph with edge probability");
 			cmbGraphType.addItem("directed acyclic graph");
+			cmbGraphType.addItem("directed graph without direct feedback");
 		}
 		return cmbGraphType;
 	}
