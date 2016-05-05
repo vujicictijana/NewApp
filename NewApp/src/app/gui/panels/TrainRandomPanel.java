@@ -43,6 +43,8 @@ import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JTable;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class TrainRandomPanel extends JPanel {
 	private JLabel lblType;
@@ -104,6 +106,24 @@ public class TrainRandomPanel extends JPanel {
 	private JButton getBtnQuestionS() {
 		if (btnQuestionS == null) {
 			btnQuestionS = new JButton("");
+			btnQuestionS.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Graph types:\n"
+											+ "* Directed graph - fully connected directed graph\n"
+											+ "* Directed graph with edge probability - edge probability represents the "
+											+ "probability that edge between two random nodes exists\n"
+											+ "* Directed acyclic graph - directed graph without cycles\n"
+											+ "* Directed directed graph without direct feedback- "
+											+ "if there is direct connection from A to B, there is no direct connection from B to A",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
+
 			btnQuestionS.setBounds(515, 36, 30, 30);
 			Style.questionButtonStyle(btnQuestionS);
 		}
@@ -227,7 +247,7 @@ public class TrainRandomPanel extends JPanel {
 						double beta = Double.parseDouble(txtBeta.getText());
 						double lr = Double.parseDouble(txtLr.getText());
 						int maxIter = Integer.parseInt(txtMaxIter.getText());
-						
+
 						ProgressBar frame = new ProgressBar(maxIter);
 						frame.pack();
 						frame.setVisible(true);

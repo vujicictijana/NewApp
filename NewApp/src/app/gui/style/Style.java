@@ -21,6 +21,7 @@ public class Style {
 		button.setBorder(null);
 		button.setBackground(UIManager.getColor("Button.background"));
 		button.setIcon(new ImageIcon("images/question.png"));
+		button.setRolloverIcon(new ImageIcon("images/question-h.png"));
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
 		button.setBorderPainted(false);
@@ -37,5 +38,9 @@ public class Style {
 		header.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		table.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		table.setRowHeight(20);
+	}
+	
+	public static ImageIcon questionIcon(){
+		return new ImageIcon("images/question-icon.png");
 	}
 }
