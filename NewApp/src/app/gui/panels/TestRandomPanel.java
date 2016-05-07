@@ -35,6 +35,7 @@ import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
+import app.gui.threads.TestForGUI;
 
 import javax.swing.JComboBox;
 
@@ -51,7 +52,6 @@ import javax.swing.JCheckBox;
 
 public class TestRandomPanel extends JPanel {
 	private JLabel lblType;
-	private JButton btnQuestionS;
 	private JLabel lblRArrayFile;
 	private JTextField txtNoOfNodes;
 	private JButton btnTrain;
@@ -60,6 +60,9 @@ public class TestRandomPanel extends JPanel {
 	private JFrame mainFrame;
 	private JLabel label;
 	private JTextField txtProb;
+	private JLabel lblTimes;
+	private JTextField txtTimes;
+	private JPanel panelForTable;
 
 	/**
 	 * Create the panel.
@@ -68,7 +71,6 @@ public class TestRandomPanel extends JPanel {
 		setBackground(UIManager.getColor("Button.background"));
 		setLayout(null);
 		add(getLblType());
-		add(getBtnQuestionS());
 		add(getLblRArrayFile());
 		add(getTxtNoOfNodes());
 		add(getBtnTrain());
@@ -77,8 +79,9 @@ public class TestRandomPanel extends JPanel {
 		this.mainFrame = mainFrame;
 		add(getLabel());
 		add(getTxtProb());
-		setUpDefaultValues();
-		createMainFolders();
+		add(getLblTimes());
+		add(getTxtTimes());
+		add(getPanelForTable());
 	}
 
 	private JLabel getLblType() {
@@ -89,33 +92,6 @@ public class TestRandomPanel extends JPanel {
 			lblType.setBounds(65, 36, 100, 30);
 		}
 		return lblType;
-	}
-
-	private JButton getBtnQuestionS() {
-		if (btnQuestionS == null) {
-			btnQuestionS = new JButton("");
-			btnQuestionS.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Graph types:\n"
-											+ "* Directed graph - fully connected directed graph\n"
-											+ "* Directed graph with edge probability - edge probability represents the "
-											+ "probability that edge between two random nodes exists\n"
-											+ "* Directed acyclic graph - directed graph without cycles\n"
-											+ "* Directed directed graph without direct feedback- "
-											+ "if there is direct connection from A to B, there is no direct connection from B to A",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
-				}
-			});
-
-			btnQuestionS.setBounds(515, 36, 30, 30);
-			Style.questionButtonStyle(btnQuestionS);
-		}
-		return btnQuestionS;
 	}
 
 	private JLabel getLblRArrayFile() {
@@ -143,12 +119,35 @@ public class TestRandomPanel extends JPanel {
 			btnTrain = new JButton("TEST");
 			btnTrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
+					String message = validateData();
+					if (message != null) {
+						JOptionPane.showMessageDialog(mainFrame, message,
+								"Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						String model = "RandomModels/"
+								+ cmbModel.getSelectedItem().toString()
+										.replaceAll(" - ", "/");
+						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
+						int times = Integer.parseInt(txtTimes.getText());
+						double probability = 0;
+						if (cmbModel.getSelectedItem().toString()
+								.contains("probability")) {
+							probability = Double.parseDouble(txtProb.getText());
+						}
+						ProgressBar frame = new ProgressBar(times);
+						frame.pack();
+						frame.setVisible(true);
+						frame.setLocationRelativeTo(null);
+						TestForGUI test = new TestForGUI(frame, mainFrame,
+								panelForTable, model, noOfNodes, times,
+								probability);
+						test.start();
+					}
 				}
 			});
 
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(305, 161, 112, 45);
+			btnTrain.setBounds(305, 209, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -156,24 +155,28 @@ public class TestRandomPanel extends JPanel {
 	private JComboBox getCmbModel() {
 		if (cmbModel == null) {
 			cmbModel = new JComboBox();
-			cmbModel.setBounds(181, 39, 315, 30);
+			cmbModel.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent arg0) {
+					if (cmbModel.getSelectedItem().toString()
+							.contains("probability")) {
+						String model = "RandomModels/"
+								+ cmbModel.getSelectedItem().toString()
+										.replaceAll(" - ", "/");
+						String probModel = model.split("/")[model.split("/").length - 1];
+						probModel = probModel.substring(
+								probModel.indexOf("s") + 1,
+								probModel.indexOf("p"));
+						txtProb.setEnabled(true);
+						txtProb.setText(probModel);
+					}
+				}
+			});
+			cmbModel.setBounds(181, 39, 417, 30);
 			cmbModel.addItem("choose model");
 			String[] files = Reader.getAllFiles("RandomModels");
 			for (int i = 0; i < files.length; i++) {
 				cmbModel.addItem(files[i]);
 			}
-			cmbModel.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					if (cmbModel.getSelectedItem().toString()
-							.contains("probability")) {
-						txtProb.setEnabled(true);
-						txtProb.setEditable(true);
-					} else {
-						txtProb.setEnabled(false);
-						txtProb.setEditable(false);
-					}
-				}
-			});
 		}
 		return cmbModel;
 	}
@@ -186,6 +189,12 @@ public class TestRandomPanel extends JPanel {
 			Integer.parseInt(txtNoOfNodes.getText());
 		} catch (NumberFormatException e) {
 			return "No. of nodes should be integer.";
+		}
+
+		try {
+			Integer.parseInt(txtTimes.getText());
+		} catch (NumberFormatException e) {
+			return "Repeat n times should be integer.";
 		}
 
 		return null;
@@ -202,9 +211,6 @@ public class TestRandomPanel extends JPanel {
 			return GraphGenerator.generateDirectedAcyclicGraph(noOfNodes);
 		}
 		return null;
-	}
-
-	public void setUpDefaultValues() {
 	}
 
 	public void createMainFolders() {
@@ -239,5 +245,34 @@ public class TestRandomPanel extends JPanel {
 			txtProb.setBounds(181, 119, 91, 30);
 		}
 		return txtProb;
+	}
+
+	private JLabel getLblTimes() {
+		if (lblTimes == null) {
+			lblTimes = new JLabel("Repeat n times:");
+			lblTimes.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblTimes.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTimes.setBounds(10, 158, 155, 30);
+		}
+		return lblTimes;
+	}
+
+	private JTextField getTxtTimes() {
+		if (txtTimes == null) {
+			txtTimes = new JTextField();
+			txtTimes.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtTimes.setColumns(10);
+			txtTimes.setBounds(181, 160, 91, 30);
+		}
+		return txtTimes;
+	}
+
+	private JPanel getPanelForTable() {
+		if (panelForTable == null) {
+			panelForTable = new JPanel();
+			panelForTable.setBounds(45, 268, 850, 285);
+			panelForTable.setLayout(null);
+		}
+		return panelForTable;
 	}
 }

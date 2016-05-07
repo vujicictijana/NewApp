@@ -100,6 +100,30 @@ public class GraphGenerator {
 		return finalGraph;
 	}
 
+	public static double[][] generateGraphByType(int noOfNodes, String type,
+			double probability) {
+		double[][] graph = null;
+		switch (type) {
+		case "DirectedGraph":
+			graph = GraphGenerator.generateDirectedGraph(noOfNodes);
+			break;
+		case "DirectedAcyclicGraph":
+			graph = GraphGenerator.generateDirectedAcyclicGraph(noOfNodes);
+			break;
+		case "DirectedGraphWithoutDirectFeedback":
+			graph = GraphGenerator.generateGraphNoFeedback(noOfNodes);
+			break;
+		case "DirectedGraphWithEdgeProbability":
+			graph = GraphGenerator.generateDirectedGraphWithEdgeProbability(
+					noOfNodes, probability);
+			break;
+		default:
+			graph = null;
+			break;
+		}
+		return graph;
+	}
+
 	public static int randomGraph(int n, int m, long seed, boolean simple,
 			boolean directed, boolean acyclic, boolean weighted, int minweight,
 			int maxweight, int nodei[], int nodej[], double weight[]) {

@@ -31,9 +31,11 @@ import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
+import app.gui.threads.TrainForGUI;
 
 import javax.swing.JComboBox;
 
@@ -250,11 +252,16 @@ public class TrainRandomPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-
-						String modelFolder = "RandomModels/"
-								+ Writer.folderName(cmbGraphType
-										.getSelectedItem().toString()) + "/"
+						String model = Writer.folderName(cmbGraphType
+								.getSelectedItem().toString());
+						String modelFolder = "RandomModels/" + model + "/"
 								+ noOfNodes + "nodes";
+						if (model.contains("Probability")) {
+							double probability = Double.parseDouble(txtProb
+									.getText());
+							modelFolder += probability + "probability";
+						}
+
 						if (checkModel(modelFolder)) {
 
 							int selectedOption = JOptionPane
@@ -271,6 +278,7 @@ public class TrainRandomPanel extends JPanel {
 											"Question",
 											JOptionPane.YES_NO_OPTION);
 							if (selectedOption == JOptionPane.YES_OPTION) {
+								Reader.deleteFiles(modelFolder);
 								train(noOfNodes, modelFolder);
 							}
 						} else {
@@ -351,8 +359,8 @@ public class TrainRandomPanel extends JPanel {
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
 		}
-		Train t = new Train(modelFolder, frame, mainFrame, s, r, y, alpha,
-				beta, lr, maxIter, panel, both);
+		TrainForGUI t = new TrainForGUI(modelFolder, frame, mainFrame, s, r, y,
+				alpha, beta, lr, maxIter, panel, both);
 		t.start();
 
 	}
@@ -399,18 +407,13 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	public double[][] generateGraph(int noOfNodes) {
-		if (cmbGraphType.getSelectedIndex() == 1) {
-			return GraphGenerator.generateDirectedGraph(noOfNodes);
-		} else if (cmbGraphType.getSelectedIndex() == 2) {
-			double prob = Double.parseDouble(txtProb.getText());
-			return GraphGenerator.generateDirectedGraphWithEdgeProbability(
-					noOfNodes, prob);
-		} else if (cmbGraphType.getSelectedIndex() == 3) {
-			return GraphGenerator.generateDirectedAcyclicGraph(noOfNodes);
-		} else if (cmbGraphType.getSelectedIndex() == 4) {
-			return GraphGenerator.generateGraphNoFeedback(noOfNodes);
+		String type = Writer.folderName(cmbGraphType.getSelectedItem()
+				.toString());
+		double probability = 0;
+		if (cmbGraphType.getSelectedItem().toString().contains("probability")) {
+			probability = Double.parseDouble(txtProb.getText());
 		}
-		return null;
+		return GraphGenerator.generateGraphByType(noOfNodes, type, probability);
 	}
 
 	private JCheckBox getChckbxSymmetric() {

@@ -51,11 +51,10 @@ public class Reader {
 			b.close();
 			return text.toArray(new String[text.size()]);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	public static String[] getAllFiles(String folder) {
@@ -65,8 +64,9 @@ public class Reader {
 					filePath -> {
 						if (Files.isRegularFile(filePath)) {
 							if (filePath.getFileName().toString()
-									.equalsIgnoreCase("Asymmetric")) {
-								String[] folders = filePath.getParent().toString().split("\\\\");
+									.contains("Asymmetric")) {
+								String[] folders = filePath.getParent()
+										.toString().split("\\\\");
 								files.add(folders[1] + " - " + folders[2]);
 							}
 						}
@@ -74,6 +74,15 @@ public class Reader {
 			return files.toArray(new String[files.size()]);
 		} catch (IOException e) {
 			return null;
+		}
+	}
+
+	public static void deleteFiles(String path) {
+		File index = new File(path);
+		String[] entries = index.list();
+		for (String s : entries) {
+			File currentFile = new File(index.getPath(), s);
+			currentFile.delete();
 		}
 	}
 

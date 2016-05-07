@@ -1,12 +1,14 @@
 package app.gui.style;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 public class Style {
@@ -28,7 +30,7 @@ public class Style {
 		button.setFocusPainted(false);
 	}
 
-	public static void resultTable(JTable table) {
+	public static void resultTable(JTable table, int last) {
 		JTableHeader header = table.getTableHeader();
 		header.setBackground(new Color(74, 130, 226));
 		header.setForeground(Color.WHITE);
@@ -38,9 +40,25 @@ public class Style {
 		header.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		table.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		table.setRowHeight(20);
+		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table,
+					Object value, boolean isSelected, boolean hasFocus,
+					int row, int column) {
+				final Component c = super.getTableCellRendererComponent(table,
+						value, isSelected, hasFocus, row, column);
+				if (last != -1) {
+					c.setBackground(row == last ? Color.LIGHT_GRAY
+							: Color.WHITE);
+					c.setFont(row == last ? new Font("Segoe UI", Font.BOLD, 15)
+							: new Font("Segoe UI", Font.PLAIN, 15));
+				}
+				return c;
+			}
+		});
 	}
-	
-	public static ImageIcon questionIcon(){
+
+	public static ImageIcon questionIcon() {
 		return new ImageIcon("images/question-icon.png");
 	}
 }

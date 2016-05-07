@@ -1,4 +1,4 @@
-package app.gui.panels;
+package app.gui.threads;
 
 import java.awt.Color;
 
@@ -17,7 +17,7 @@ import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 
-public class Train extends Thread {
+public class TrainForGUI extends Thread {
 	private ProgressBar frame;
 	private JFrame mainFrame;
 
@@ -32,7 +32,7 @@ public class Train extends Thread {
 	private boolean both;
 	private String modelFolder;
 
-	public Train(String modelFolder, ProgressBar frame, JFrame mainFrame,
+	public TrainForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
 			double[][] s, double[] r, double[] y, double alpha, double beta,
 			double lr, int maxIter, JPanel panel, boolean both) {
 		super();
@@ -77,9 +77,9 @@ public class Train extends Thread {
 			r2S = algS.rSquared();
 		}
 		createTable(res, r2, resS, r2S);
-		createFile("Asymmetric", res);
+		createFile("Asymmetric.txt", res);
 		if (resS != null) {
-			createFile("Symmetric", resS);
+			createFile("Symmetric.txt", resS);
 		}
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
@@ -94,7 +94,7 @@ public class Train extends Thread {
 
 		table.setBackground(new Color(240, 240, 240));
 		JScrollPane scrollPane = new JScrollPane(table);
-		Style.resultTable(table);
+		Style.resultTable(table,-1);
 		panel.add(scrollPane);
 		if (resS == null) {
 			scrollPane.setBounds(50, 420, 700, 50);
