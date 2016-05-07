@@ -57,7 +57,7 @@ public class TestSymmetric {
 		double[] yS = cS.y(5, 1, 0.05);
 		GradientDescentSymmetric gS = new GradientDescentSymmetric(alpha, beta,
 				lr, sS, r, yS);
-		double[] paramsS = gS.learn(maxIter, false);
+		double[] paramsS = gS.learn(maxIter, false, null);
 		double alphaT = paramsS[0];
 		double betaT = paramsS[1];
 
@@ -65,7 +65,8 @@ public class TestSymmetric {
 		CalculationsSymmetric cS1 = new CalculationsSymmetric(sST, rT);
 		double[] yTest = cS1.y(5, 1, 0.05);
 
-		AlgorithmSymmetric g1 = new AlgorithmSymmetric(alphaT, betaT, sST, rT, yTest);
+		AlgorithmSymmetric g1 = new AlgorithmSymmetric(alphaT, betaT, sST, rT,
+				yTest);
 		return g1.rSquared();
 	}
 
@@ -77,17 +78,18 @@ public class TestSymmetric {
 		double[] yS = cS.y(5, 1, 0.05);
 		GradientDescentSymmetric gS = new GradientDescentSymmetric(alpha, beta,
 				lr, sS, r, yS);
-		double[] paramsS = gS.learn(maxIter, false);
+		double[] paramsS = gS.learn(maxIter, false, null);
 		double alphaTS = paramsS[0];
 		double betaTS = paramsS[1];
 		// System.out.println(alphaTS + " " + betaTS);
-		AlgorithmSymmetric g1S = new AlgorithmSymmetric(alphaTS, betaTS, sS, r, yS);
+		AlgorithmSymmetric g1S = new AlgorithmSymmetric(alphaTS, betaTS, sS, r,
+				yS);
 		return g1S.rSquared();
 	}
 
 	public void testSymmetric(int no, int maxIter) {
 		double[][] s = GraphGenerator.generateDirectedGraph(no);
-		double[] r = ArrayGenerator.generateArray(200,5);
+		double[] r = ArrayGenerator.generateArray(200, 5);
 		double alpha = 1;
 		double beta = 1;
 		double lr = 0.0001;

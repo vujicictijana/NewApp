@@ -62,5 +62,19 @@ public class Writer {
 			dir.mkdir();
 		}
 	}
+	
+	public static String folderName(String name){
+		String[] words = name.split(" ");
+		String result ="";
+		for (int i = 0; i < words.length; i++) {
+			result += (words[i].charAt(0)+"").toUpperCase() + words[i].substring(1).toLowerCase();
+		}
+		return result;
+	}
+	
+	public static boolean checkFolder(String name){
+		File dir = new File(name);
+		return dir.exists();
+	}
 
 }

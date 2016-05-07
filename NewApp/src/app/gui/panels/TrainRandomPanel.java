@@ -31,6 +31,7 @@ import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 
@@ -45,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JTable;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.JCheckBox;
 
 public class TrainRandomPanel extends JPanel {
 	private JLabel lblType;
@@ -65,6 +67,8 @@ public class TrainRandomPanel extends JPanel {
 	private JComboBox cmbGraphType;
 	private JPanel panel;
 	private JFrame mainFrame;
+	private JCheckBox chckbxSymmetric;
+	private JLabel lblTrainSymmetric;
 
 	/**
 	 * Create the panel.
@@ -88,9 +92,12 @@ public class TrainRandomPanel extends JPanel {
 		add(getTxtMaxIter());
 		add(getLabel());
 		add(getCmbGraphType());
+		add(getChckbxSymmetric());
+		add(getLblTrainSymmetric());
 		panel = this;
 		this.mainFrame = mainFrame;
-
+		setUpDefaultValues();
+		createMainFolders();
 	}
 
 	private JLabel getLblType() {
@@ -243,30 +250,38 @@ public class TrainRandomPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						double alpha = Double.parseDouble(txtAlpha.getText());
-						double beta = Double.parseDouble(txtBeta.getText());
-						double lr = Double.parseDouble(txtLr.getText());
-						int maxIter = Integer.parseInt(txtMaxIter.getText());
 
-						ProgressBar frame = new ProgressBar(maxIter);
-						frame.pack();
-						frame.setVisible(true);
-						frame.setLocationRelativeTo(null);
+						String modelFolder = "RandomModels/"
+								+ Writer.folderName(cmbGraphType
+										.getSelectedItem().toString()) + "/"
+								+ noOfNodes + "nodes";
+						if (checkModel(modelFolder)) {
 
-						double[][] s = generateGraph(noOfNodes);
-						double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
-						CalculationsAsymmetric c = new CalculationsAsymmetric(
-								s, r);
-						double[] y = c.y(5, 1, 0.05);
-						Train t = new Train(frame, mainFrame, s, r, y, alpha,
-								beta, lr, maxIter, panel);
-						t.start();
+							int selectedOption = JOptionPane
+									.showConfirmDialog(
+											mainFrame,
 
+											"Model for "
+													+ cmbGraphType
+															.getSelectedItem()
+															.toString()
+													+ " with "
+													+ noOfNodes
+													+ " nodes already exists. Do you want to replace it?",
+											"Question",
+											JOptionPane.YES_NO_OPTION);
+							if (selectedOption == JOptionPane.YES_OPTION) {
+								train(noOfNodes, modelFolder);
+							}
+						} else {
+							train(noOfNodes, modelFolder);
+						}
 					}
 				}
 			});
+
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(327, 320, 112, 45);
+			btnTrain.setBounds(330, 348, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -314,6 +329,32 @@ public class TrainRandomPanel extends JPanel {
 			cmbGraphType.addItem("directed graph without direct feedback");
 		}
 		return cmbGraphType;
+	}
+
+	public void train(int noOfNodes, String modelFolder) {
+
+		double alpha = Double.parseDouble(txtAlpha.getText());
+		double beta = Double.parseDouble(txtBeta.getText());
+		double lr = Double.parseDouble(txtLr.getText());
+		int maxIter = Integer.parseInt(txtMaxIter.getText());
+
+		ProgressBar frame = new ProgressBar(maxIter);
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		double[][] s = generateGraph(noOfNodes);
+		double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
+		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
+		double[] y = c.y(5, 1, 0.05);
+		boolean both = false;
+		if (chckbxSymmetric.isSelected()) {
+			both = true;
+		}
+		Train t = new Train(modelFolder, frame, mainFrame, s, r, y, alpha,
+				beta, lr, maxIter, panel, both);
+		t.start();
+
 	}
 
 	public String validateData() {
@@ -366,7 +407,48 @@ public class TrainRandomPanel extends JPanel {
 					noOfNodes, prob);
 		} else if (cmbGraphType.getSelectedIndex() == 3) {
 			return GraphGenerator.generateDirectedAcyclicGraph(noOfNodes);
+		} else if (cmbGraphType.getSelectedIndex() == 4) {
+			return GraphGenerator.generateGraphNoFeedback(noOfNodes);
 		}
 		return null;
+	}
+
+	private JCheckBox getChckbxSymmetric() {
+		if (chckbxSymmetric == null) {
+			chckbxSymmetric = new JCheckBox("");
+			chckbxSymmetric.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			chckbxSymmetric.setBounds(181, 327, 91, 23);
+		}
+		return chckbxSymmetric;
+	}
+
+	private JLabel getLblTrainSymmetric() {
+		if (lblTrainSymmetric == null) {
+			lblTrainSymmetric = new JLabel("Train symmetric:");
+			lblTrainSymmetric.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblTrainSymmetric.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTrainSymmetric.setBounds(35, 320, 132, 30);
+		}
+		return lblTrainSymmetric;
+	}
+
+	public void setUpDefaultValues() {
+		txtAlpha.setText("1");
+		txtBeta.setText("1");
+		txtLr.setText("0.0001");
+		txtMaxIter.setText("10000");
+	}
+
+	public void createMainFolders() {
+		Writer.createFolder("RandomModels");
+		for (int i = 1; i < cmbGraphType.getItemCount(); i++) {
+			String folder = Writer.folderName(cmbGraphType.getItemAt(i)
+					.toString());
+			Writer.createFolder("RandomModels/" + folder);
+		}
+	}
+
+	public boolean checkModel(String path) {
+		return Writer.checkFolder(path);
 	}
 }

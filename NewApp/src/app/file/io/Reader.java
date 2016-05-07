@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Reader {
@@ -55,4 +57,24 @@ public class Reader {
 		}
 		return null;
 	}
+
+	public static String[] getAllFiles(String folder) {
+		try {
+			ArrayList<String> files = new ArrayList<>();
+			Files.walk(Paths.get(folder)).forEach(
+					filePath -> {
+						if (Files.isRegularFile(filePath)) {
+							if (filePath.getFileName().toString()
+									.equalsIgnoreCase("Asymmetric")) {
+								String[] folders = filePath.getParent().toString().split("\\\\");
+								files.add(folders[1] + " - " + folders[2]);
+							}
+						}
+					});
+			return files.toArray(new String[files.size()]);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 }

@@ -1,7 +1,8 @@
 package app.algorithms.symmetric;
 
-import app.algorithms.basic.BasicCalcs;
+import javax.swing.JProgressBar;
 
+import app.algorithms.basic.BasicCalcs;
 
 public class GradientDescentSymmetric {
 	private double alpha;
@@ -23,7 +24,8 @@ public class GradientDescentSymmetric {
 		calcs = new CalculationsSymmetric(s, r);
 	}
 
-	public double[] learn(int maxIter, boolean showProgress) {
+	public double[] learn(int maxIter, boolean showProgress,
+			JProgressBar progress) {
 		int tempIter = 0;
 		double little = 1E-10;
 		double tempAlpha = 0;
@@ -36,6 +38,9 @@ public class GradientDescentSymmetric {
 		while (difAlpha > little || difBeta > little) {
 			// while (tempIter < iterNum) {
 			if (tempIter % 50 == 0) {
+				if (progress != null) {
+					progress.setValue(tempIter);
+				}
 				if (showProgress) {
 					System.out.println("Iter: " + tempIter);
 				}
