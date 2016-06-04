@@ -31,10 +31,13 @@ public class TrainForGUI extends Thread {
 	private JPanel panel;
 	private boolean both;
 	private String modelFolder;
+	private int xTable;
+	private int yTable;
 
 	public TrainForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
 			double[][] s, double[] r, double[] y, double alpha, double beta,
-			double lr, int maxIter, JPanel panel, boolean both) {
+			double lr, int maxIter, JPanel panel, boolean both, int xTable,
+			int yTable) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -48,6 +51,8 @@ public class TrainForGUI extends Thread {
 		this.panel = panel;
 		this.both = both;
 		this.modelFolder = modelFolder;
+		this.xTable = xTable;
+		this.yTable = yTable;
 	}
 
 	public void run() {
@@ -94,18 +99,17 @@ public class TrainForGUI extends Thread {
 
 		table.setBackground(new Color(240, 240, 240));
 		JScrollPane scrollPane = new JScrollPane(table);
-		Style.resultTable(table,-1);
+		Style.resultTable(table, -1);
 		panel.add(scrollPane);
 		if (resS == null) {
-			scrollPane.setBounds(50, 420, 700, 50);
+			scrollPane.setBounds(xTable, yTable, 700, 50);
 		} else {
-			scrollPane.setBounds(50, 420, 700, 75);
+			scrollPane.setBounds(xTable, yTable, 700, 75);
 		}
 		return table;
 	}
 
-	public void createFile(String symmetric,
-			double[] results) {
+	public void createFile(String symmetric, double[] results) {
 		Writer.createFolder(modelFolder);
 		String fileName = modelFolder + "/" + symmetric;
 		String[] resultsS = { results[0] + "", results[1] + "" };

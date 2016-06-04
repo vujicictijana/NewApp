@@ -35,7 +35,7 @@ import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
-import app.gui.threads.TestForGUI;
+import app.gui.threads.TestWithRandomForGUI;
 
 import javax.swing.JComboBox;
 
@@ -138,7 +138,7 @@ public class TestRandomPanel extends JPanel {
 						frame.pack();
 						frame.setVisible(true);
 						frame.setLocationRelativeTo(null);
-						TestForGUI test = new TestForGUI(frame, mainFrame,
+						TestWithRandomForGUI test = new TestWithRandomForGUI(frame, mainFrame,
 								panelForTable, model, noOfNodes, times,
 								probability);
 						test.start();

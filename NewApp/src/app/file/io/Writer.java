@@ -1,8 +1,12 @@
 package app.file.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.channels.FileChannel;
 
 public class Writer {
 
@@ -62,19 +66,43 @@ public class Writer {
 			dir.mkdir();
 		}
 	}
-	
-	public static String folderName(String name){
+
+	public static String folderName(String name) {
 		String[] words = name.split(" ");
-		String result ="";
+		String result = "";
 		for (int i = 0; i < words.length; i++) {
-			result += (words[i].charAt(0)+"").toUpperCase() + words[i].substring(1).toLowerCase();
+			result += (words[i].charAt(0) + "").toUpperCase()
+					+ words[i].substring(1).toLowerCase();
 		}
 		return result;
 	}
-	
-	public static boolean checkFolder(String name){
+
+	public static boolean checkFolder(String name) {
 		File dir = new File(name);
 		return dir.exists();
+	}
+
+	public static void copyFile(File sourceFile, String newFileName) {
+		File destFile = new File(newFileName);
+		try {
+			FileChannel source = null;
+			FileChannel destination = null;
+
+			try {
+				source = new FileInputStream(sourceFile).getChannel();
+				destination = new FileOutputStream(destFile).getChannel();
+				destination.transferFrom(source, 0, source.size());
+			} finally {
+				if (source != null) {
+					source.close();
+				}
+				if (destination != null) {
+					destination.close();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

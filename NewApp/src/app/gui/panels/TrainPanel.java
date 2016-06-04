@@ -1,9 +1,10 @@
 package app.gui.panels;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-
 import javax.swing.UIManager;
 import javax.swing.JTextField;
 
@@ -12,10 +13,19 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
+
+import app.algorithms.asymmetric.CalculationsAsymmetric;
+import app.data.generators.ArrayGenerator;
+import app.file.io.Reader;
+import app.file.io.Writer;
+import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
+import app.gui.threads.TrainForGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import javax.swing.JCheckBox;
 
 public class TrainPanel extends JPanel {
 	private JTextField txtMatrixFile;
@@ -43,11 +53,16 @@ public class TrainPanel extends JPanel {
 	private JTextField txtMaxIter;
 	private JFileChooser fc;
 	private JPanel panel;
+	private JFrame mainFrame;
+	private JLabel label;
+	private JTextField txtNoOfNodes;
+	private JCheckBox chckbxSymmetric;
+	private JLabel label_1;
 
 	/**
 	 * Create the panel.
 	 */
-	public TrainPanel() {
+	public TrainPanel(JFrame mainFrame) {
 		setBackground(UIManager.getColor("Button.background"));
 		setLayout(null);
 		add(getTxtMatrixFile());
@@ -75,8 +90,15 @@ public class TrainPanel extends JPanel {
 		add(getTxtMaxIter());
 		fc = new JFileChooser();
 		panel = this;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
+		this.mainFrame = mainFrame;
+		add(getLabel());
+		add(getTxtNoOfNodes());
+		add(getChckbxSymmetric());
+		add(getLabel_1());
+		setUpDefaultValues();
 	}
 
 	private JTextField getTxtMatrixFile() {
@@ -182,7 +204,7 @@ public class TrainPanel extends JPanel {
 			lblAlpha = new JLabel("First alpha:");
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(67, 197, 100, 30);
+			lblAlpha.setBounds(67, 235, 100, 30);
 		}
 		return lblAlpha;
 	}
@@ -192,7 +214,7 @@ public class TrainPanel extends JPanel {
 			lblFirstBeta = new JLabel("First beta:");
 			lblFirstBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblFirstBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFirstBeta.setBounds(67, 237, 100, 30);
+			lblFirstBeta.setBounds(67, 275, 100, 30);
 		}
 		return lblFirstBeta;
 	}
@@ -202,7 +224,7 @@ public class TrainPanel extends JPanel {
 			txtAlpha = new JTextField();
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(183, 198, 91, 30);
+			txtAlpha.setBounds(183, 236, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -212,7 +234,7 @@ public class TrainPanel extends JPanel {
 			txtBeta = new JTextField();
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(183, 239, 91, 30);
+			txtBeta.setBounds(183, 277, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -222,7 +244,7 @@ public class TrainPanel extends JPanel {
 			lblLearningRate = new JLabel("Learning rate:");
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLearningRate.setBounds(67, 277, 100, 30);
+			lblLearningRate.setBounds(67, 315, 100, 30);
 		}
 		return lblLearningRate;
 	}
@@ -232,7 +254,7 @@ public class TrainPanel extends JPanel {
 			txtLr = new JTextField();
 			txtLr.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLr.setColumns(10);
-			txtLr.setBounds(183, 277, 91, 30);
+			txtLr.setBounds(183, 315, 91, 30);
 		}
 		return txtLr;
 	}
@@ -294,13 +316,57 @@ public class TrainPanel extends JPanel {
 			btnTrain = new JButton("TRAIN");
 			btnTrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
+					String message = validateData();
+					if (message != null) {
+						JOptionPane.showMessageDialog(mainFrame, message,
+								"Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						Writer.createFolder("MyModels");
+						String path = "MyModels/" + txtModelName.getText();
+						Writer.createFolder(path);
+						String dataPath = "MyModels/" + txtModelName.getText() + "/data";
+						Writer.createFolder(dataPath);
+						File matrixFile = new File(txtMatrixFile.getText());
+						Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
+						File rFile = new File(txtRFile.getText());
+						Writer.copyFile(rFile, dataPath + "/r.txt");
+						File yFile = new File(txtYFile.getText());
+						Writer.copyFile(yFile, dataPath + "/y.txt");
+						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
+						Writer.createFolder(path + "/results");
+						train(noOfNodes, path + "/results");
+					}
 				}
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(338, 365, 112, 45);
+			btnTrain.setBounds(340, 440, 112, 45);
 		}
 		return btnTrain;
+	}
+
+	public void train(int noOfNodes, String modelFolder) {
+
+		double alpha = Double.parseDouble(txtAlpha.getText());
+		double beta = Double.parseDouble(txtBeta.getText());
+		double lr = Double.parseDouble(txtLr.getText());
+		int maxIter = Integer.parseInt(txtMaxIter.getText());
+
+		ProgressBar frame = new ProgressBar(maxIter);
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
+		double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
+		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+		boolean both = false;
+		if (chckbxSymmetric.isSelected()) {
+			both = true;
+		}
+		TrainForGUI t = new TrainForGUI(modelFolder, frame, mainFrame, s, r, y,
+				alpha, beta, lr, maxIter, panel, both, 50, 500);
+		t.start();
+
 	}
 
 	private JLabel getLblMaxIterations() {
@@ -308,9 +374,55 @@ public class TrainPanel extends JPanel {
 			lblMaxIterations = new JLabel("Max. iterations:");
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(35, 317, 132, 30);
+			lblMaxIterations.setBounds(35, 355, 132, 30);
 		}
 		return lblMaxIterations;
+	}
+
+	public String validateData() {
+		if (txtMatrixFile.getText().equals("")) {
+			return "Choose matrix file.";
+		}
+		if (txtRFile.getText().equals("")) {
+			return "Choose R file.";
+		}
+		if (txtYFile.getText().equals("")) {
+			return "Choose Y file.";
+		}
+		try {
+			Integer.parseInt(txtNoOfNodes.getText());
+		} catch (NumberFormatException e) {
+			return "No. of nodes should be integer.";
+		}
+		if (txtModelName.getText().equals("")) {
+			return "Insert model name.";
+		}
+		if (Writer.checkFolder("MyModels/" + txtModelName.getText())) {
+			return "Model with name " + txtModelName.getText()
+					+ " already exists.";
+		}
+		try {
+			Double.parseDouble(txtAlpha.getText());
+		} catch (NumberFormatException e) {
+			return "First alpha should be number.";
+		}
+		try {
+			Double.parseDouble(txtBeta.getText());
+		} catch (NumberFormatException e) {
+			return "First beta should be number.";
+		}
+		try {
+			Double.parseDouble(txtLr.getText());
+		} catch (NumberFormatException e) {
+			return "Learning rate should be number.";
+		}
+
+		try {
+			Integer.parseInt(txtMaxIter.getText());
+		} catch (NumberFormatException e) {
+			return "Max. iterations should be integer.";
+		}
+		return null;
 	}
 
 	private JTextField getTxtMaxIter() {
@@ -318,15 +430,61 @@ public class TrainPanel extends JPanel {
 			txtMaxIter = new JTextField();
 			txtMaxIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtMaxIter.setColumns(10);
-			txtMaxIter.setBounds(183, 317, 91, 30);
+			txtMaxIter.setBounds(183, 355, 91, 30);
 		}
 		return txtMaxIter;
 	}
-	
-	public void chooseFile(JTextField txt){
+
+	public void chooseFile(JTextField txt) {
 		int returnVal = fc.showOpenDialog(panel);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			txt.setText(fc.getSelectedFile().getPath());
 		}
+	}
+
+	public void setUpDefaultValues() {
+		txtAlpha.setText("1");
+		txtBeta.setText("1");
+		txtLr.setText("0.0001");
+		txtMaxIter.setText("10000");
+	}
+
+	private JLabel getLabel() {
+		if (label == null) {
+			label = new JLabel("No. of nodes:");
+			label.setHorizontalAlignment(SwingConstants.RIGHT);
+			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label.setBounds(67, 199, 100, 30);
+		}
+		return label;
+	}
+
+	private JTextField getTxtNoOfNodes() {
+		if (txtNoOfNodes == null) {
+			txtNoOfNodes = new JTextField();
+			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtNoOfNodes.setColumns(10);
+			txtNoOfNodes.setBounds(183, 198, 91, 30);
+		}
+		return txtNoOfNodes;
+	}
+
+	private JCheckBox getChckbxSymmetric() {
+		if (chckbxSymmetric == null) {
+			chckbxSymmetric = new JCheckBox("");
+			chckbxSymmetric.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			chckbxSymmetric.setBounds(181, 403, 91, 23);
+		}
+		return chckbxSymmetric;
+	}
+
+	private JLabel getLabel_1() {
+		if (label_1 == null) {
+			label_1 = new JLabel("Train symmetric:");
+			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
+			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label_1.setBounds(35, 396, 132, 30);
+		}
+		return label_1;
 	}
 }

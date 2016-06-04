@@ -31,12 +31,12 @@ public class TestSymmetric {
 		int t = 0;
 		for (int i = 1; i <= times; i++) {
 			s = Reader.readGraph(folder + "/graph" + i + ".txt", no);
-			r = Reader.readR(folder + "/r" + i + ".txt", no);
+			r = Reader.readArray(folder + "/r" + i + ".txt", no);
 			if (same) {
 				r2 = runSymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
 				sT = Reader.readGraph(folder + "/graphTest" + i + ".txt", no);
-				rT = Reader.readR(folder + "/rTest" + i + ".txt", no);
+				rT = Reader.readArray(folder + "/rTest" + i + ".txt", no);
 				r2 = runSymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
 			textA = i + ": R^2 Symmetric = " + df.format(r2);

@@ -28,7 +28,7 @@ public class Reader {
 		return matrix;
 	}
 
-	public static double[] readR(String path, int noOfNodes) {
+	public static double[] readArray(String path, int noOfNodes) {
 		double[] r = new double[noOfNodes];
 
 		String[] text = Reader.read(path);

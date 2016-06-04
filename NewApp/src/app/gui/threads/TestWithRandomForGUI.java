@@ -23,7 +23,7 @@ import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 
-public class TestForGUI extends Thread {
+public class TestWithRandomForGUI extends Thread {
 	private ProgressBar frame;
 	private JFrame mainFrame;
 	private JPanel panel;
@@ -32,7 +32,7 @@ public class TestForGUI extends Thread {
 	private int times;
 	private double probability;
 
-	public TestForGUI(ProgressBar frame, JFrame mainFrame, JPanel panel,
+	public TestWithRandomForGUI(ProgressBar frame, JFrame mainFrame, JPanel panel,
 			String modelFolder, int noOfNodes, int times, double probability) {
 		super();
 		this.frame = frame;

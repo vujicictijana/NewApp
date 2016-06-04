@@ -360,7 +360,7 @@ public class TrainRandomPanel extends JPanel {
 			both = true;
 		}
 		TrainForGUI t = new TrainForGUI(modelFolder, frame, mainFrame, s, r, y,
-				alpha, beta, lr, maxIter, panel, both);
+				alpha, beta, lr, maxIter, panel, both,50, 420);
 		t.start();
 
 	}
