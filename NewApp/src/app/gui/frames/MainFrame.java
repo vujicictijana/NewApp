@@ -11,6 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+import app.gui.panels.TestPanel;
 import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
 import app.gui.panels.TrainRandomPanel;
@@ -155,6 +156,22 @@ public class MainFrame extends JFrame {
 		if (menuTest == null) {
 			menuTest = new JMenuItem("Test on your data");
 			menuTest.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuTest.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(
+						java.awt.event.ActionEvent evt) {
+					TestPanel t = new TestPanel(frame);
+					t.setBounds(0, 61, 900, 500);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+				}
+			});
 		}
 		return menuTest;
 	}

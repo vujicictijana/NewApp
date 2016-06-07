@@ -20,11 +20,13 @@ import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
-import app.gui.threads.TrainForGUI;
+import app.gui.threads.TrainMyModelForGUI;
+import app.gui.threads.TrainWithRandomForGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+
 import javax.swing.JCheckBox;
 
 public class TrainPanel extends JPanel {
@@ -58,6 +60,7 @@ public class TrainPanel extends JPanel {
 	private JTextField txtNoOfNodes;
 	private JCheckBox chckbxSymmetric;
 	private JLabel label_1;
+	private JPanel panelForTable;
 
 	/**
 	 * Create the panel.
@@ -98,6 +101,7 @@ public class TrainPanel extends JPanel {
 		add(getTxtNoOfNodes());
 		add(getChckbxSymmetric());
 		add(getLabel_1());
+		add(getPanelForTable());
 		setUpDefaultValues();
 	}
 
@@ -363,8 +367,8 @@ public class TrainPanel extends JPanel {
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
 		}
-		TrainForGUI t = new TrainForGUI(modelFolder, frame, mainFrame, s, r, y,
-				alpha, beta, lr, maxIter, panel, both, 50, 500);
+		TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y,
+				alpha, beta, lr, maxIter, panelForTable, both, 10, 10);
 		t.start();
 
 	}
@@ -486,5 +490,13 @@ public class TrainPanel extends JPanel {
 			label_1.setBounds(35, 396, 132, 30);
 		}
 		return label_1;
+	}
+	private JPanel getPanelForTable() {
+		if (panelForTable == null) {
+			panelForTable = new JPanel();
+			panelForTable.setLayout(null);
+			panelForTable.setBounds(35, 501, 850, 130);
+		}
+		return panelForTable;
 	}
 }

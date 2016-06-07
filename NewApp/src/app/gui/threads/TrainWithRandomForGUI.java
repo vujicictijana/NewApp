@@ -17,7 +17,7 @@ import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 
-public class TrainForGUI extends Thread {
+public class TrainWithRandomForGUI extends Thread {
 	private ProgressBar frame;
 	private JFrame mainFrame;
 
@@ -34,7 +34,7 @@ public class TrainForGUI extends Thread {
 	private int xTable;
 	private int yTable;
 
-	public TrainForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
+	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
 			double[][] s, double[] r, double[] y, double alpha, double beta,
 			double lr, int maxIter, JPanel panel, boolean both, int xTable,
 			int yTable) {
@@ -98,6 +98,9 @@ public class TrainForGUI extends Thread {
 		JTable table = new JTable(data, columnNames);
 
 		table.setBackground(new Color(240, 240, 240));
+		panel.removeAll();
+		panel.repaint();
+		panel.revalidate();
 		JScrollPane scrollPane = new JScrollPane(table);
 		Style.resultTable(table, -1);
 		panel.add(scrollPane);
