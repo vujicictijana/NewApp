@@ -34,7 +34,7 @@ public class TestConvexity {
 
 	}
 
-	public void testNew(int no, int maxIter, double lr, double[][] s,
+	public void testNew(int maxIter, double lr, double[][] s,
 			double[] r, double[] y, double[][] s1, double[] r1, double[] y1) {
 		double alpha = 0;
 		double beta = 0;
@@ -66,7 +66,7 @@ public class TestConvexity {
 					s1, r1, y1);
 			r2Test = alg1.rSquared();
 			theta1 = Math.atan(alpha1 / beta1);
-			System.out.println(i + "," + "," + theta + "," + alpha + "," + beta
+			System.out.println(i + "," + theta + "," + alpha + "," + beta
 					+ "," + alpha1 + "," + beta1 + "," + theta1 + "," + r2
 					+ "," + r2Test);
 			i++;

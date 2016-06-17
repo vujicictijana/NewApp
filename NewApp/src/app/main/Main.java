@@ -48,9 +48,9 @@ public class Main {
 		TestConvexity tc = new TestConvexity();
 
 		int nodes = 200;
-		int iterations = 500;
+		int iterations = 100;
 		double rate = 0.01;
-		int times = 30;
+		// int times = 30;
 
 		double s[][] = GraphGenerator.generateDirectedGraphWithEdgeProbability(
 				nodes, 0.5);
@@ -65,7 +65,7 @@ public class Main {
 		double[] y1 = c1.y(5, 1, 0.05);
 
 		// tc.test(times, iterations, rate, s, r, y, s1, r1, y1);
-		tc.testNew(times, iterations, rate, s, r, y, s1, r1, y1);
+		tc.testNew(iterations, rate, s, r, y, s1, r1, y1);
 
 	}
 
