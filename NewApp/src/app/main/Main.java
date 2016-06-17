@@ -52,17 +52,20 @@ public class Main {
 		double rate = 0.01;
 		int times = 30;
 
-		double s[][] = GraphGenerator.generateDirectedGraphWithEdgeProbability(nodes, 0.5);
+		double s[][] = GraphGenerator.generateDirectedGraphWithEdgeProbability(
+				nodes, 0.5);
 		double[] r = ArrayGenerator.generateArray(nodes, 5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 		double[] y = c.y(5, 1, 0.05);
 
-		double s1[][] = GraphGenerator.generateDirectedGraphWithEdgeProbability(nodes, 0.5);
+		double s1[][] = GraphGenerator
+				.generateDirectedGraphWithEdgeProbability(nodes, 0.5);
 		double[] r1 = ArrayGenerator.generateArray(nodes, 5);
 		CalculationsAsymmetric c1 = new CalculationsAsymmetric(s1, r1);
 		double[] y1 = c1.y(5, 1, 0.05);
 
-		tc.test(times, iterations, rate, s, r, y, s1, r1, y1);
+		// tc.test(times, iterations, rate, s, r, y, s1, r1, y1);
+		tc.testNew(times, iterations, rate, s, r, y, s1, r1, y1);
 
 	}
 
