@@ -12,6 +12,7 @@ import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.algorithms.symmetric.CalculationsSymmetric;
 import app.algorithms.symmetric.GradientDescentSymmetric;
+import app.algorithms.test.TestConvexity;
 import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
@@ -34,10 +35,10 @@ public class TrainMyModelForGUI extends Thread {
 	private int xTable;
 	private int yTable;
 
-	public TrainMyModelForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
-			double[][] s, double[] r, double[] y, double alpha, double beta,
-			double lr, int maxIter, JPanel panel, boolean both, int xTable,
-			int yTable) {
+	public TrainMyModelForGUI(String modelFolder, ProgressBar frame,
+			JFrame mainFrame, double[][] s, double[] r, double[] y,
+			double alpha, double beta, double lr, int maxIter, JPanel panel,
+			boolean both, int xTable, int yTable) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;

@@ -38,7 +38,7 @@ public class TestConvexity {
 			double[] r, double[] y, double[][] s1, double[] r1, double[] y1) {
 		double alpha = 0;
 		double beta = 0;
-		double theta = 0;
+		double theta = 0.01;
 		double theta1 = 0;
 		double alpha1 = 0;
 		double beta1 = 0;
@@ -48,7 +48,7 @@ public class TestConvexity {
 
 		DecimalFormat df = new DecimalFormat("#.##");
 		int i = 1;
-		while (theta < 1.58) {
+		while (theta < 1.57) {
 			alpha = Double.parseDouble(df.format(Math.sin(theta)));
 			beta = Double.parseDouble(df.format(Math.cos(theta)));
 			GradientDescentAsymmetric gda = new GradientDescentAsymmetric(

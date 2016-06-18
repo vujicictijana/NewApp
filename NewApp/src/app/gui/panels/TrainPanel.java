@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
+import Jama.Matrix;
 import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.data.generators.ArrayGenerator;
 import app.file.io.Reader;
@@ -363,6 +364,7 @@ public class TrainPanel extends JPanel {
 		double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
 		double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
 		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+		
 		boolean both = false;
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
