@@ -3,6 +3,7 @@ package app.gui.threads;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JTable;
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
+import app.algorithms.basic.BasicCalcs;
 import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.algorithms.symmetric.CalculationsSymmetric;
 import app.algorithms.symmetric.GradientDescentSymmetric;
@@ -134,7 +136,7 @@ public class TestWithRandomForGUI extends Thread {
 		}
 		table.setBackground(new Color(240, 240, 240));
 		JScrollPane scrollPane = new JScrollPane(table);
-		Style.resultTable(table, times);
+		Style.resultTable(table, times+1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
 		JButton export = new JButton();
@@ -157,9 +159,9 @@ public class TestWithRandomForGUI extends Thread {
 	public String[] exportTxt(double[] results, double[] resultsS) {
 		String[] txt = null;
 		if (resultsS != null) {
-			txt = new String[(times * 2) + 2];
+			txt = new String[(times * 2) + 4];
 		} else {
-			txt = new String[times + 1];
+			txt = new String[times + 2];
 		}
 		double sum = 0;
 		double sumS = 0;
@@ -174,10 +176,16 @@ public class TestWithRandomForGUI extends Thread {
 				no++;
 			}
 		}
+		DecimalFormat df  = new DecimalFormat("#.############");
+		txt[txt.length - 3] = "Average Asymmetric: " + (sum / times);
+		if (resultsS != null) {
+			txt[txt.length - 4] = "Average Asymmetric: " + (sum / times);
+			txt[txt.length - 3] = "Average Symmetric: " + (sumS / times);
+		}
 		txt[txt.length - 1] = "Average Asymmetric: " + (sum / times);
 		if (resultsS != null) {
-			txt[txt.length - 2] = "Average Asymmetric: " + (sum / times);
-			txt[txt.length - 1] = "Average Symmetric: " + (sumS / times);
+			txt[txt.length - 2] = "Standard deviation Asymmetric: " + df.format(BasicCalcs.standardDeviation(results));
+			txt[txt.length - 1] = "Standard deviation Symmetric: " + df.format(BasicCalcs.standardDeviation(resultsS));
 		}
 		return txt;
 	}
@@ -185,9 +193,9 @@ public class TestWithRandomForGUI extends Thread {
 	public Object[][] fillData(double[] results, double[] resultsS) {
 		Object[][] data;
 		if (resultsS != null) {
-			data = new Object[times + 1][3];
+			data = new Object[times + 2][3];
 		} else {
-			data = new Object[times + 1][2];
+			data = new Object[times + 2][2];
 		}
 		double sum = 0;
 		double sumS = 0;
@@ -202,8 +210,12 @@ public class TestWithRandomForGUI extends Thread {
 		}
 		data[times][0] = "Average";
 		data[times][1] = sum / times;
+		DecimalFormat df  = new DecimalFormat("#.############");
+		data[times+1][0] = "Standard deviation";
+		data[times+1][1] = df.format(BasicCalcs.standardDeviation(results));
 		if (resultsS != null) {
 			data[times][2] = sumS / times;
+			data[times+1][2] =df.format(BasicCalcs.standardDeviation(resultsS));
 		}
 		return data;
 	}

@@ -451,8 +451,8 @@ public class TrainPanel extends JPanel {
 	public void setUpDefaultValues() {
 		txtAlpha.setText("1");
 		txtBeta.setText("1");
-		txtLr.setText("0.0001");
-		txtMaxIter.setText("10000");
+		txtLr.setText("0.01");
+		txtMaxIter.setText("5000");
 	}
 
 	private JLabel getLabel() {

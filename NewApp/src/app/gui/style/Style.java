@@ -48,9 +48,9 @@ public class Style {
 				final Component c = super.getTableCellRendererComponent(table,
 						value, isSelected, hasFocus, row, column);
 				if (last != -1) {
-					c.setBackground(row == last ? Color.LIGHT_GRAY
+					c.setBackground(row == last || row==last-1 ? Color.LIGHT_GRAY
 							: Color.WHITE);
-					c.setFont(row == last ? new Font("Segoe UI", Font.BOLD, 15)
+					c.setFont(row == last || row==last-1 ? new Font("Segoe UI", Font.BOLD, 15)
 							: new Font("Segoe UI", Font.PLAIN, 15));
 				}
 				return c;

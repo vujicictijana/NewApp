@@ -1,5 +1,8 @@
 package app.data.generators;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GraphGenerator {
@@ -100,6 +103,66 @@ public class GraphGenerator {
 		return finalGraph;
 	}
 
+	public static double[][] generateChain(int noOfNodes) {
+		double[][] graph = new double[noOfNodes][noOfNodes];
+
+		List<Integer> choosen = new ArrayList<>();
+		Random r = new Random();
+		int prev = r.nextInt(noOfNodes);
+		int next = 0;
+		choosen.add(prev);
+		while (choosen.size() < noOfNodes) {
+			next = r.nextInt(noOfNodes);
+			while (choosen.contains(next)) {
+				next = r.nextInt(noOfNodes);
+			}
+			graph[prev][next] = Math.random();
+			;
+			prev = next;
+			choosen.add(prev);
+		}
+
+		return graph;
+	}
+
+	public static double[][] generateBinaryTree(int noOfNodes) {
+		double[][] matrix = new double[noOfNodes][noOfNodes];
+		Random r = new Random();
+		int root = r.nextInt(noOfNodes);
+		List<Integer> nodes = new ArrayList<>();
+		nodes.add(root);
+		System.out.println(root + 1);
+		generateNode(root, nodes, noOfNodes, matrix);
+		return matrix;
+	}
+
+	public static void generateNode(int root, List<Integer> nodes, int total,
+			double[][] matrix) {
+		Random r = new Random();
+		int left = r.nextInt(total);
+		int rigth = r.nextInt(total);
+		if (nodes.size() < total) {
+			while (nodes.contains(left)) {
+				left = r.nextInt(total);
+			}
+			matrix[root][left] = Math.random();
+			nodes.add(left);
+			if (nodes.size() == total) {
+				return;
+			}
+			while (nodes.contains(rigth)) {
+				rigth = r.nextInt(total);
+			}
+			matrix[root][rigth] = Math.random();
+			nodes.add(rigth);
+			if (nodes.size() == total) {
+				return;
+			}
+			generateNode(left, nodes, total, matrix);
+			generateNode(rigth, nodes, total, matrix);
+		}
+	}
+
 	public static double[][] generateGraphByType(int noOfNodes, String type,
 			double probability) {
 		double[][] graph = null;
@@ -116,6 +179,9 @@ public class GraphGenerator {
 		case "DirectedGraphWithEdgeProbability":
 			graph = GraphGenerator.generateDirectedGraphWithEdgeProbability(
 					noOfNodes, probability);
+			break;
+		case "Chain":
+			graph = GraphGenerator.generateChain(noOfNodes);
 			break;
 		default:
 			graph = null;
@@ -189,6 +255,18 @@ public class GraphGenerator {
 			k = perm[i];
 			perm[i] = perm[j];
 			perm[j] = k;
+		}
+	}
+
+	public static void showMatrix(double[][] s) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		for (int i = 0; i < s.length; i++) {
+			double[] s1 = s[i];
+			System.out.print((i + 1) + "\t");
+			for (int j = 0; j < s1.length; j++) {
+				System.out.print(df.format(s[i][j]) + "\t");
+			}
+			System.out.println();
 		}
 	}
 

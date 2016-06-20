@@ -337,6 +337,7 @@ public class TrainRandomPanel extends JPanel {
 			cmbGraphType.addItem("directed graph with edge probability");
 			cmbGraphType.addItem("directed acyclic graph");
 			cmbGraphType.addItem("directed graph without direct feedback");
+			cmbGraphType.addItem("chain");
 		}
 		return cmbGraphType;
 	}
@@ -361,8 +362,9 @@ public class TrainRandomPanel extends JPanel {
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
 		}
-		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame, mainFrame, s, r, y,
-				alpha, beta, lr, maxIter, panelForTable, both,10, 10);
+		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame,
+				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
+				both, 10, 10);
 		t.start();
 
 	}
@@ -440,8 +442,8 @@ public class TrainRandomPanel extends JPanel {
 	public void setUpDefaultValues() {
 		txtAlpha.setText("1");
 		txtBeta.setText("1");
-		txtLr.setText("0.0001");
-		txtMaxIter.setText("10000");
+		txtLr.setText("0.01");
+		txtMaxIter.setText("1000");
 	}
 
 	public void createMainFolders() {
@@ -456,6 +458,7 @@ public class TrainRandomPanel extends JPanel {
 	public boolean checkModel(String path) {
 		return Writer.checkFolder(path);
 	}
+
 	private JPanel getPanelForTable() {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();

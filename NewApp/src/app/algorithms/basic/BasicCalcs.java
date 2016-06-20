@@ -152,4 +152,17 @@ public class BasicCalcs {
 		return degreeMatrix;
 	}
 
+	public static double standardDeviation(double[] array) {
+		double sum = 0;
+		for (int i = 0; i < array.length; i++) {
+			sum += array[i];
+		}
+		double avg = sum / array.length;
+		double sum2 = 0;
+		for (int i = 0; i < array.length; i++) {
+			sum2 += Math.pow(array[i] - avg, 2);
+		}
+		return Math.sqrt(sum2/array.length);
+	}
+
 }
