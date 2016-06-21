@@ -3,9 +3,11 @@ package app.gui.threads;
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.algorithms.symmetric.AlgorithmSymmetric;
@@ -31,11 +33,13 @@ public class TrainMyModelForGUI extends Thread {
 	private String modelFolder;
 	private int xTable;
 	private int yTable;
+	private JLabel timeLabel;
+	private String time;
 
 	public TrainMyModelForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, JPanel panel,
-			boolean both, int xTable, int yTable) {
+			boolean both, int xTable, int yTable,JLabel timeLabel) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -51,11 +55,14 @@ public class TrainMyModelForGUI extends Thread {
 		this.modelFolder = modelFolder;
 		this.xTable = xTable;
 		this.yTable = yTable;
+		this.timeLabel = timeLabel;
+		time = "Time in milis - ";
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress Asymmetric");
+		long start = System.currentTimeMillis();
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
 		double[] res = gda.learn(maxIter, false, frame.getCurrent());
@@ -63,11 +70,14 @@ public class TrainMyModelForGUI extends Thread {
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
 				y);
 		double r2 = alg.rSquared();
+		long elapsedTime = System.currentTimeMillis() - start;
+		time += "Asymmetric: " + elapsedTime ;
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
 			frame.getCurrent().setValue(0);
 			frame.setTitle("Progress Symmetric");
+			start = System.currentTimeMillis();
 			double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 			GradientDescentSymmetric gdS = new GradientDescentSymmetric(alpha,
 					beta, lr, sS, r, y);
@@ -76,12 +86,16 @@ public class TrainMyModelForGUI extends Thread {
 			AlgorithmSymmetric algS = new AlgorithmSymmetric(resS[0], resS[1],
 					sS, r, y);
 			r2S = algS.rSquared();
+			elapsedTime = System.currentTimeMillis() - start;
+			time += " Symmetric: " + elapsedTime ;
 		}
 		createTable(res, r2, resS, r2S);
 		createFile("Asymmetric.txt", res);
 		if (resS != null) {
 			createFile("Symmetric.txt", resS);
 		}
+		timeLabel.setText(time);
+		timeLabel.setVisible(true);
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
 	}

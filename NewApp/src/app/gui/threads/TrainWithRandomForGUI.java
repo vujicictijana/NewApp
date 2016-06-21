@@ -3,6 +3,7 @@ package app.gui.threads;
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,11 +34,13 @@ public class TrainWithRandomForGUI extends Thread {
 	private String modelFolder;
 	private int xTable;
 	private int yTable;
+	private JLabel timeLabel;
+	private String time;
 
-	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame, JFrame mainFrame,
-			double[][] s, double[] r, double[] y, double alpha, double beta,
-			double lr, int maxIter, JPanel panel, boolean both, int xTable,
-			int yTable) {
+	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame,
+			JFrame mainFrame, double[][] s, double[] r, double[] y,
+			double alpha, double beta, double lr, int maxIter, JPanel panel,
+			boolean both, int xTable, int yTable, JLabel timeLabel) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -53,11 +56,14 @@ public class TrainWithRandomForGUI extends Thread {
 		this.modelFolder = modelFolder;
 		this.xTable = xTable;
 		this.yTable = yTable;
+		this.timeLabel = timeLabel;
+		time = "Time in milis - ";
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress Asymmetric");
+		long start = System.currentTimeMillis();
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
 		double[] res = gda.learn(maxIter, false, frame.getCurrent());
@@ -65,11 +71,14 @@ public class TrainWithRandomForGUI extends Thread {
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
 				y);
 		double r2 = alg.rSquared();
+		long elapsedTime = System.currentTimeMillis() - start;
+		time += "Asymmetric: " + elapsedTime ;
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
 			frame.getCurrent().setValue(0);
 			frame.setTitle("Progress Symmetric");
+			start = System.currentTimeMillis();
 			double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 			CalculationsSymmetric cS = new CalculationsSymmetric(sS, r);
 			double[] yS = cS.y(5, 1, 0.05);
@@ -80,12 +89,16 @@ public class TrainWithRandomForGUI extends Thread {
 			AlgorithmSymmetric algS = new AlgorithmSymmetric(resS[0], resS[1],
 					sS, r, yS);
 			r2S = algS.rSquared();
+			elapsedTime = System.currentTimeMillis() - start;
+			time += " Symmetric: " + elapsedTime ;
 		}
 		createTable(res, r2, resS, r2S);
 		createFile("Asymmetric.txt", res);
 		if (resS != null) {
 			createFile("Symmetric.txt", resS);
 		}
+		timeLabel.setText(time);
+		timeLabel.setVisible(true);
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
 	}

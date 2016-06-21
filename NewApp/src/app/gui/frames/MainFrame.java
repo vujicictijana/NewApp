@@ -124,7 +124,7 @@ public class MainFrame extends JFrame {
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							TrainRandomPanel t = new TrainRandomPanel(frame);
-							t.setBounds(0, 61, 900, 500);
+							t.setBounds(0, 61, 900, 750);
 							if (mainPanel != null) {
 								contentPane.remove(mainPanel);
 								contentPane.repaint();

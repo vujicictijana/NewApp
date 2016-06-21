@@ -53,6 +53,7 @@ public class TrainRandomPanel extends JPanel {
 	private JCheckBox chckbxSymmetric;
 	private JLabel lblTrainSymmetric;
 	private JPanel panelForTable;
+	private JLabel lblTime;
 
 	/**
 	 * Create the panel.
@@ -80,6 +81,7 @@ public class TrainRandomPanel extends JPanel {
 		add(getLblTrainSymmetric());
 		this.mainFrame = mainFrame;
 		add(getPanelForTable());
+		add(getLblTime());
 		setUpDefaultValues();
 		createMainFolders();
 	}
@@ -345,7 +347,7 @@ public class TrainRandomPanel extends JPanel {
 		}
 		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame,
 				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
-				both, 10, 10);
+				both, 10, 10, lblTime);
 		t.start();
 
 	}
@@ -444,8 +446,19 @@ public class TrainRandomPanel extends JPanel {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();
 			panelForTable.setLayout(null);
-			panelForTable.setBounds(21, 402, 850, 130);
+			panelForTable.setBounds(22, 404, 850, 130);
 		}
 		return panelForTable;
+	}
+
+	private JLabel getLblTime() {
+		if (lblTime == null) {
+			lblTime = new JLabel("Time:");
+			lblTime.setVisible(false);
+			lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+			lblTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTime.setBounds(32, 545, 421, 30);
+		}
+		return lblTime;
 	}
 }

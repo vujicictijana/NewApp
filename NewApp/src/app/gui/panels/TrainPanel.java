@@ -55,6 +55,7 @@ public class TrainPanel extends JPanel {
 	private JCheckBox chckbxSymmetric;
 	private JLabel label_1;
 	private JPanel panelForTable;
+	private JLabel lblTime;
 
 	/**
 	 * Create the panel.
@@ -91,6 +92,7 @@ public class TrainPanel extends JPanel {
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
 		this.mainFrame = mainFrame;
+		add(getLblTime());
 		add(getLabel());
 		add(getTxtNoOfNodes());
 		add(getChckbxSymmetric());
@@ -322,7 +324,8 @@ public class TrainPanel extends JPanel {
 						Writer.createFolder("MyModels");
 						String path = "MyModels/" + txtModelName.getText();
 						Writer.createFolder(path);
-						String dataPath = "MyModels/" + txtModelName.getText() + "/data";
+						String dataPath = "MyModels/" + txtModelName.getText()
+								+ "/data";
 						Writer.createFolder(dataPath);
 						File matrixFile = new File(txtMatrixFile.getText());
 						Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
@@ -357,13 +360,14 @@ public class TrainPanel extends JPanel {
 		double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
 		double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
 		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
-		
+
 		boolean both = false;
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
 		}
-		TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y,
-				alpha, beta, lr, maxIter, panelForTable, both, 10, 10);
+		TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder, frame,
+				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
+				both, 10, 10, lblTime);
 		t.start();
 
 	}
@@ -486,12 +490,24 @@ public class TrainPanel extends JPanel {
 		}
 		return label_1;
 	}
+
 	private JPanel getPanelForTable() {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();
 			panelForTable.setLayout(null);
-			panelForTable.setBounds(35, 501, 850, 130);
+			panelForTable.setBounds(35, 496, 850, 114);
 		}
 		return panelForTable;
+	}
+
+	private JLabel getLblTime() {
+		if (lblTime == null) {
+			lblTime = new JLabel("Time:");
+			lblTime.setVisible(false);
+			lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+			lblTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTime.setBounds(35, 610, 421, 30);
+		}
+		return lblTime;
 	}
 }
