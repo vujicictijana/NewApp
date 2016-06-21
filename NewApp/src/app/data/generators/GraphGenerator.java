@@ -131,7 +131,7 @@ public class GraphGenerator {
 		int root = r.nextInt(noOfNodes);
 		List<Integer> nodes = new ArrayList<>();
 		nodes.add(root);
-		System.out.println(root + 1);
+		// System.out.println(root + 1);
 		generateNode(root, nodes, noOfNodes, matrix);
 		return matrix;
 	}
@@ -182,6 +182,9 @@ public class GraphGenerator {
 			break;
 		case "Chain":
 			graph = GraphGenerator.generateChain(noOfNodes);
+			break;
+		case "BinaryTree":
+			graph = GraphGenerator.generateBinaryTree(noOfNodes);
 			break;
 		default:
 			graph = null;

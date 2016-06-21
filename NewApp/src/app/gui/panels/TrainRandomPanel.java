@@ -338,6 +338,7 @@ public class TrainRandomPanel extends JPanel {
 			cmbGraphType.addItem("directed acyclic graph");
 			cmbGraphType.addItem("directed graph without direct feedback");
 			cmbGraphType.addItem("chain");
+			cmbGraphType.addItem("binary tree");
 		}
 		return cmbGraphType;
 	}
