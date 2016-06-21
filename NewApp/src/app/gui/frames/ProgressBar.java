@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 
 public class ProgressBar extends JFrame {
 
+	private static final long serialVersionUID = 1747260278082326270L;
 	private JProgressBar current;
 	private JFrame frame;
 

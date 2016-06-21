@@ -7,30 +7,23 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.JTextField;
-
 import java.awt.Font;
-
 import javax.swing.JButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
-
-import Jama.Matrix;
-import app.algorithms.asymmetric.CalculationsAsymmetric;
-import app.data.generators.ArrayGenerator;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.TrainMyModelForGUI;
-import app.gui.threads.TrainWithRandomForGUI;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-
 import javax.swing.JCheckBox;
 
 public class TrainPanel extends JPanel {
+
+	private static final long serialVersionUID = 7542338256284881226L;
 	private JTextField txtMatrixFile;
 	private JLabel lblFile;
 	private JButton btnBrowseS;

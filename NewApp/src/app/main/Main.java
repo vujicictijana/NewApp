@@ -4,8 +4,6 @@ import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.test.*;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
-import app.file.io.Reader;
-import app.file.io.Writer;
 
 public class Main {
 
@@ -48,11 +46,11 @@ public class Main {
 		// tt.testSymmetric();
 
 		// TestConvexity
-		// TestConvexity tc = new TestConvexity();
-		//
-		// int nodes = 200;
-		// int iterations = 5000;
-		// double rate = 0.01;
+		TestConvexity tc = new TestConvexity();
+
+		int nodes = 200;
+		int iterations = 1000;
+		double rate = 0.01;
 		// // int times = 30;
 
 		// directed
@@ -65,9 +63,12 @@ public class Main {
 
 		// acyclic
 		// double s[][] = GraphGenerator.generateDirectedAcyclicGraph(nodes);
-		// double[] r = ArrayGenerator.generateArray(nodes, 5);
-		// CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-		// double[] y = c.y(5, 1, 0.05);
+
+		// chain
+		double[][] s = GraphGenerator.generateChain(nodes);
+		double[] r = ArrayGenerator.generateArray(nodes, 5);
+		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
+		double[] y = c.y(5, 1, 0.05);
 
 		// teen
 		// double[][] s = Reader.readGraph(
@@ -92,14 +93,21 @@ public class Main {
 		// directed
 		// double s1[][] = GraphGenerator
 		// .generateDirectedGraphWithEdgeProbability(nodes, 0.5);
+
 		// no loop
 		// double s1[][] = GraphGenerator.generateGraphNoFeedback(nodes);
+
 		// acyclic
 		// double s1[][] = GraphGenerator.generateDirectedAcyclicGraph(nodes);
-		// double[] r1 = ArrayGenerator.generateArray(nodes, 5);
-		// CalculationsAsymmetric c1 = new CalculationsAsymmetric(s1, r1);
-		// double[] y1 = c1.y(5, 1, 0.05);
+
+		// chain
+		double[][] s1 = GraphGenerator.generateChain(nodes);
+		double[] r1 = ArrayGenerator.generateArray(nodes, 5);
+		CalculationsAsymmetric c1 = new CalculationsAsymmetric(s1, r1);
+		double[] y1 = c1.y(5, 1, 0.05);
+		
 		// tc.test(times, iterations, rate, s, r, y, s1, r1, y1);
+		
 		// teen
 		// double[][] s1 = Reader.readGraph(
 		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/testGraph.txt",
@@ -108,6 +116,7 @@ public class Main {
 		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/testR.txt", 50);
 		// double[] y1 = Reader.readArray(
 		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/testY.txt", 50);
+		
 		// Delinquency
 		// double[][] s1 = Reader.readGraph(
 		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testGraphC.txt",
@@ -116,12 +125,9 @@ public class Main {
 		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testR.txt", 25);
 		// double[] y1 = Reader.readArray(
 		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testY.txt", 25);
-		// tc.testNew(iterations, rate, s, r, y, s1, r1, y1);
-
-		// chain
-		// double[][] graph = GraphGenerator.generateChain(5);
-		// GraphGenerator.showMatrix(graph);
-		// System.out.println(Writer.edges(graph));
+		
+		
+		 tc.testNew(iterations, rate, s, r, y, s1, r1, y1);
 
 		// binary tree
 		// double[][] graph = GraphGenerator.generateBinaryTree(200);

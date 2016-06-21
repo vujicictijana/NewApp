@@ -41,6 +41,7 @@ public class Style {
 		table.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		table.setRowHeight(20);
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = -4710832517168964346L;
 			@Override
 			public Component getTableCellRendererComponent(JTable table,
 					Object value, boolean isSelected, boolean hasFocus,

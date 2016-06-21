@@ -6,13 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.algorithms.symmetric.AlgorithmSymmetric;
-import app.algorithms.symmetric.CalculationsSymmetric;
 import app.algorithms.symmetric.GradientDescentSymmetric;
-import app.algorithms.test.TestConvexity;
 import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;

@@ -1,59 +1,26 @@
 package app.gui.panels;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JToolBar;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-
-import javax.swing.border.LineBorder;
-
-import java.awt.SystemColor;
-
 import javax.swing.UIManager;
 import javax.swing.JTextField;
-
 import java.awt.Font;
-
 import javax.swing.JButton;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
 import javax.swing.SwingConstants;
-
-import app.algorithms.asymmetric.CalculationsAsymmetric;
-import app.algorithms.asymmetric.GradientDescentAsymmetric;
-import app.data.generators.ArrayGenerator;
-import app.data.generators.GraphGenerator;
 import app.file.io.Reader;
 import app.file.io.Writer;
-import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.TestMyModelForGUI;
-import app.gui.threads.TestWithRandomForGUI;
-
-import javax.swing.JComboBox;
-
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.JTable;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JCheckBox;
 
 public class TestPanel extends JPanel {
+
+	private static final long serialVersionUID = 356011421979477981L;
 	private JButton btnTrain;
 	private JPanel panel;
 	private JFrame mainFrame;

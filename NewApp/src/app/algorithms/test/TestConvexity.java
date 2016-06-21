@@ -1,7 +1,6 @@
 package app.algorithms.test;
 
 import java.text.DecimalFormat;
-import java.util.Random;
 
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;

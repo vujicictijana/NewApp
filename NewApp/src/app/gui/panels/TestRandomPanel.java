@@ -1,35 +1,17 @@
 package app.gui.panels;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JToolBar;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-
-import javax.swing.border.LineBorder;
-
-import java.awt.SystemColor;
-
 import javax.swing.UIManager;
 import javax.swing.JTextField;
 
 import java.awt.Font;
 
 import javax.swing.JButton;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
 import javax.swing.SwingConstants;
 
-import app.algorithms.asymmetric.CalculationsAsymmetric;
-import app.algorithms.asymmetric.GradientDescentAsymmetric;
-import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
 import app.file.io.Reader;
 import app.file.io.Writer;
@@ -43,20 +25,15 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.JTable;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.JCheckBox;
 
 public class TestRandomPanel extends JPanel {
+	
+	private static final long serialVersionUID = 4390862740626681899L;
 	private JLabel lblType;
 	private JLabel lblRArrayFile;
 	private JTextField txtNoOfNodes;
 	private JButton btnTrain;
-	private JComboBox cmbModel;
-	private JPanel panel;
+	private JComboBox<String> cmbModel;
 	private JFrame mainFrame;
 	private JLabel label;
 	private JTextField txtProb;
@@ -75,7 +52,6 @@ public class TestRandomPanel extends JPanel {
 		add(getTxtNoOfNodes());
 		add(getBtnTrain());
 		add(getCmbModel());
-		panel = this;
 		this.mainFrame = mainFrame;
 		add(getLabel());
 		add(getTxtProb());
@@ -152,9 +128,9 @@ public class TestRandomPanel extends JPanel {
 		return btnTrain;
 	}
 
-	private JComboBox getCmbModel() {
+	private JComboBox<String> getCmbModel() {
 		if (cmbModel == null) {
-			cmbModel = new JComboBox();
+			cmbModel = new JComboBox<String>();
 			cmbModel.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					if (cmbModel.getSelectedItem().toString()

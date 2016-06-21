@@ -13,11 +13,9 @@ import javax.swing.JTable;
 
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.CalculationsAsymmetric;
-import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.algorithms.basic.BasicCalcs;
 import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.algorithms.symmetric.CalculationsSymmetric;
-import app.algorithms.symmetric.GradientDescentSymmetric;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
 import app.file.io.Reader;
