@@ -36,7 +36,9 @@ public class TrainWithRandomForGUI extends Thread {
 	private int yTable;
 	private JLabel timeLabel;
 	private String time;
-
+	private double alphaGen = 5;
+	private double betaGen = 1;
+	
 	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, JPanel panel,
@@ -81,7 +83,7 @@ public class TrainWithRandomForGUI extends Thread {
 			start = System.currentTimeMillis();
 			double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 			CalculationsSymmetric cS = new CalculationsSymmetric(sS, r);
-			double[] yS = cS.y(5, 1, 0.05);
+			double[] yS = cS.y(alphaGen, betaGen, 0.05);
 			GradientDescentSymmetric gdS = new GradientDescentSymmetric(alpha,
 					beta, lr, sS, r, yS);
 			resS = gdS.learn(maxIter, false, frame.getCurrent());

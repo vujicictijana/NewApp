@@ -54,6 +54,9 @@ public class TrainRandomPanel extends JPanel {
 	private JLabel lblTrainSymmetric;
 	private JPanel panelForTable;
 	private JLabel lblTime;
+	
+	private double alphaGen = 5;
+	private double betaGen = 1;
 
 	/**
 	 * Create the panel.
@@ -340,7 +343,7 @@ public class TrainRandomPanel extends JPanel {
 		double[][] s = generateGraph(noOfNodes);
 		double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-		double[] y = c.y(5, 1, 0.05);
+		double[] y = c.y(alphaGen, betaGen, 0.05);
 		boolean both = false;
 		if (chckbxSymmetric.isSelected()) {
 			both = true;

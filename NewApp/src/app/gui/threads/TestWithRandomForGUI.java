@@ -31,6 +31,8 @@ public class TestWithRandomForGUI extends Thread {
 	private int noOfNodes;
 	private int times;
 	private double probability;
+	private double alphaGen = 5;
+	private double betaGen = 1;
 
 	public TestWithRandomForGUI(ProgressBar frame, JFrame mainFrame, JPanel panel,
 			String modelFolder, int noOfNodes, int times, double probability) {
@@ -90,7 +92,7 @@ public class TestWithRandomForGUI extends Thread {
 			double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
 			CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 
-			double[] y = c.y(5, 1, 0.05);
+			double[] y = c.y(alphaGen, betaGen, 0.05);
 
 			AlgorithmAsymmetric alg = new AlgorithmAsymmetric(alpha, beta, s,
 					r, y);
@@ -110,7 +112,7 @@ public class TestWithRandomForGUI extends Thread {
 			double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
 			CalculationsSymmetric c = new CalculationsSymmetric(s, r);
 
-			double[] y = c.y(5, 1, 0.05);
+			double[] y = c.y(alphaGen, betaGen, 0.05);
 
 			AlgorithmSymmetric alg = new AlgorithmSymmetric(alpha, beta, s, r,
 					y);
