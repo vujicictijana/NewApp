@@ -4,7 +4,6 @@ import javax.swing.JProgressBar;
 
 import app.algorithms.basic.BasicCalcs;
 
-
 public class GradientDescentAsymmetric {
 	private double alpha;
 	private double beta;
@@ -24,7 +23,8 @@ public class GradientDescentAsymmetric {
 		this.calcs = new CalculationsAsymmetric(s, r);
 	}
 
-	public double[] learn(int maxIter, boolean showProgress, JProgressBar progress) {
+	public double[] learn(int maxIter, boolean showProgress,
+			JProgressBar progress) {
 		int tempIter = 0;
 		double little = 1E-10;
 		double tempAlpha = 0;
@@ -35,9 +35,10 @@ public class GradientDescentAsymmetric {
 		// System.out.println(df.format(little));
 
 		while (difAlpha > little || difBeta > little) {
+			// System.out.print(Math.atan(alpha / beta) + ",");
 			// while (tempIter < iterNum) {
 			if (tempIter % 50 == 0) {
-				if(progress!=null){
+				if (progress != null) {
 					progress.setValue(tempIter);
 				}
 				if (showProgress) {

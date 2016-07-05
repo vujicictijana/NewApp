@@ -39,7 +39,7 @@ public class TrainMyModelForGUI extends Thread {
 	public TrainMyModelForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, JPanel panel,
-			boolean both, int xTable, int yTable,JLabel timeLabel) {
+			boolean both, int xTable, int yTable, JLabel timeLabel) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -63,15 +63,18 @@ public class TrainMyModelForGUI extends Thread {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress Asymmetric");
 		long start = System.currentTimeMillis();
-		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
-				beta, lr, s, r, y);
-		double[] res = gda.learn(maxIter, false, frame.getCurrent());
-
-		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
-				y);
-		double r2 = alg.rSquared();
+		 GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
+		 beta, lr, s, r, y);
+		 double[] res = gda.learn(maxIter, false, frame.getCurrent());
+		
+		 AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s,
+		 r,
+		 y);
+		 double r2 = alg.rSquared();
+		// double[] res = { 0, 0 };
+		// double r2 = 0;
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "Asymmetric: " + elapsedTime ;
+		time += "Asymmetric: " + elapsedTime;
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
@@ -87,7 +90,7 @@ public class TrainMyModelForGUI extends Thread {
 					sS, r, y);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += " Symmetric: " + elapsedTime ;
+			time += " Symmetric: " + elapsedTime;
 		}
 		createTable(res, r2, resS, r2S);
 		createFile("Asymmetric.txt", res);

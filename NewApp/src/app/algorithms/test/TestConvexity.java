@@ -68,6 +68,7 @@ public class TestConvexity {
 			System.out.println(i + "," + theta + "," + alpha + "," + beta
 					+ "," + alpha1 + "," + beta1 + "," + theta1 + "," + r2
 					+ "," + r2Test);
+//			System.out.println(theta1);
 			i++;
 			theta += 0.1;
 		}

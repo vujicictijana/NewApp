@@ -60,6 +60,7 @@ public class TrainWithRandomForGUI extends Thread {
 		this.yTable = yTable;
 		this.timeLabel = timeLabel;
 		time = "Time in milis - ";
+		System.out.println(Writer.edges(s));
 	}
 
 	public void run() {

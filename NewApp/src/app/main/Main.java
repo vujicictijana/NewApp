@@ -4,6 +4,7 @@ import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.test.*;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.file.io.Reader;
 
 public class Main {
 
@@ -50,7 +51,7 @@ public class Main {
 
 		int nodes = 200;
 		int iterations = 5000;
-		double rate = 0.01;
+		double rate = 0.0001;
 		// // int times = 30;
 
 		// directed
@@ -68,10 +69,10 @@ public class Main {
 		// double[][] s = GraphGenerator.generateChain(nodes);
 
 		// binary tree
-		double[][] s = GraphGenerator.generateBinaryTree(nodes);
-		double[] r = ArrayGenerator.generateArray(nodes, 5);
-		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-		double[] y = c.y(5, 1, 0.05);
+//		double[][] s = GraphGenerator.generateBinaryTree(nodes);
+//		double[] r = ArrayGenerator.generateArray(nodes, 5);
+//		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
+//		double[] y = c.y(5, 1, 0.05);
 
 		// teen
 		// double[][] s = Reader.readGraph(
@@ -83,15 +84,15 @@ public class Main {
 		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainY.txt", 50);
 
 		// Delinquency
-		// double[][] s = Reader.readGraph(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainGraphC.txt",
-		// 50);
-		// double[] r = Reader.readArray(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainR.txt",
-		// 50);
-		// double[] y = Reader.readArray(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainY.txt",
-		// 50);
+		 double[][] s = Reader.readGraph(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainGraphC.txt",
+		 50);
+		 double[] r = Reader.readArray(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainR.txt",
+		 50);
+		 double[] y = Reader.readArray(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainY.txt",
+		 50);
 
 		// directed
 		// double s1[][] = GraphGenerator
@@ -107,10 +108,10 @@ public class Main {
 		// double[][] s1 = GraphGenerator.generateChain(nodes);
 
 		// binary tree
-		double[][] s1 = GraphGenerator.generateBinaryTree(nodes);
-		double[] r1 = ArrayGenerator.generateArray(nodes, 5);
-		CalculationsAsymmetric c1 = new CalculationsAsymmetric(s1, r1);
-		double[] y1 = c1.y(5, 1, 0.05);
+//		double[][] s1 = GraphGenerator.generateBinaryTree(nodes);
+//		double[] r1 = ArrayGenerator.generateArray(nodes, 5);
+//		CalculationsAsymmetric c1 = new CalculationsAsymmetric(s1, r1);
+//		double[] y1 = c1.y(5, 1, 0.05);
 
 		// tc.test(times, iterations, rate, s, r, y, s1, r1, y1);
 
@@ -124,13 +125,13 @@ public class Main {
 		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/testY.txt", 50);
 
 		// Delinquency
-		// double[][] s1 = Reader.readGraph(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testGraphC.txt",
-		// 25);
-		// double[] r1 = Reader.readArray(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testR.txt", 25);
-		// double[] y1 = Reader.readArray(
-		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testY.txt", 25);
+		 double[][] s1 = Reader.readGraph(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testGraphC.txt",
+		 25);
+		 double[] r1 = Reader.readArray(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testR.txt", 25);
+		 double[] y1 = Reader.readArray(
+		 "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/testY.txt", 25);
 
 		tc.testNew(iterations, rate, s, r, y, s1, r1, y1);
 
