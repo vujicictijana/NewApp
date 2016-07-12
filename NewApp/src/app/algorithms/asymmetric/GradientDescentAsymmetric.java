@@ -33,6 +33,10 @@ public class GradientDescentAsymmetric {
 		double difBeta = 1;
 		// DecimalFormat df = new DecimalFormat("#.##########");
 		// System.out.println(df.format(little));
+		
+		double[] mu = null;
+		double[][] q =null;
+		double[][] qInverse = null;
 
 		while (difAlpha > little || difBeta > little) {
 			// System.out.print(Math.atan(alpha / beta) + ",");
@@ -48,8 +52,15 @@ public class GradientDescentAsymmetric {
 			if (tempIter == maxIter) {
 				break;
 			}
-			tempAlpha = alpha + lr * dervativeAlpha(alpha, beta);
-			tempBeta = beta + lr * dervativeBeta(alpha, beta);
+			// System.out.println("Iter: " + tempIter);
+
+			mu = calcs.mu(alpha, beta);
+			q = calcs.q(alpha, beta);
+			qInverse = BasicCalcs.inverse(q);
+
+			tempAlpha = alpha + lr
+					* dervativeAlpha(alpha, beta, mu, q, qInverse);
+			tempBeta = beta + lr * dervativeBeta(alpha, beta,mu,q,qInverse);
 
 			difAlpha = Math.abs(alpha - tempAlpha);
 			difBeta = Math.abs(beta - tempBeta);
@@ -71,13 +82,11 @@ public class GradientDescentAsymmetric {
 		return params;
 	}
 
-	public double dervativeAlpha(double alpha, double beta) {
+	public double dervativeAlpha(double alpha, double beta, double[] mu,
+			double[][] q, double[][] qInverse) {
 		// partial derivative of l with respect to the beta
 		// -1/2 * [ (y-mu)^T * (y-mu) + (R-mu)^T [I+Q^-1Q](mu-y)]
 		// +1/2 * Tr(Q^-1)
-		double[] mu = calcs.mu(alpha, beta);
-		double[][] q = calcs.q(alpha, beta);
-		double[][] qInverse = BasicCalcs.inverse(q);
 
 		// yMinusMu = (y-mu)
 		double[] yMinusMu = BasicCalcs.vectorMinusVector(y, mu);
@@ -126,15 +135,13 @@ public class GradientDescentAsymmetric {
 		return finalResult;
 	}
 
-	public double dervativeBeta(double alpha, double beta) {
+	public double dervativeBeta(double alpha, double beta, double[] mu,
+			double[][] q, double[][] qInverse) {
 		// partial derivative of l with respect to the beta
 		// -1/2 * [ y^T*L*y - (-Q^-1*L*mu)^T*Q*y - mu^T*L*y +
 		// (-Q^-1*L*mu)^T*Q*mu] +1/2 * Tr(L*Q^-1)
 
-		double[] mu = calcs.mu(alpha, beta);
 		double[][] l = calcs.l();
-		double[][] q = calcs.q(alpha, beta);
-		double[][] qInverse = BasicCalcs.inverse(q);
 
 		// first = y^T * L * y
 		double first = BasicCalcs.multiplyTwoVectors(y,

@@ -1,5 +1,6 @@
 package app.algorithms.asymmetric;
 
+import Jama.Matrix;
 import app.algorithms.basic.BasicCalcs;
 
 public class CalculationsAsymmetric {
@@ -7,7 +8,7 @@ public class CalculationsAsymmetric {
 	private int n;
 	private double[][] s;
 	private double[] r;
-	
+
 	public CalculationsAsymmetric(double[][] s, double[] r) {
 		super();
 		this.n = s.length;
@@ -43,8 +44,7 @@ public class CalculationsAsymmetric {
 
 	public double[][] alphaI(double alpha) {
 		// Alpha * I (I - identity matrix)
-		double[][] identity = BasicCalcs
-				.identityMatrix(s.length);
+		double[][] identity = BasicCalcs.identityMatrix(s.length);
 		return BasicCalcs.multiplyMatrixByANumber(identity, alpha);
 	}
 
@@ -64,7 +64,7 @@ public class CalculationsAsymmetric {
 	public double[] b(double alpha) {
 		return BasicCalcs.multiplyVectorByANumber(r, alpha);
 	}
-	
+
 	public double[] mu(double alpha, double beta) {
 		// mu = Q^-1*b
 		double[] mu = new double[n];
@@ -73,16 +73,48 @@ public class CalculationsAsymmetric {
 		mu = BasicCalcs.multiplyMatrixByAColumnVector(qInverse, b);
 		return mu;
 	}
-	
-	public double[] y(double alpha, double beta,double p) {
+
+	public double[] y(double alpha, double beta, double p) {
 		double[][] qInverse = BasicCalcs.inverse(q(alpha, beta));
 		double[] b = b(alpha);
-		double[] y = BasicCalcs.multiplyMatrixByAColumnVector(qInverse,b);
+		double[] y = BasicCalcs.multiplyMatrixByAColumnVector(qInverse, b);
 		double[] finalY = new double[y.length];
 		for (int i = 0; i < y.length; i++) {
-			finalY[i] = y[i] +Math.random()*p;
+			finalY[i] = y[i] + Math.random() * p;
 		}
 		return finalY;
 	}
 
+	public double logLikelihood(double alpha, double beta, double[] y) {
+		double[][] q = q(alpha, beta);
+		double[] mu = mu(alpha, beta);
+
+		// y*Q*y
+		double yQy = BasicCalcs.multiplyTwoVectors(y,
+				BasicCalcs.multiplyMatrixByAColumnVector(q, y));
+
+		// y*Q*mu
+		double yQmu = BasicCalcs.multiplyTwoVectors(y,
+				BasicCalcs.multiplyMatrixByAColumnVector(q, mu));
+
+		// mu*Q*y
+		double muQy = BasicCalcs.multiplyTwoVectors(mu,
+				BasicCalcs.multiplyMatrixByAColumnVector(q, y));
+
+		// mu*Q*mu
+		double muQmu = BasicCalcs.multiplyTwoVectors(mu,
+				BasicCalcs.multiplyMatrixByAColumnVector(q, mu));
+
+		// y*Q*y - y*Q*mu - mu*Q*y + mu*Q*mu
+		double result1 = yQy - yQmu - muQy + muQmu;
+
+		Matrix m = new Matrix(q);
+
+		double det = m.inverse().det();
+		//log(det(Q-1)^1/2)
+		
+		double result2 = Math.log(Math.sqrt(det));
+
+		return (-(result1 / 2)) - result2;
+	}
 }

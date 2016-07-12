@@ -177,12 +177,12 @@ public class TestWithRandomForGUI extends Thread {
 			}
 		}
 		DecimalFormat df  = new DecimalFormat("#.############");
-		txt[txt.length - 3] = "Average Asymmetric: " + (sum / times);
+		txt[txt.length - 1] = "Average Asymmetric: " + (sum / times);
 		if (resultsS != null) {
 			txt[txt.length - 4] = "Average Asymmetric: " + (sum / times);
 			txt[txt.length - 3] = "Average Symmetric: " + (sumS / times);
 		}
-		txt[txt.length - 1] = "Average Asymmetric: " + (sum / times);
+		txt[txt.length - 2] = "Standard deviation Asymmetric: " + df.format(BasicCalcs.standardDeviation(results));
 		if (resultsS != null) {
 			txt[txt.length - 2] = "Standard deviation Asymmetric: " + df.format(BasicCalcs.standardDeviation(results));
 			txt[txt.length - 1] = "Standard deviation Symmetric: " + df.format(BasicCalcs.standardDeviation(resultsS));

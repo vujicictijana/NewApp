@@ -38,7 +38,7 @@ public class TrainWithRandomForGUI extends Thread {
 	private String time;
 	private double alphaGen = 5;
 	private double betaGen = 1;
-	
+
 	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, JPanel panel,
@@ -60,22 +60,26 @@ public class TrainWithRandomForGUI extends Thread {
 		this.yTable = yTable;
 		this.timeLabel = timeLabel;
 		time = "Time in milis - ";
-		System.out.println(Writer.edges(s));
+//		System.out.println(Writer.edges(s));
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress Asymmetric");
-		long start = System.currentTimeMillis();
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		double[] res = gda.learn(maxIter, false, frame.getCurrent());
+		// no progress
+		// double[] res = gda.learn(maxIter, false, frame.getCurrent());
+		// System.out.println("POCEO SAM");
+		long start = System.currentTimeMillis();
+		double[] res = gda.learn(maxIter, false, null);
+		long elapsedTime = System.currentTimeMillis() - start;
+		time += "Asymmetric: " + elapsedTime;
 
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
 				y);
 		double r2 = alg.rSquared();
-		long elapsedTime = System.currentTimeMillis() - start;
-		time += "Asymmetric: " + elapsedTime ;
+
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
@@ -87,13 +91,17 @@ public class TrainWithRandomForGUI extends Thread {
 			double[] yS = cS.y(alphaGen, betaGen, 0.05);
 			GradientDescentSymmetric gdS = new GradientDescentSymmetric(alpha,
 					beta, lr, sS, r, yS);
-			resS = gdS.learn(maxIter, false, frame.getCurrent());
+			// no progress
+			// resS = gdS.learn(maxIter, false, frame.getCurrent());
+			start = System.currentTimeMillis();
+			resS = gdS.learn(maxIter, false, null);
+			elapsedTime = System.currentTimeMillis() - start;
 
 			AlgorithmSymmetric algS = new AlgorithmSymmetric(resS[0], resS[1],
 					sS, r, yS);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += " Symmetric: " + elapsedTime ;
+			time += " Symmetric: " + elapsedTime;
 		}
 		createTable(res, r2, resS, r2S);
 		createFile("Asymmetric.txt", res);

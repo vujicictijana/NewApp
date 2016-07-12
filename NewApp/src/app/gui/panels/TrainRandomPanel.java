@@ -341,11 +341,9 @@ public class TrainRandomPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 
 		double[][] s = generateGraph(noOfNodes);
-		Writer.writeGraph(s, "binary.txt");
 		double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
 		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
 		double[] y = c.y(alphaGen, betaGen, 0.05);
-		Writer.writeR(y, "binaryY.txt");
 		boolean both = false;
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
