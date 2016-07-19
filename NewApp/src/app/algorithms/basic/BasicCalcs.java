@@ -1,6 +1,7 @@
 package app.algorithms.basic;
 
-import Jama.Matrix;
+import org.ujmp.core.Matrix;
+
 
 public class BasicCalcs {
 
@@ -32,7 +33,7 @@ public class BasicCalcs {
 
 	public static double trace(double[][] matrix) {
 		// sum of the elements on the main diagonal
-		Matrix m1 = new Matrix(matrix);
+		Matrix m1 =  Matrix.Factory.linkToArray(matrix);
 		return m1.trace();
 	}
 
@@ -47,33 +48,33 @@ public class BasicCalcs {
 
 	public static double[][] multiplyMatrixByANumber(double[][] matrix,
 			double number) {
-		Matrix m1 = new Matrix(matrix);
+		Matrix m1 = Matrix.Factory.linkToArray(matrix);
 		Matrix res = m1.times(number);
-		return res.getArray();
+		return res.toDoubleArray();
 	}
 
 	public static double[][] multiplyTwoMatrices(double[][] matrix1,
 			double[][] matrix2) {
-		Matrix m1 = new Matrix(matrix1);
-		Matrix m2 = new Matrix(matrix2);
+		Matrix m1 = Matrix.Factory.linkToArray(matrix1);
+		Matrix m2 = Matrix.Factory.linkToArray(matrix2);
 		Matrix res = m1.times(m2);
-		return res.getArray();
+		return res.toDoubleArray();
 	}
 
 	public static double[][] matrixMinusMatrix(double[][] matrix1,
 			double[][] matrix2) {
-		Matrix m1 = new Matrix(matrix1);
-		Matrix m2 = new Matrix(matrix2);
+		Matrix m1 = Matrix.Factory.linkToArray(matrix1);
+		Matrix m2 = Matrix.Factory.linkToArray(matrix2);
 		Matrix res = m1.minus(m2);
-		return res.getArray();
+		return res.toDoubleArray();
 	}
 
 	public static double[][] matrixPlusMatrix(double[][] matrix1,
 			double[][] matrix2) {
-		Matrix m1 = new Matrix(matrix1);
-		Matrix m2 = new Matrix(matrix2);
+		Matrix m1 = Matrix.Factory.linkToArray(matrix1);
+		Matrix m2 = Matrix.Factory.linkToArray(matrix2);
 		Matrix res = m1.plus(m2);
-		return res.getArray();
+		return res.toDoubleArray();
 	}
 
 	public static double[] multiplyMatrixByAColumnVector(double[][] matrix,
@@ -125,13 +126,17 @@ public class BasicCalcs {
 	}
 
 	public static double[][] identityMatrix(int n) {
-		return Matrix.identity(n, n).getArray();
+		double[][] identity = new double[n][n];
+		for (int i = 0; i < identity.length; i++) {
+			identity[i][i] = 1;
+		}
+		return identity;
 	}
 
 	public static double[][] inverse(double[][] matrix) {
-		Matrix m = new Matrix(matrix);
-		Matrix inverse = m.inverse();
-		return inverse.getArray();
+		Matrix m = Matrix.Factory.linkToArray(matrix);
+		Matrix inverse = m.inv();
+		return inverse.toDoubleArray();
 	}
 
 	private static int degree(int row, double[][] matrix) {

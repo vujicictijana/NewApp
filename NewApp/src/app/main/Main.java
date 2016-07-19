@@ -1,6 +1,7 @@
 package app.main;
 
 import app.algorithms.asymmetric.CalculationsAsymmetric;
+import app.algorithms.basic.BasicCalcs;
 import app.algorithms.test.*;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
@@ -47,17 +48,18 @@ public class Main {
 		// tt.testSymmetric();
 
 		// TestConvexity
-		TestConvexity tc = new TestConvexity();
-
-		int nodes =200;
+		// TestConvexity tc = new TestConvexity();
+		//
+		// int nodes = 200;
 		// int iterations = 5000;
 		// double rate = 0.0001;
 		// // int times = 30;
 
 		// directed
 		// double s[][] = GraphGenerator.generateDirectedGraph(nodes);
-		double s[][] = GraphGenerator.generateDirectedGraphWithEdgeProbability(
-				nodes, 0.5);
+		// double s[][] =
+		// GraphGenerator.generateDirectedGraphWithEdgeProbability(
+		// nodes, 0.5);
 
 		// no loop
 		// double s[][] = GraphGenerator.generateGraphNoFeedback(nodes);
@@ -70,9 +72,9 @@ public class Main {
 
 		// binary tree
 		// double[][] s = GraphGenerator.generateBinaryTree(nodes);
-		double[] r = ArrayGenerator.generateArray(nodes, 5);
-		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-		double[] y = c.y(5, 1, 0.05);
+		// double[] r = ArrayGenerator.generateArray(nodes, 5);
+		// CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
+		// double[] y = c.y(5, 1, 0.05);
 
 		// teen
 		// double[][] s = Reader.readGraph(
@@ -142,7 +144,11 @@ public class Main {
 		// double[][] graph = GraphGenerator.generateBinaryTree(200);
 		// System.out.println(Writer.edges(graph));
 
-		tc.testNewLog(s, r, y);
+		// tc.testNewLog(s, r, y);
 
+		TestEfficiency t = new TestEfficiency();
+		// t.jama(5000);
+		// t.universal(5000);
+		t.learn(100, 50);
 	}
 }

@@ -60,7 +60,7 @@ public class TrainWithRandomForGUI extends Thread {
 		this.yTable = yTable;
 		this.timeLabel = timeLabel;
 		time = "Time in milis - ";
-//		System.out.println(Writer.edges(s));
+		// System.out.println(Writer.edges(s));
 	}
 
 	public void run() {
@@ -68,11 +68,8 @@ public class TrainWithRandomForGUI extends Thread {
 		frame.setTitle("Progress Asymmetric");
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
-		// no progress
-		// double[] res = gda.learn(maxIter, false, frame.getCurrent());
-		// System.out.println("POCEO SAM");
 		long start = System.currentTimeMillis();
-		double[] res = gda.learn(maxIter, false, null);
+		double[] res = gda.learn(maxIter, false, frame.getCurrent());
 		long elapsedTime = System.currentTimeMillis() - start;
 		time += "Asymmetric: " + elapsedTime;
 
@@ -91,10 +88,8 @@ public class TrainWithRandomForGUI extends Thread {
 			double[] yS = cS.y(alphaGen, betaGen, 0.05);
 			GradientDescentSymmetric gdS = new GradientDescentSymmetric(alpha,
 					beta, lr, sS, r, yS);
-			// no progress
-			// resS = gdS.learn(maxIter, false, frame.getCurrent());
 			start = System.currentTimeMillis();
-			resS = gdS.learn(maxIter, false, null);
+			resS = gdS.learn(maxIter, false, frame.getCurrent());
 			elapsedTime = System.currentTimeMillis() - start;
 
 			AlgorithmSymmetric algS = new AlgorithmSymmetric(resS[0], resS[1],

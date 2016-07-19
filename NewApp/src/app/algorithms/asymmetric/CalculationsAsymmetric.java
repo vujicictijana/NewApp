@@ -1,6 +1,7 @@
 package app.algorithms.asymmetric;
 
-import Jama.Matrix;
+import org.ujmp.core.Matrix;
+
 import app.algorithms.basic.BasicCalcs;
 
 public class CalculationsAsymmetric {
@@ -108,9 +109,9 @@ public class CalculationsAsymmetric {
 		// y*Q*y - y*Q*mu - mu*Q*y + mu*Q*mu
 		double result1 = yQy - yQmu - muQy + muQmu;
 
-		Matrix m = new Matrix(q);
+		Matrix m = Matrix.Factory.linkToArray(q);
 
-		double det = m.inverse().det();
+		double det = m.inv().det();
 		//log(det(Q-1)^1/2)
 		
 		double result2 = Math.log(Math.sqrt(det));

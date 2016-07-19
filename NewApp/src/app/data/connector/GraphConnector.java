@@ -1,6 +1,6 @@
 package app.data.connector;
 
-import Jama.Matrix;
+import org.ujmp.core.Matrix;
 
 public class GraphConnector {
 
@@ -8,8 +8,10 @@ public class GraphConnector {
 		int rows = 0;
 		int cols = 0;
 		for (int i = 0; i < matrices.length; i++) {
-			rows += matrices[i].getRowDimension();
-			cols += matrices[i].getColumnDimension();
+			// rows += matrices[i].getRowDimension();
+			rows += matrices[i].getRowCount();
+			// cols += matrices[i].getColumnDimension();
+			cols += matrices[i].getColumnCount();
 		}
 		double[][] finalMatrix = new double[rows][cols];
 		int rowIndex = 0;
@@ -18,15 +20,19 @@ public class GraphConnector {
 		for (int i = 0; i < matrices.length; i++) {
 			Matrix m = matrices[i];
 			begin = colIndex;
-			for (int j = 0; j < m.getRowDimension(); j++) {
-				for (int j2 = 0; j2 < m.getColumnDimension(); j2++) {
-					finalMatrix[rowIndex][colIndex] = m.get(j, j2);
+			// for (int j = 0; j < m.getRowDimension(); j++) {
+			// for (int j2 = 0; j2 < m.getColumnDimension(); j2++) {
+			// finalMatrix[rowIndex][colIndex] = m.get(j, j2);
+			for (int j = 0; j < m.getRowCount(); j++) {
+				for (int j2 = 0; j2 < m.getColumnCount(); j2++) {
+					finalMatrix[rowIndex][colIndex] = m.getAsDouble(j,j2);
 					colIndex++;
 				}
 				rowIndex++;
 				colIndex = begin;
 			}
-			colIndex = colIndex + m.getColumnDimension();
+//			colIndex = colIndex + m.getColumnDimension();
+			colIndex = colIndex + (int) m.getColumnCount();
 		}
 		return finalMatrix;
 

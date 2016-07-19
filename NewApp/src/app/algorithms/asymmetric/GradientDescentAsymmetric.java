@@ -33,9 +33,9 @@ public class GradientDescentAsymmetric {
 		double difBeta = 1;
 		// DecimalFormat df = new DecimalFormat("#.##########");
 		// System.out.println(df.format(little));
-		
+
 		double[] mu = null;
-		double[][] q =null;
+		double[][] q = null;
 		double[][] qInverse = null;
 
 		while (difAlpha > little || difBeta > little) {
@@ -57,10 +57,9 @@ public class GradientDescentAsymmetric {
 			mu = calcs.mu(alpha, beta);
 			q = calcs.q(alpha, beta);
 			qInverse = BasicCalcs.inverse(q);
-
 			tempAlpha = alpha + lr
 					* dervativeAlpha(alpha, beta, mu, q, qInverse);
-			tempBeta = beta + lr * dervativeBeta(alpha, beta,mu,q,qInverse);
+			tempBeta = beta + lr * dervativeBeta(alpha, beta, mu, q, qInverse);
 
 			difAlpha = Math.abs(alpha - tempAlpha);
 			difBeta = Math.abs(beta - tempBeta);
@@ -183,8 +182,10 @@ public class GradientDescentAsymmetric {
 
 		// trace = Tr(L*Q^-1)
 		// trace = Tr(L * qInverse)
+		
 		double[][] matrix = BasicCalcs.multiplyTwoMatrices(l, qInverse);
 		double trace = BasicCalcs.trace(matrix);
+	
 
 		// result2 = 1/2 * Tr(L*Q^-1)
 		// result2 = 1/2 * trace
