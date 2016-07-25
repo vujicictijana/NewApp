@@ -1,5 +1,7 @@
 package app.algorithms.basic;
 
+import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ujmp.core.Matrix;
 
 
@@ -134,9 +136,13 @@ public class BasicCalcs {
 	}
 
 	public static double[][] inverse(double[][] matrix) {
-		Matrix m = Matrix.Factory.linkToArray(matrix);
-		Matrix inverse = m.inv();
-		return inverse.toDoubleArray();
+//		Matrix m = Matrix.Factory.linkToArray(matrix);
+//		Matrix inverse = m.inv();
+//		return inverse.toDoubleArray();
+		BasicMatrix.Factory<PrimitiveMatrix> mtrxFactory = PrimitiveMatrix.FACTORY;
+		PrimitiveMatrix mtrxA = mtrxFactory.rows(matrix);
+		PrimitiveMatrix mtrxI =  mtrxA.invert();
+		return mtrxI.toRawCopy2D();
 	}
 
 	private static int degree(int row, double[][] matrix) {

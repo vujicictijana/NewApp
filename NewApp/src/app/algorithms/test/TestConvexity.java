@@ -87,8 +87,9 @@ public class TestConvexity {
 			alpha = Double.parseDouble(df.format(Math.sin(theta)));
 			beta = Double.parseDouble(df.format(Math.cos(theta)));
 			CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-			System.out.println(i + "," + theta + ","
-					+ c.logLikelihood(alpha, beta, y));
+//			System.out.println(i + "," + theta + ","
+//					+ c.logLikelihood(alpha, beta, y));
+			System.out.println(c.logLikelihood(alpha, beta, y));
 			i++;
 			theta += 0.1;
 		}
