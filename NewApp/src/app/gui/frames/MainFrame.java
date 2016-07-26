@@ -10,6 +10,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+import app.file.io.Reader;
+import app.gui.panels.ConfigurePanel;
 import app.gui.panels.TestPanel;
 import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
@@ -65,6 +67,35 @@ public class MainFrame extends JFrame {
 		contentPane.add(getMenuBar_1());
 		setLocationRelativeTo(null);
 		frame = this;
+
+		if (Reader.checkFile("cfg.txt")) {
+
+		} else {
+
+			ConfigurePanel c = new ConfigurePanel(frame);
+			c.setBounds(0, 61, 900, 750);
+			if (mainPanel != null) {
+				contentPane.remove(mainPanel);
+				contentPane.repaint();
+				contentPane.revalidate();
+			}
+			mainPanel = c;
+			contentPane.add(mainPanel);
+			contentPane.repaint();
+			contentPane.revalidate();
+
+			menuBar.setEnabled(false);
+			for (int i = 0; i < menuBar.getComponentCount(); i++) {
+				menuBar.getComponent(i).setEnabled(false);
+			}
+		}
+	}
+
+	public void enableMenu() {
+		menuBar.setEnabled(true);
+		for (int i = 0; i < menuBar.getComponentCount(); i++) {
+			menuBar.getComponent(i).setEnabled(true);
+		}
 	}
 
 	private JMenuBar getMenuBar_1() {
@@ -157,8 +188,7 @@ public class MainFrame extends JFrame {
 			menuTest = new JMenuItem("Test on your data");
 			menuTest.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTest.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(
-						java.awt.event.ActionEvent evt) {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					TestPanel t = new TestPanel(frame);
 					t.setBounds(0, 61, 900, 500);
 					if (mainPanel != null) {
@@ -181,22 +211,22 @@ public class MainFrame extends JFrame {
 			menuTestRandom = new JMenuItem("Test on random data");
 			menuTestRandom.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTestRandom
-			.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(
-						java.awt.event.ActionEvent evt) {
-					TestRandomPanel t = new TestRandomPanel(frame);
-					t.setBounds(0, 61, 900, 500);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
-						contentPane.repaint();
-						contentPane.revalidate();
-					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
-					contentPane.repaint();
-					contentPane.revalidate();
-				}
-			});
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
+							TestRandomPanel t = new TestRandomPanel(frame);
+							t.setBounds(0, 61, 900, 500);
+							if (mainPanel != null) {
+								contentPane.remove(mainPanel);
+								contentPane.repaint();
+								contentPane.revalidate();
+							}
+							mainPanel = t;
+							contentPane.add(mainPanel);
+							contentPane.repaint();
+							contentPane.revalidate();
+						}
+					});
 		}
 		return menuTestRandom;
 	}
@@ -236,7 +266,25 @@ public class MainFrame extends JFrame {
 		if (menuParameters == null) {
 			menuParameters = new JMenuItem("Configure parameters");
 			menuParameters.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuParameters
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
+							ConfigurePanel c = new ConfigurePanel(frame);
+							c.setBounds(0, 61, 900, 750);
+							if (mainPanel != null) {
+								contentPane.remove(mainPanel);
+								contentPane.repaint();
+								contentPane.revalidate();
+							}
+							mainPanel = c;
+							contentPane.add(mainPanel);
+							contentPane.repaint();
+							contentPane.revalidate();
+						}
+					});
 		}
 		return menuParameters;
 	}
+
 }

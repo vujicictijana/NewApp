@@ -86,4 +86,11 @@ public class Reader {
 		}
 	}
 
+	public static boolean checkFile(String path){
+		File f = new File(path);
+		if(f.exists() && !f.isDirectory()) { 
+		    return true;
+		}
+		return false;
+	}
 }
