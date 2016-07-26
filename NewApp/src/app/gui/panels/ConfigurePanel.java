@@ -13,6 +13,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
@@ -21,6 +22,7 @@ import app.gui.threads.TestMyModelForGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -32,12 +34,13 @@ public class ConfigurePanel extends JPanel {
 
 	// params
 
-	private double alphaGen;
-	private double betaGen;
-	private double alpha;
-	private double beta;
+	private int alphaGen;
+	private int betaGen;
+	private int alpha;
+	private int beta;
 	private double lr;
 	private int iterations;
+
 	private JTextField txtAlphaGen;
 	private JLabel lblub;
 	private JLabel lblParametersForRandom;
@@ -53,6 +56,7 @@ public class ConfigurePanel extends JPanel {
 	private JTextField txtIter;
 	private JLabel lblMaxIterations;
 	private JButton btnSave;
+	private JButton btnResetToDefaults;
 
 	public ConfigurePanel(JFrame mainFrame) {
 		setBackground(UIManager.getColor("Button.background"));
@@ -74,17 +78,18 @@ public class ConfigurePanel extends JPanel {
 		add(getTextField_1_2());
 		add(getLblMaxIterations());
 		if (Reader.checkFile("cfg.txt")) {
-
+			String result = readParametersFromCfg();
+			if(result != null){
+				JOptionPane.showMessageDialog(mainFrame, result + " Parameters will be reset to the default values.",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				setUpDefaultValues();
+			}
 		} else {
 			setUpDefaultValues();
 		}
-		txtAlphaGen.setText(alphaGen + "");
-		txtBetaGen.setText(betaGen + "");
-		txtAlpha.setText(alpha + "");
-		txtBeta.setText(beta + "");
-		txtLR.setText(lr + "");
-		txtIter.setText(iterations + "");
+		setTxtValues();
 		add(getBtnSave());
+		add(getBtnResetToDefaults());
 	}
 
 	public void setUpDefaultValues() {
@@ -243,15 +248,131 @@ public class ConfigurePanel extends JPanel {
 			btnSave = new JButton("Save");
 			btnSave.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					MainFrame m = (MainFrame) mainFrame;
-					m.enableMenu();
-					panel.removeAll();
-					panel.repaint();
-					panel.revalidate();
+					String message = validateData();
+					if (message != null) {
+						JOptionPane.showMessageDialog(mainFrame, message,
+								"Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						String[] text = prepareForFile();
+						Writer.write("cfg.txt", text);
+						MainFrame m = (MainFrame) mainFrame;
+						m.enableMenu();
+						panel.removeAll();
+						panel.repaint();
+						panel.revalidate();
+					}
 				}
 			});
-			btnSave.setBounds(237, 388, 112, 45);
+			btnSave.setBounds(210, 386, 169, 45);
 		}
 		return btnSave;
+	}
+
+	public String[] prepareForFile() {
+		String[] text = new String[6];
+		alphaGen = Integer.parseInt(txtAlphaGen.getText());
+		betaGen = Integer.parseInt(txtBetaGen.getText());
+		alpha = Integer.parseInt(txtAlpha.getText());
+		beta = Integer.parseInt(txtBeta.getText());
+		lr  = Double.parseDouble(txtLR.getText());
+		iterations  = Integer.parseInt(txtIter.getText());
+		text[0] = "AlphaGen=" + alphaGen;
+		text[1] = "BetaGen=" + betaGen;
+		text[2] = "Alpha=" + alpha;
+		text[3] = "Beta=" + beta;
+		text[4] = "LR=" + lr;
+		text[5] = "Iterations=" + iterations;
+		return text;
+	}
+
+	public String validateData() {
+		try {
+			int a = Integer.parseInt(txtAlphaGen.getText());
+			if (a <= 0) {
+				return "Alpha for data generation should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Alpha for data generation should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtBetaGen.getText());
+			if (b <= 0) {
+				return "Beta for data generation should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Beta for data generation should be integer.";
+		}
+
+		try {
+			int a = Integer.parseInt(txtAlpha.getText());
+			if (a <= 0) {
+				return "Alpha should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Alpha should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtBeta.getText());
+			if (b <= 0) {
+				return "Beta should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Beta should be integer.";
+		}
+		try {
+			double l = Double.parseDouble(txtLR.getText());
+			if (l <= 0) {
+				return "Learning rate should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Learning rate should be number.";
+		}
+
+		try {
+			int i = Integer.parseInt(txtIter.getText());
+			if (i <= 0) {
+				return "Max. iterations should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Max. iterations should be integer.";
+		}
+		return null;
+	}
+
+	public String readParametersFromCfg() {
+		try {
+			Map<String, Double> params = Reader.readCfg();
+			alphaGen = params.get("AlphaGen").intValue();
+			betaGen = params.get("BetaGen").intValue();
+			alpha = params.get("Alpha").intValue();
+			beta = params.get("Beta").intValue();
+			lr = params.get("LR");
+			iterations = params.get("Iterations").intValue();
+		} catch (ConfigurationParameterseException e) {
+			return e.getMessage();
+		}
+		return null;
+	}
+	
+	public void setTxtValues(){
+		txtAlphaGen.setText(alphaGen + "");
+		txtBetaGen.setText(betaGen + "");
+		txtAlpha.setText(alpha + "");
+		txtBeta.setText(beta + "");
+		txtLR.setText(lr + "");
+		txtIter.setText(iterations + "");
+	}
+	private JButton getBtnResetToDefaults() {
+		if (btnResetToDefaults == null) {
+			btnResetToDefaults = new JButton("Reset to defaults");
+			btnResetToDefaults.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					setUpDefaultValues();
+					setTxtValues();
+				}
+			});
+			btnResetToDefaults.setBounds(210, 442, 169, 45);
+		}
+		return btnResetToDefaults;
 	}
 }

@@ -1,0 +1,6 @@
+AlphaGen=5
+BetaGen=1
+Alpha=1
+Beta=1
+LR=0.01
+Iterations=1000

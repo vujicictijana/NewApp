@@ -15,6 +15,7 @@ import javax.swing.SwingConstants;
 import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
@@ -27,6 +28,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 import javax.swing.JCheckBox;
 
@@ -42,11 +44,11 @@ public class TrainRandomPanel extends JPanel {
 	private JTextField txtAlpha;
 	private JTextField txtBeta;
 	private JLabel lblLearningRate;
-	private JTextField txtLr;
+	private JTextField txtLR;
 	private JLabel lblYArrayFile;
 	private JTextField txtNoOfNodes;
 	private JButton btnTrain;
-	private JTextField txtMaxIter;
+	private JTextField txtIter;
 	private JLabel label;
 	private JComboBox<String> cmbGraphType;
 	private JFrame mainFrame;
@@ -54,39 +56,64 @@ public class TrainRandomPanel extends JPanel {
 	private JLabel lblTrainSymmetric;
 	private JPanel panelForTable;
 	private JLabel lblTime;
-	
-	private double alphaGen = 5;
-	private double betaGen = 1;
+
+	// params
+
+	private int alphaGen;
+	private int betaGen;
+	private int alpha;
+	private int beta;
+	private double lr;
+	private int iterations;
 
 	/**
 	 * Create the panel.
 	 */
 	public TrainRandomPanel(JFrame mainFrame) {
-		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getLblType());
-		add(getBtnQuestionS());
-		add(getTxtProb());
-		add(getLblRArrayFile());
-		add(getLblAlpha());
-		add(getLblFirstBeta());
-		add(getTxtAlpha());
-		add(getTxtBeta());
-		add(getLblLearningRate());
-		add(getTxtLr());
-		add(getLblYArrayFile());
-		add(getTxtNoOfNodes());
-		add(getBtnTrain());
-		add(getTxtMaxIter());
-		add(getLabel());
-		add(getCmbGraphType());
-		add(getChckbxSymmetric());
-		add(getLblTrainSymmetric());
-		this.mainFrame = mainFrame;
-		add(getPanelForTable());
-		add(getLblTime());
-		setUpDefaultValues();
-		createMainFolders();
+		if (Reader.checkFile("cfg.txt")) {
+			String result = readParametersFromCfg();
+			if (result != null) {
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configure Parameters.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				setBackground(UIManager.getColor("Button.background"));
+				setLayout(null);
+				add(getLblType());
+				add(getBtnQuestionS());
+				add(getTxtProb());
+				add(getLblRArrayFile());
+				add(getLblAlpha());
+				add(getLblFirstBeta());
+				add(getTxtAlpha());
+				add(getTxtBeta());
+				add(getLblLearningRate());
+				add(getTxtLr());
+				add(getLblYArrayFile());
+				add(getTxtNoOfNodes());
+				add(getBtnTrain());
+				add(getTxtMaxIter());
+				add(getLabel());
+				add(getCmbGraphType());
+				add(getChckbxSymmetric());
+				add(getLblTrainSymmetric());
+				this.mainFrame = mainFrame;
+				add(getPanelForTable());
+				add(getLblTime());
+				createMainFolders();
+				setTxtValues();
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Please configure parameters values in Settings->Configure Parameters.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
+
 	}
 
 	private JLabel getLblType() {
@@ -199,13 +226,13 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	private JTextField getTxtLr() {
-		if (txtLr == null) {
-			txtLr = new JTextField();
-			txtLr.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtLr.setColumns(10);
-			txtLr.setBounds(181, 238, 91, 30);
+		if (txtLR == null) {
+			txtLR = new JTextField();
+			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtLR.setColumns(10);
+			txtLR.setBounds(181, 238, 91, 30);
 		}
-		return txtLr;
+		return txtLR;
 	}
 
 	private JLabel getLblYArrayFile() {
@@ -282,13 +309,13 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	private JTextField getTxtMaxIter() {
-		if (txtMaxIter == null) {
-			txtMaxIter = new JTextField();
-			txtMaxIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtMaxIter.setColumns(10);
-			txtMaxIter.setBounds(181, 279, 91, 30);
+		if (txtIter == null) {
+			txtIter = new JTextField();
+			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtIter.setColumns(10);
+			txtIter.setBounds(181, 279, 91, 30);
 		}
-		return txtMaxIter;
+		return txtIter;
 	}
 
 	private JLabel getLabel() {
@@ -332,8 +359,8 @@ public class TrainRandomPanel extends JPanel {
 
 		double alpha = Double.parseDouble(txtAlpha.getText());
 		double beta = Double.parseDouble(txtBeta.getText());
-		double lr = Double.parseDouble(txtLr.getText());
-		int maxIter = Integer.parseInt(txtMaxIter.getText());
+		double lr = Double.parseDouble(txtLR.getText());
+		int maxIter = Integer.parseInt(txtIter.getText());
 
 		ProgressBar frame = new ProgressBar(maxIter);
 		frame.pack();
@@ -375,13 +402,13 @@ public class TrainRandomPanel extends JPanel {
 			return "First beta should be number.";
 		}
 		try {
-			Double.parseDouble(txtLr.getText());
+			Double.parseDouble(txtLR.getText());
 		} catch (NumberFormatException e) {
 			return "Learning rate should be number.";
 		}
 
 		try {
-			Integer.parseInt(txtMaxIter.getText());
+			Integer.parseInt(txtIter.getText());
 		} catch (NumberFormatException e) {
 			return "Max. iterations should be integer.";
 		}
@@ -425,13 +452,6 @@ public class TrainRandomPanel extends JPanel {
 		return lblTrainSymmetric;
 	}
 
-	public void setUpDefaultValues() {
-		txtAlpha.setText("1");
-		txtBeta.setText("1");
-		txtLr.setText("0.01");
-		txtMaxIter.setText("1000");
-	}
-
 	public void createMainFolders() {
 		Writer.createFolder("RandomModels");
 		for (int i = 1; i < cmbGraphType.getItemCount(); i++) {
@@ -463,5 +483,27 @@ public class TrainRandomPanel extends JPanel {
 			lblTime.setBounds(32, 545, 421, 30);
 		}
 		return lblTime;
+	}
+
+	public String readParametersFromCfg() {
+		try {
+			Map<String, Double> params = Reader.readCfg();
+			alphaGen = params.get("AlphaGen").intValue();
+			betaGen = params.get("BetaGen").intValue();
+			alpha = params.get("Alpha").intValue();
+			beta = params.get("Beta").intValue();
+			lr = params.get("LR");
+			iterations = params.get("Iterations").intValue();
+		} catch (ConfigurationParameterseException e) {
+			return e.getMessage();
+		}
+		return null;
+	}
+	
+	public void setTxtValues(){
+		txtAlpha.setText(alpha + "");
+		txtBeta.setText(beta + "");
+		txtLR.setText(lr + "");
+		txtIter.setText(iterations + "");
 	}
 }

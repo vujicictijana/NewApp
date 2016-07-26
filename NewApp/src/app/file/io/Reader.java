@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.naming.ConfigurationException;
+
+import app.exceptions.ConfigurationParameterseException;
 
 public class Reader {
 
@@ -86,11 +92,38 @@ public class Reader {
 		}
 	}
 
-	public static boolean checkFile(String path){
+	public static boolean checkFile(String path) {
 		File f = new File(path);
-		if(f.exists() && !f.isDirectory()) { 
-		    return true;
+		if (f.exists() && !f.isDirectory()) {
+			return true;
 		}
 		return false;
 	}
+
+	public static Map<String, Double> readCfg()
+			throws ConfigurationParameterseException {
+		Map<String, Double> params = new HashMap<>();
+		String[] text = read("cfg.txt");
+		if (text.length != 6) {
+			throw new ConfigurationParameterseException(
+					"Configuration file reading failed. File has wrong format.");
+		}
+		for (int i = 0; i < text.length; i++) {
+			if (!text[i].contains("=")) {
+				throw new ConfigurationParameterseException(
+						"Configuration file reading failed. File has wrong format.");
+			}
+			String[] line = text[i].split("=");
+			try {
+				double value = Double.parseDouble(line[1]);
+				params.put(line[0], value);
+			} catch (NumberFormatException e) {
+				throw new ConfigurationParameterseException(
+						"Configuration file reading failed. File has wrong format.");
+			}
+		}
+		return params;
+	}
+
+
 }
