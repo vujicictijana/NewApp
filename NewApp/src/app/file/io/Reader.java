@@ -28,6 +28,9 @@ public class Reader {
 			line = text[k].split(",");
 			i = Integer.parseInt(line[0]);
 			j = Integer.parseInt(line[1]);
+			if(i<=0 || i>noOfNodes || j<=0 || j>noOfNodes){
+				return null;
+			}
 			weigth = Double.parseDouble(line[2]);
 			matrix[i - 1][j - 1] = weigth;
 		}
@@ -38,6 +41,9 @@ public class Reader {
 		double[] r = new double[noOfNodes];
 
 		String[] text = Reader.read(path);
+		if(text.length!=noOfNodes){
+			return null;
+		}
 		for (int k = 0; k < text.length; k++) {
 			r[k] = Double.parseDouble(text[k]);
 		}

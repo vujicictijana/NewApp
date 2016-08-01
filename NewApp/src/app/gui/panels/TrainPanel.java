@@ -426,15 +426,35 @@ public class TrainPanel extends JPanel {
 		double beta = Double.parseDouble(txtBeta.getText());
 		double lr = Double.parseDouble(txtLR.getText());
 		int maxIter = Integer.parseInt(txtIter.getText());
+		
+		double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
+		if (r == null) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Number of lines in R file should be " + noOfNodes + ".",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+		if (y == null) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Number of lines in Y file should be " + noOfNodes + ".",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
+		
+		if (s == null) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Ordinal number of node can be between 1 and " + noOfNodes + ".",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 
 		ProgressBar frame = new ProgressBar(maxIter);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-
-		double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
-		double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
-		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
 
 		boolean both = false;
 		if (chckbxSymmetric.isSelected()) {
