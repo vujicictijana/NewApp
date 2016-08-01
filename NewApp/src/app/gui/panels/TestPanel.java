@@ -28,17 +28,17 @@ public class TestPanel extends JPanel {
 	private JTextField txtMatrixFile;
 	private JLabel label;
 	private JButton button;
-	private JButton button_1;
+	private JButton btnQuestionS;
 	private JLabel label_1;
 	private JTextField txtModelName;
 	private JLabel label_2;
 	private JTextField txtRFile;
 	private JButton button_2;
-	private JButton button_3;
+	private JButton btnQuestionR;
 	private JLabel label_3;
 	private JTextField txtYFile;
 	private JButton button_4;
-	private JButton button_5;
+	private JButton btnQuestionY;
 	private JLabel label_4;
 	private JTextField txtNoOfNodes;
 	private JFileChooser fc;
@@ -55,17 +55,17 @@ public class TestPanel extends JPanel {
 		add(getTxtMatrixFile());
 		add(getLabel_1());
 		add(getButton());
-		add(getButton_1());
+		add(getBtnQuestionS());
 		add(getLabel_1_1());
 		add(getTxtModelName());
 		add(getLabel_2());
 		add(getTxtRFile());
 		add(getButton_2());
-		add(getButton_3());
+		add(getBtnQuestionR());
 		add(getLabel_3());
 		add(getTxtYFile());
 		add(getButton_4());
-		add(getButton_5());
+		add(getBtnQuestionY());
 		add(getLabel_4());
 		add(getTxtNoOfNodes());
 		fc = new JFileChooser();
@@ -89,9 +89,29 @@ public class TestPanel extends JPanel {
 
 						String dataPath = "MyModels/" + txtModelName.getText() + "/results";
 						
-						double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
 						double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
+						if (r == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in R file should be " + noOfNodes + ".",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+						if (y == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in Y file should be " + noOfNodes + ".",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
+						
+						if (s == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Ordinal number of node can be between 1 and " + noOfNodes + ".",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						
 						TestMyModelForGUI test = new TestMyModelForGUI(
 								mainFrame, panelForTable, dataPath, s, r,
@@ -186,12 +206,30 @@ public class TestPanel extends JPanel {
 		return button;
 	}
 
-	private JButton getButton_1() {
-		if (button_1 == null) {
-			button_1 = new JButton("");
-			button_1.setBounds(606, 22, 30, 30);
+	private JButton getBtnQuestionS() {
+		if (btnQuestionS == null) {
+			btnQuestionS = new JButton("");
+			Style.questionButtonStyle(btnQuestionS);
+			btnQuestionS.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains data about connections between nodes."
+											+ "\nThis file contains data about all edges in following format: "
+											+ "from node, to node, weight\n"
+											+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
+											+ "1,2,10"
+											+ "\nEach edge should be in a separate line."
+											+ "\nNodes are represented by ordinal numbers.",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
+			btnQuestionS.setBounds(606, 22, 30, 30);
 		}
-		return button_1;
+		return btnQuestionS;
 	}
 
 	private JLabel getLabel_1_1() {
@@ -247,12 +285,26 @@ public class TestPanel extends JPanel {
 		return button_2;
 	}
 
-	private JButton getButton_3() {
-		if (button_3 == null) {
-			button_3 = new JButton("");
-			button_3.setBounds(606, 62, 30, 30);
+	private JButton getBtnQuestionR() {
+		if (btnQuestionR == null) {
+			btnQuestionR = new JButton("");
+			btnQuestionR.setBounds(606, 62, 30, 30);
+			Style.questionButtonStyle(btnQuestionR);
+			btnQuestionR.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains output predicted by unstructured predictor for each node."
+											+ "\nEach output should be in a separate line. "
+											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
 		}
-		return button_3;
+		return btnQuestionR;
 	}
 
 	private JLabel getLabel_3() {
@@ -288,12 +340,26 @@ public class TestPanel extends JPanel {
 		return button_4;
 	}
 
-	private JButton getButton_5() {
-		if (button_5 == null) {
-			button_5 = new JButton("");
-			button_5.setBounds(606, 102, 30, 30);
+	private JButton getBtnQuestionY() {
+		if (btnQuestionY == null) {
+			btnQuestionY = new JButton("");
+			btnQuestionY.setBounds(606, 102, 30, 30);
+			Style.questionButtonStyle(btnQuestionY);
+			btnQuestionY.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains actual output for each node."
+											+ "\nEach output should be in a separate line. "
+											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
 		}
-		return button_5;
+		return btnQuestionY;
 	}
 
 	private JLabel getLabel_4() {
