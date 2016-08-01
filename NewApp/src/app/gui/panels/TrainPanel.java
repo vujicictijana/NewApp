@@ -1,5 +1,7 @@
 package app.gui.panels;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,6 +25,7 @@ import app.gui.threads.TrainMyModelForGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Map;
 
@@ -170,6 +173,23 @@ public class TrainPanel extends JPanel {
 			btnQuestionS = new JButton("");
 			btnQuestionS.setBounds(634, 36, 30, 30);
 			Style.questionButtonStyle(btnQuestionS);
+			btnQuestionS.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains data about connections between nodes."
+											+ "\nThis file contains data about all edges in following format: "
+											+ "from node, to node, weight\n"
+											+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
+											+ "1,2,10"
+											+ "\nEach edge should be in a separate line."
+											+ "\nNodes are represented by ordinal numbers.",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
 		}
 		return btnQuestionS;
 	}
@@ -293,6 +313,19 @@ public class TrainPanel extends JPanel {
 			btnQuestionR = new JButton("");
 			btnQuestionR.setBounds(634, 76, 30, 30);
 			Style.questionButtonStyle(btnQuestionR);
+			btnQuestionR.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains output predicted by unstructured predictor for each node."
+											+ "\nEach output should be in a separate line. "
+											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
 		}
 		return btnQuestionR;
 	}
@@ -336,6 +369,19 @@ public class TrainPanel extends JPanel {
 			btnQuestionY = new JButton("");
 			btnQuestionY.setBounds(634, 116, 30, 30);
 			Style.questionButtonStyle(btnQuestionY);
+			btnQuestionY.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Text file (.txt) that contains actual output for each node."
+											+ "\nEach output should be in a separate line. "
+											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
 		}
 		return btnQuestionY;
 	}
@@ -545,8 +591,8 @@ public class TrainPanel extends JPanel {
 		}
 		return null;
 	}
-	
-	public void setTxtValues(){
+
+	public void setTxtValues() {
 		txtAlpha.setText(alpha + "");
 		txtBeta.setText(beta + "");
 		txtLR.setText(lr + "");

@@ -36,7 +36,7 @@ public class TrainRandomPanel extends JPanel {
 
 	private static final long serialVersionUID = 2574347379339766542L;
 	private JLabel lblType;
-	private JButton btnQuestionS;
+	private JButton btnQuestionType;
 	private JTextField txtProb;
 	private JLabel lblRArrayFile;
 	private JLabel lblAlpha;
@@ -127,9 +127,9 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	private JButton getBtnQuestionS() {
-		if (btnQuestionS == null) {
-			btnQuestionS = new JButton("");
-			btnQuestionS.addActionListener(new ActionListener() {
+		if (btnQuestionType == null) {
+			btnQuestionType = new JButton("");
+			btnQuestionType.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
 					JOptionPane
@@ -147,10 +147,10 @@ public class TrainRandomPanel extends JPanel {
 				}
 			});
 
-			btnQuestionS.setBounds(515, 36, 30, 30);
-			Style.questionButtonStyle(btnQuestionS);
+			btnQuestionType.setBounds(515, 36, 30, 30);
+			Style.questionButtonStyle(btnQuestionType);
 		}
-		return btnQuestionS;
+		return btnQuestionType;
 	}
 
 	private JTextField getTxtProb() {
