@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -106,6 +107,8 @@ public class TestMyModelForGUI extends Thread {
 				String fileName = modelFolder + "/Test/results.txt";
 				String[] a = exportTxt(result, resultS);
 				Writer.write(fileName, a);
+				JOptionPane.showMessageDialog(mainFrame,
+						"Export successfully completed.");
 			}
 		});
 		return table;

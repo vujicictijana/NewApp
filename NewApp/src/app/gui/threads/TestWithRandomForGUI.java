@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -151,6 +152,8 @@ public class TestWithRandomForGUI extends Thread {
 						+ "Nodes" + times + "times.txt";
 				String[] a = exportTxt(results, resultsS);
 				Writer.write(fileName, a);
+				JOptionPane.showMessageDialog(mainFrame,
+						"Export successfully completed.");
 			}
 		});
 		return table;
