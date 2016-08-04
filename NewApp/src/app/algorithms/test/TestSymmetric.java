@@ -46,7 +46,7 @@ public class TestSymmetric {
 			text[t] = textA;
 			t++;
 		}
-		Writer.write(folder + "/resultComparison" + folder + ".txt", text);
+		Writer.write(text, folder + "/resultComparison" + folder + ".txt");
 	}
 
 	private double runSymmetricDif(double alpha, double beta, double lr,

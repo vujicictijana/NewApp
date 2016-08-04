@@ -75,7 +75,7 @@ public class TestAcyclic {
 			System.out.println(textA);
 			text[i - 1] = textA;
 		}
-		Writer.write(path + "/" + fileName, text);
+		Writer.write(text, path + "/" + fileName);
 	}
 
 	private double runAsymmetric(double alpha, double beta, double lr,

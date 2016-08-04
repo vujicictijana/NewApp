@@ -151,7 +151,7 @@ public class TestWithRandomForGUI extends Thread {
 				String fileName = modelFolder + "/Test/TestWith" + noOfNodes
 						+ "Nodes" + times + "times.txt";
 				String[] a = exportTxt(results, resultsS);
-				Writer.write(fileName, a);
+				Writer.write(a, fileName);
 				JOptionPane.showMessageDialog(mainFrame,
 						"Export successfully completed.");
 			}

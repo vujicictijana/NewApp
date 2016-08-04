@@ -24,6 +24,7 @@ public class TestMyModelForGUI extends Thread {
 	private double[][] s;
 	private double[] r;
 	private double[] y;
+	public double[] outputs;
 
 	public TestMyModelForGUI(JFrame mainFrame, JPanel panel,
 			String modelFolder, double[][] s, double[] r, double[] y) {
@@ -71,6 +72,7 @@ public class TestMyModelForGUI extends Thread {
 	public double resultAsymmetric(double alpha, double beta) {
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(alpha, beta, s, r, y);
 		// System.out.println(alg.rSquared());
+		outputs = alg.outputs();
 		return alg.rSquared();
 	}
 
@@ -105,8 +107,8 @@ public class TestMyModelForGUI extends Thread {
 			public void actionPerformed(ActionEvent e) {
 				Writer.createFolder(modelFolder + "/Test");
 				String fileName = modelFolder + "/Test/results.txt";
-				String[] a = exportTxt(result, resultS);
-				Writer.write(fileName, a);
+				String[] text = exportTxt(result, resultS);
+				Writer.write(text, fileName);
 				JOptionPane.showMessageDialog(mainFrame,
 						"Export successfully completed.");
 			}
@@ -116,13 +118,21 @@ public class TestMyModelForGUI extends Thread {
 
 	public String[] exportTxt(double result, double resultS) {
 		String[] txt = null;
+		
 		if (resultS != -1) {
-			txt = new String[2];
-			txt[0] = " R^2 Asymmetric: " + result;
-			txt[1] = " R^2 Symmetric: " + resultS;
+			txt = new String[outputs.length + 2];
 		} else {
-			txt = new String[1];
-			txt[0] = " R^2 Asymmetric: " + result;
+			txt = new String[outputs.length + 1];
+		}
+		for (int i = 0; i < outputs.length; i++) {
+			txt[i] = outputs[i]+"";
+		}
+		
+		if (resultS != -1) {
+			txt[outputs.length] = "R^2 Asymmetric: " + result;
+			txt[outputs.length+1] = "R^2 Symmetric: " + resultS;
+		} else {
+			txt[outputs.length] = "R^2 Asymmetric: " + result;
 		}
 		return txt;
 	}

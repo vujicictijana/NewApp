@@ -254,7 +254,7 @@ public class ConfigurePanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						String[] text = prepareForFile();
-						Writer.write("cfg.txt", text);
+						Writer.write(text, "cfg.txt");
 						MainFrame m = (MainFrame) mainFrame;
 						m.enableMenu();
 						panel.removeAll();

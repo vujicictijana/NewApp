@@ -155,21 +155,21 @@ public class TestAsymmetric {
 			s = GraphGenerator.generateDirectedGraph(no);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
 			r = ArrayGenerator.generateArray(200, 5);
-			Writer.writeR(r, path + "/r" + i + ".txt");
+			Writer.writeDoubleArray(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
 				sT = GraphGenerator.generateDirectedGraph(no);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
 				rT = ArrayGenerator.generateArray(200, 5);
-				Writer.writeR(rT, path + "/rTest" + i + ".txt");
+				Writer.writeDoubleArray(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
 			textA = i + ": R^2 Asymmetric = " + df.format(r2A);
 			System.out.println(textA);
 			text[i - 1] = textA;
 		}
-		Writer.write(path + "/results" + path + ".txt", text);
+		Writer.write(text, path + "/results" + path + ".txt");
 	}
 
 	public void testTrainAndTestMoreWithProbability(int no, int maxIter,
@@ -199,7 +199,7 @@ public class TestAsymmetric {
 					probability);
 			Writer.writeGraph(s, path + "/graph" + i + ".txt");
 			r = ArrayGenerator.generateArray(200, 5);
-			Writer.writeR(r, path + "/r" + i + ".txt");
+			Writer.writeDoubleArray(r, path + "/r" + i + ".txt");
 			if (same) {
 				r2A = runAsymmetric(alpha, beta, lr, s, r, maxIter);
 			} else {
@@ -207,14 +207,14 @@ public class TestAsymmetric {
 						no, probability);
 				Writer.writeGraph(sT, path + "/graphTest" + i + ".txt");
 				rT = ArrayGenerator.generateArray(200, 5);
-				Writer.writeR(rT, path + "/rTest" + i + ".txt");
+				Writer.writeDoubleArray(rT, path + "/rTest" + i + ".txt");
 				r2A = runAsymmetricDif(alpha, beta, lr, s, r, maxIter, sT, rT);
 			}
 			textA = i + ": R^2 Asymmetric = " + df.format(r2A);
 			System.out.println(textA);
 			text[i - 1] = textA;
 		}
-		Writer.write(path + "/results" + path + ".txt", text);
+		Writer.write(text, path + "/results" + path + ".txt");
 	}
 
 	private double runAsymmetric(double alpha, double beta, double lr,

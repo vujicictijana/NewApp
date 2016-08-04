@@ -135,7 +135,7 @@ public class TrainWithRandomForGUI extends Thread {
 		Writer.createFolder(modelFolder);
 		String fileName = modelFolder + "/" + symmetric;
 		String[] resultsS = { results[0] + "", results[1] + "" };
-		Writer.write(fileName, resultsS);
+		Writer.write(resultsS, fileName);
 	}
 
 	public Object[][] fillData(double[] res, double r2, double[] resS,

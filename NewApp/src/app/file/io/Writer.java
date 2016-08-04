@@ -21,15 +21,15 @@ public class Writer {
 				}
 			}
 		}
-		write(fileName, edges);
+		write(edges, fileName);
 	}
 
-	public static void writeR(double[] r, String fileName) {
+	public static void writeDoubleArray(double[] r, String fileName) {
 		String[] rText = new String[r.length];
 		for (int i = 0; i < r.length; i++) {
 			rText[i] = r[i] + "";
 		}
-		write(fileName, rText);
+		write(rText, fileName);
 	}
 
 	public static int edges(double[][] matrix) {
@@ -44,7 +44,7 @@ public class Writer {
 		return edges;
 	}
 
-	public static void write(String fileName, String[] text) {
+	public static void write(String[] text, String fileName) {
 		File file = new File(fileName);
 		try {
 			PrintStream print = new PrintStream(file);
@@ -59,6 +59,7 @@ public class Writer {
 		}
 
 	}
+
 
 	public static void createFolder(String name) {
 		File dir = new File(name);

@@ -77,13 +77,13 @@ public class Main {
 		// double[] y = c.y(5, 1, 0.05);
 
 		// teen
-//		double[][] s = Reader.readGraph(
-//				"C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainGraph.txt",
-//				50);
-//		double[] r = Reader.readArray(
-//				"C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainR.txt", 50);
-//		double[] y = Reader.readArray(
-//				"C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainY.txt", 50);
+		// double[][] s = Reader.readGraph(
+		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainGraph.txt",
+		// 50);
+		// double[] r = Reader.readArray(
+		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainR.txt", 50);
+		// double[] y = Reader.readArray(
+		// "C:/Users/Tijana/Desktop/Data/Teen/Connected1/trainY.txt", 50);
 
 		// Delinquency
 		// double[][] s = Reader
@@ -98,7 +98,7 @@ public class Main {
 		// .readArray(
 		// "C:/Users/Tijana/Desktop/Data/Delinquency/Regular/C2/trainY.txt",
 		// 50);
-		 
+
 		// Glasgow
 		// double[][] s = Reader
 		// .readGraph(
@@ -112,20 +112,20 @@ public class Main {
 		// .readArray(
 		// "C:/Users/Tijana/Desktop/Data/Glasgow/trainY.txt",
 		// 258);
-		
+
 		// Geostep
-//		 double[][] s = Reader
-//		 .readGraph(
-//		 "C:/Users/Tijana/Desktop/Data/Geostep/testGraph.txt",
-//		 258);
-//		 double[] r = Reader
-//		 .readArray(
-//		 "C:/Users/Tijana/Desktop/Data/Geostep/testR.txt",
-//		 258);
-//		 double[] y = Reader
-//		 .readArray(
-//		 "C:/Users/Tijana/Desktop/Data/Geostep/testY.txt",
-//		 258);
+		// double[][] s = Reader
+		// .readGraph(
+		// "C:/Users/Tijana/Desktop/Data/Geostep/testGraph.txt",
+		// 258);
+		// double[] r = Reader
+		// .readArray(
+		// "C:/Users/Tijana/Desktop/Data/Geostep/testR.txt",
+		// 258);
+		// double[] y = Reader
+		// .readArray(
+		// "C:/Users/Tijana/Desktop/Data/Geostep/testY.txt",
+		// 258);
 
 		// directed
 		// double s1[][] = GraphGenerator
@@ -172,14 +172,15 @@ public class Main {
 		// double[][] graph = GraphGenerator.generateBinaryTree(200);
 		// System.out.println(Writer.edges(graph));
 
-//		tc.testNewLog(s, r, y);
+		// tc.testNewLog(s, r, y);
 
-		TestEfficiency t = new TestEfficiency();
-//		t.jama(5000);
-//		t.universal(5000);
-//		t.learn(5000, 1);
-//		t.la4j(5000);
-//		t.ojAlgo(5000);
-		t.learn(5000, 1);
+		// TestEfficiency t = new TestEfficiency();
+		// t.jama(5000);
+		// t.universal(5000);
+		// t.learn(5000, 1);
+		// t.la4j(5000);
+		// t.ojAlgo(5000);
+		// t.learn(5000, 1);
+
 	}
 }
