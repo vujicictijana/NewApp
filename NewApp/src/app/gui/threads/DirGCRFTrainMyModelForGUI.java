@@ -13,7 +13,7 @@ import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 
-public class TrainMyModelForGUI extends Thread {
+public class DirGCRFTrainMyModelForGUI extends Thread {
 	private ProgressBar frame;
 	private JFrame mainFrame;
 
@@ -32,7 +32,7 @@ public class TrainMyModelForGUI extends Thread {
 	// private JLabel timeLabel;
 	private String time;
 
-	public TrainMyModelForGUI(String modelFolder, ProgressBar frame,
+	public DirGCRFTrainMyModelForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, boolean both) {
 		super();

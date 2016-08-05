@@ -18,7 +18,7 @@ import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.style.Style;
-import app.gui.threads.TestMyModelForGUI;
+import app.gui.threads.DirGCRFTestMyModelForGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

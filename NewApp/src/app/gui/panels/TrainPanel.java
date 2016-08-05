@@ -16,12 +16,14 @@ import javax.swing.JButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
+import app.algorithms.basic.BasicCalcs;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
-import app.gui.threads.TrainMyModelForGUI;
+import app.gui.threads.DirGCRFTrainMyModelForGUI;
+import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -504,10 +506,8 @@ public class TrainPanel extends JPanel {
 										JOptionPane.ERROR_MESSAGE);
 								return;
 							}
-							if (method.contains("Dir")) {
-								trainDirGCRF(noOfNodes, path, maxIter, alpha,
-										beta, lr, r, y, s);
-							}
+							callMethod(method, path, noOfNodes, alpha, beta,
+									lr, maxIter, y, r, s);
 						} else {
 							JOptionPane
 									.showMessageDialog(
@@ -518,11 +518,36 @@ public class TrainPanel extends JPanel {
 
 					}
 				}
+
 			});
 			Style.buttonStyle(btnTrain);
 			btnTrain.setBounds(773, 606, 112, 45);
 		}
 		return btnTrain;
+	}
+
+	private void callMethod(String method, String path, int noOfNodes,
+			double alpha, double beta, double lr, int maxIter, double[] y,
+			double[] r, double[][] s) {
+		switch (method) {
+		case "DirGCRF":
+			trainDirGCRF(noOfNodes, path, maxIter, alpha, beta, lr, r, y, s);
+			break;
+		case "GCRF":
+			if (BasicCalcs.isSymmetric(s)) {
+				trainGCRF(noOfNodes, path, maxIter, alpha, beta, lr, r, y, s);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame,
+						"For GCRF method matrix should be symmetric.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			break;
+		default:
+			JOptionPane.showMessageDialog(mainFrame, "Unknown method.",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			break;
+		}
+
 	}
 
 	public void trainDirGCRF(int noOfNodes, String modelFolder, int maxIter,
@@ -538,11 +563,27 @@ public class TrainPanel extends JPanel {
 		if (chckbxStandard.isSelected()) {
 			both = true;
 		}
-		TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder + "/results",
+		DirGCRFTrainMyModelForGUI t = new DirGCRFTrainMyModelForGUI(modelFolder + "/results",
 				frame, mainFrame, s, r, y, alpha, beta, lr, maxIter, both);
 		// 10, 10
 		t.start();
 
+	}
+
+	public void trainGCRF(int noOfNodes, String modelFolder, int maxIter,
+			double alpha, double beta, double lr, double[] r, double[] y,
+			double[][] s) {
+
+		ProgressBar frame = new ProgressBar(maxIter);
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		GCRFTrainMyModelForGUI t = new GCRFTrainMyModelForGUI(modelFolder
+				+ "/results", frame, mainFrame, s, r, y, alpha, beta, lr,
+				maxIter);
+
+		t.start();
 	}
 
 	private JLabel getLblMaxIterations() {

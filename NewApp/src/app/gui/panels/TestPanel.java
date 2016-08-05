@@ -13,10 +13,12 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import app.algorithms.basic.BasicCalcs;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.style.Style;
-import app.gui.threads.TestMyModelForGUI;
+import app.gui.threads.GCRFTestMyModelForGUI;
+import app.gui.threads.DirGCRFTestMyModelForGUI;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -142,9 +144,7 @@ public class TestPanel extends JPanel {
 								return;
 							}
 
-							if (method.contains("Dir")) {
-								testDirGCRF(noOfNodes, dataPath, r, y, s);
-							}
+							callMethod(noOfNodes, method, dataPath, y, r, s);
 
 						} else {
 							JOptionPane
@@ -154,6 +154,32 @@ public class TestPanel extends JPanel {
 											"Error", JOptionPane.ERROR_MESSAGE);
 						}
 
+					}
+				}
+
+				private void callMethod(int noOfNodes, String method,
+						String dataPath, double[] y, double[] r, double[][] s) {
+
+					switch (method) {
+					case "DirGCRF":
+						testDirGCRF(noOfNodes, dataPath, r, y, s);
+						break;
+					case "GCRF":
+						if (BasicCalcs.isSymmetric(s)) {
+							testGCRF(noOfNodes, dataPath, r, y, s);
+						} else {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"For GCRF method matrix should be symmetric.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+						}
+						break;
+					default:
+						JOptionPane.showMessageDialog(mainFrame,
+								"Unknown method.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						break;
 					}
 				}
 
@@ -167,7 +193,14 @@ public class TestPanel extends JPanel {
 
 	private void testDirGCRF(int noOfNodes, String modelFolder, double[] r,
 			double[] y, double[][] s) {
-		TestMyModelForGUI test = new TestMyModelForGUI(mainFrame,
+		DirGCRFTestMyModelForGUI test = new DirGCRFTestMyModelForGUI(mainFrame,
+				panelForTable, modelFolder + "/results", s, r, y);
+		test.start();
+	}
+
+	private void testGCRF(int noOfNodes, String modelFolder, double[] r,
+			double[] y, double[][] s) {
+		GCRFTestMyModelForGUI test = new GCRFTestMyModelForGUI(mainFrame,
 				panelForTable, modelFolder + "/results", s, r, y);
 		test.start();
 	}

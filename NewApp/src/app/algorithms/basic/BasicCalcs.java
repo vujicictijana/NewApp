@@ -4,6 +4,7 @@ import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ujmp.core.Matrix;
 
+import app.data.generators.GraphGenerator;
 
 public class BasicCalcs {
 
@@ -35,8 +36,19 @@ public class BasicCalcs {
 
 	public static double trace(double[][] matrix) {
 		// sum of the elements on the main diagonal
-		Matrix m1 =  Matrix.Factory.linkToArray(matrix);
+		Matrix m1 = Matrix.Factory.linkToArray(matrix);
 		return m1.trace();
+	}
+
+	public static boolean isSymmetric(double[][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix.length; j++) {
+				if(matrix[i][j]!=matrix[j][i]){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public static double[] multiplyVectorByANumber(double[] vector,
@@ -136,12 +148,12 @@ public class BasicCalcs {
 	}
 
 	public static double[][] inverse(double[][] matrix) {
-//		Matrix m = Matrix.Factory.linkToArray(matrix);
-//		Matrix inverse = m.inv();
-//		return inverse.toDoubleArray();
+		// Matrix m = Matrix.Factory.linkToArray(matrix);
+		// Matrix inverse = m.inv();
+		// return inverse.toDoubleArray();
 		BasicMatrix.Factory<PrimitiveMatrix> mtrxFactory = PrimitiveMatrix.FACTORY;
 		PrimitiveMatrix mtrxA = mtrxFactory.rows(matrix);
-		PrimitiveMatrix mtrxI =  mtrxA.invert();
+		PrimitiveMatrix mtrxI = mtrxA.invert();
 		return mtrxI.toRawCopy2D();
 	}
 
@@ -173,7 +185,7 @@ public class BasicCalcs {
 		for (int i = 0; i < array.length; i++) {
 			sum2 += Math.pow(array[i] - avg, 2);
 		}
-		return Math.sqrt(sum2/array.length);
+		return Math.sqrt(sum2 / array.length);
 	}
 
 }
