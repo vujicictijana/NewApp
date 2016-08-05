@@ -7,11 +7,13 @@ import java.util.Stack;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 
+import app.data.generators.GraphGenerator;
+
 public class Helper {
 
-	public static double normalize(int x, int max, int min) {
+	public static double normalize(double x, double max, double min) {
 		DecimalFormat df = new DecimalFormat("#.##");
-		double res = (double) (x - min) / (double) (max - min);
+		double res = (x - min) / (max - min);
 		return Double.parseDouble(df.format(res));
 	}
 
@@ -91,23 +93,71 @@ public class Helper {
 		return finalMatrix;
 	}
 
-	public static DataSet prepareDataForNN(String[] data, double[] y){
+	public static DataSet prepareDataForNN(String[] data, double[] y) {
 		int no = data[0].split(",").length;
 		DataSet d = new DataSet(no, 1);
-		double[] x = null;
-		String[] values = null;
+		double[][] x = getAllDataNormalized(data, no);
+		double[] yNormalized = getArrayNormalized(y);
+		if (x == null || yNormalized == null) {
+			return null;
+		}
 		for (int i = 0; i < data.length; i++) {
-			x = new double[no];
-			values = data[0].split(",");
-			if(values.length!=no){
-				return null;
-			}else{
-				for (int j = 0; j < values.length; j++) {
-					x[j] = Double.parseDouble(values[j]);
+			d.addRow(new DataSetRow(x[i], new double[] { yNormalized[i] }));
+		}
+		System.out.println(d);
+		return d;
+	}
+
+	public static double[][] getAllDataNormalized(String[] data, int no) {
+		double[][] xValues = new double[data.length][no];
+		String[] values = null;
+		for (int i = 0; i < no; i++) {
+			double[] array = new double[data.length];
+			for (int j = 0; j < data.length; j++) {
+				values = data[j].split(",");
+				if (values.length != no) {
+					return null;
+				} else {
+					array[j] = Double.parseDouble(values[i]);
 				}
 			}
-			d.addRow(new DataSetRow(x,new double[]{y[i]}));
+			double[] normalized = getArrayNormalized(array);
+			for (int j = 0; j < normalized.length; j++) {
+				xValues[j][i] = normalized[j];
+			}
 		}
-		return d;
+
+		return xValues;
+
+	}
+
+	public static double[] getArrayNormalized(double[] array) {
+
+		boolean normalize = false;
+		double min = array[0];
+		double max = array[0];
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] > 1 || array[i] < 0) {
+				normalize = true;
+			}
+			if (array[i] > max) {
+				max = array[i];
+			}
+			if (array[i] < min) {
+				min = array[i];
+			}
+		}
+		// System.out.println(min + "-" + max);
+		if (normalize) {
+			double[] normalized = new double[array.length];
+			for (int i = 0; i < normalized.length; i++) {
+				normalized[i] = normalize(array[i], max, min);
+			}
+			return normalized;
+		} else {
+			System.out.println("NE TREBA");
+			return array;
+		}
+
 	}
 }
