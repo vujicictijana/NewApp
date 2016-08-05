@@ -103,14 +103,57 @@ public class TestPanel extends JPanel {
 						String dataPath = "MyModels" + method + "/"
 								+ txtModelName.getText();
 						File matrixFile = new File(txtMatrixFile.getText());
-						Writer.copyFile(matrixFile, dataPath + "/data/matrixTest.txt");
+						Writer.copyFile(matrixFile, dataPath
+								+ "/data/matrixTest.txt");
 						File xFile = new File(txtXFile.getText());
 						Writer.copyFile(xFile, dataPath + "/data/xTest.txt");
 						File yFile = new File(txtYFile.getText());
 						Writer.copyFile(yFile, dataPath + "/data/yTest.txt");
-						if (method.contains("Dir")) {
-							testDirGCRF(noOfNodes, dataPath);
+
+						String[] x = Reader.read(txtXFile.getText());
+						if (x == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in the file with attributes should be "
+											+ noOfNodes + ".", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
 						}
+						double[] y = Reader.readArray(txtYFile.getText(),
+								noOfNodes);
+						if (y == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in in the file with outputs should be "
+											+ noOfNodes + ".", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						double result = MyNN.test(dataPath, x, y);
+						if (result != -5000) {
+							double[] r = Reader.readArray(dataPath
+									+ "/data/rTest.txt", noOfNodes);
+							double[][] s = Reader.readGraph(
+									txtMatrixFile.getText(), noOfNodes);
+
+							if (s == null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										"Ordinal number of node can be between 1 and "
+												+ noOfNodes + ".", "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+
+							if (method.contains("Dir")) {
+								testDirGCRF(noOfNodes, dataPath, r, y, s);
+							}
+
+						} else {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"File with attributes is not in correct format.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+						}
+
 					}
 				}
 
@@ -122,46 +165,11 @@ public class TestPanel extends JPanel {
 		return btnTrain;
 	}
 
-	private void testDirGCRF(int noOfNodes, String modelFolder) {
-		String[] x = Reader.read(txtXFile.getText());
-		if (x == null) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"Number of lines in the file with attributes should be "
-							+ noOfNodes + ".", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
-		if (y == null) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"Number of lines in in the file with outputs should be "
-							+ noOfNodes + ".", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		double result = MyNN.test(modelFolder, x, y);
-		if (result != -5000) {
-			double[] r = Reader.readArray(modelFolder + "/data/rTest.txt",
-					noOfNodes);
-			double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
-
-			if (s == null) {
-				JOptionPane.showMessageDialog(mainFrame,
-						"Ordinal number of node can be between 1 and "
-								+ noOfNodes + ".", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			TestMyModelForGUI test = new TestMyModelForGUI(mainFrame,
-					panelForTable, modelFolder + "/results", s, r, y);
-			test.start();
-		} else {
-			JOptionPane.showMessageDialog(mainFrame,
-					"File with attributes is not in correct format.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-
-		}
+	private void testDirGCRF(int noOfNodes, String modelFolder, double[] r,
+			double[] y, double[][] s) {
+		TestMyModelForGUI test = new TestMyModelForGUI(mainFrame,
+				panelForTable, modelFolder + "/results", s, r, y);
+		test.start();
 	}
 
 	public void chooseFile(JTextField txt) {

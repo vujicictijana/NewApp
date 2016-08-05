@@ -461,9 +461,61 @@ public class TrainPanel extends JPanel {
 						Writer.copyFile(yFile, dataPath + "/y.txt");
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						Writer.createFolder(path);
-						if (method.contains("Dir")) {
-							trainDirGCRF(noOfNodes, path);
+
+						double alpha = Double.parseDouble(txtAlpha.getText());
+						double beta = Double.parseDouble(txtBeta.getText());
+						double lr = Double.parseDouble(txtLR.getText());
+						int maxIter = Integer.parseInt(txtIter.getText());
+
+						String[] x = Reader.read(txtXFile.getText());
+						if (x == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in the file with attributes should be "
+											+ noOfNodes + ".", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
 						}
+
+						double[] y = Reader.readArray(txtYFile.getText(),
+								noOfNodes);
+						if (y == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Number of lines in in the file with outputs should be "
+											+ noOfNodes + ".", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						int noOfHidden = Integer.parseInt(txtHidden.getText());
+						int noOfIter = Integer.parseInt(txtIterNN.getText());
+						double result = MyNN.learn(noOfHidden, x, y, 0.003,
+								noOfIter, path);
+
+						if (result != -5000) {
+							double[] r = Reader.readArray(path + "/data/r.txt",
+									noOfNodes);
+
+							double[][] s = Reader.readGraph(
+									txtMatrixFile.getText(), noOfNodes);
+
+							if (s == null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										"Ordinal number of node can be between 1 and "
+												+ noOfNodes + ".", "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							if (method.contains("Dir")) {
+								trainDirGCRF(noOfNodes, path, maxIter, alpha,
+										beta, lr, r, y, s);
+							}
+						} else {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"File with attributes is not in correct format.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+						}
+
 					}
 				}
 			});
@@ -473,68 +525,23 @@ public class TrainPanel extends JPanel {
 		return btnTrain;
 	}
 
-	public void trainDirGCRF(int noOfNodes, String modelFolder) {
+	public void trainDirGCRF(int noOfNodes, String modelFolder, int maxIter,
+			double alpha, double beta, double lr, double[] r, double[] y,
+			double[][] s) {
 
-		double alpha = Double.parseDouble(txtAlpha.getText());
-		double beta = Double.parseDouble(txtBeta.getText());
-		double lr = Double.parseDouble(txtLR.getText());
-		int maxIter = Integer.parseInt(txtIter.getText());
+		ProgressBar frame = new ProgressBar(maxIter);
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
 
-		String[] x = Reader.read(txtXFile.getText());
-		if (x == null) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"Number of lines in the file with attributes should be "
-							+ noOfNodes + ".", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
+		boolean both = false;
+		if (chckbxStandard.isSelected()) {
+			both = true;
 		}
-
-		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
-		if (y == null) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"Number of lines in in the file with outputs should be "
-							+ noOfNodes + ".", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		int noOfHidden = Integer.parseInt(txtHidden.getText());
-		int noOfIter = Integer.parseInt(txtIterNN.getText());
-		double result = MyNN.learn(noOfHidden, x, y, 0.003, noOfIter, modelFolder);
-
-		if (result != -5000) {
-			double[] r = Reader.readArray(modelFolder + "/data/r.txt",
-					noOfNodes);
-
-			double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
-
-			if (s == null) {
-				JOptionPane.showMessageDialog(mainFrame,
-						"Ordinal number of node can be between 1 and "
-								+ noOfNodes + ".", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			ProgressBar frame = new ProgressBar(maxIter);
-			frame.pack();
-			frame.setVisible(true);
-			frame.setLocationRelativeTo(null);
-
-			boolean both = false;
-			if (chckbxStandard.isSelected()) {
-				both = true;
-			}
-			TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder
-					+ "/results", frame, mainFrame, s, r, y,
-					alpha, beta, lr, maxIter, both);
-			// 10, 10
-			t.start();
-		} else {
-			JOptionPane.showMessageDialog(mainFrame,
-					"File with attributes is not in correct format.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-
-		}
+		TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder + "/results",
+				frame, mainFrame, s, r, y, alpha, beta, lr, maxIter, both);
+		// 10, 10
+		t.start();
 
 	}
 
