@@ -104,7 +104,7 @@ public class Helper {
 		for (int i = 0; i < data.length; i++) {
 			d.addRow(new DataSetRow(x[i], new double[] { yNormalized[i] }));
 		}
-		System.out.println(d);
+		// System.out.println(d);
 		return d;
 	}
 
@@ -155,7 +155,7 @@ public class Helper {
 			}
 			return normalized;
 		} else {
-			System.out.println("NE TREBA");
+			// System.out.println("NE TREBA");
 			return array;
 		}
 

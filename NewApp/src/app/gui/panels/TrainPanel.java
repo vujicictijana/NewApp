@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
@@ -73,10 +74,10 @@ public class TrainPanel extends JPanel {
 	private JFrame mainFrame;
 	private JLabel label;
 	private JTextField txtNoOfNodes;
-	private JCheckBox chckbxSymmetric;
-	private JLabel label_1;
-	private JPanel panelForTable;
-	private JLabel lblTime;
+	private JCheckBox chckbxStandard;
+	private JLabel lblStandard;
+	// private JPanel panelForTable;
+	// private JLabel lblTime;
 
 	// params
 
@@ -96,6 +97,8 @@ public class TrainPanel extends JPanel {
 	private JTextField txtHidden;
 	private JLabel lblNoOfIterations;
 	private JTextField txtIterNN;
+	private JComboBox<String> cmbMethod;
+	private JLabel lblMethod;
 
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -142,12 +145,12 @@ public class TrainPanel extends JPanel {
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
 		this.mainFrame = mainFrame;
-		add(getLblTime());
+		// add(getLblTime());
 		add(getLabel());
 		add(getTxtNoOfNodes());
-		add(getChckbxSymmetric());
-		add(getLabel_1());
-		add(getPanelForTable());
+		add(getChckbxStandard());
+		add(getLblStandard());
+		// add(getPanelForTable());
 		add(getSeparator());
 		add(getLblData());
 		add(getSeparator_1());
@@ -162,6 +165,8 @@ public class TrainPanel extends JPanel {
 		add(getTxtIterNN());
 		setTxtValues();
 		add(getCmbPredictor());
+		add(getCmbMethod());
+		add(getLblMethod());
 		// }
 		// } else {
 		// JOptionPane
@@ -292,7 +297,7 @@ public class TrainPanel extends JPanel {
 			lblAlpha = new JLabel("First alpha:");
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(561, 309, 100, 30);
+			lblAlpha.setBounds(515, 349, 100, 30);
 		}
 		return lblAlpha;
 	}
@@ -302,7 +307,7 @@ public class TrainPanel extends JPanel {
 			lblFirstBeta = new JLabel("First beta:");
 			lblFirstBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblFirstBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFirstBeta.setBounds(561, 349, 100, 30);
+			lblFirstBeta.setBounds(515, 389, 100, 30);
 		}
 		return lblFirstBeta;
 	}
@@ -312,7 +317,7 @@ public class TrainPanel extends JPanel {
 			txtAlpha = new JTextField();
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(677, 310, 91, 30);
+			txtAlpha.setBounds(631, 350, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -322,7 +327,7 @@ public class TrainPanel extends JPanel {
 			txtBeta = new JTextField();
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(677, 351, 91, 30);
+			txtBeta.setBounds(631, 391, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -332,7 +337,7 @@ public class TrainPanel extends JPanel {
 			lblLearningRate = new JLabel("Learning rate:");
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLearningRate.setBounds(561, 389, 100, 30);
+			lblLearningRate.setBounds(515, 429, 100, 30);
 		}
 		return lblLearningRate;
 	}
@@ -342,7 +347,7 @@ public class TrainPanel extends JPanel {
 			txtLR = new JTextField();
 			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLR.setColumns(10);
-			txtLR.setBounds(677, 389, 91, 30);
+			txtLR.setBounds(631, 429, 91, 30);
 		}
 		return txtLR;
 	}
@@ -440,11 +445,13 @@ public class TrainPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						Writer.createFolder("MyModels");
-						String path = "MyModels/" + txtModelName.getText();
+						String method = cmbMethod.getSelectedItem().toString();
+						Writer.createFolder("MyModels" + method);
+						String path = "MyModels" + method + "/"
+								+ txtModelName.getText();
 						Writer.createFolder(path);
-						String dataPath = "MyModels/" + txtModelName.getText()
-								+ "/data";
+						String dataPath = "MyModels" + method + "/"
+								+ txtModelName.getText() + "/data";
 						Writer.createFolder(dataPath);
 						File matrixFile = new File(txtMatrixFile.getText());
 						Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
@@ -453,8 +460,10 @@ public class TrainPanel extends JPanel {
 						File yFile = new File(txtYFile.getText());
 						Writer.copyFile(yFile, dataPath + "/y.txt");
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						Writer.createFolder(path + "/results");
-						train(noOfNodes, path + "/results");
+						Writer.createFolder(path);
+						if (method.contains("Dir")) {
+							trainDirGCRF(noOfNodes, path);
+						}
 					}
 				}
 			});
@@ -464,7 +473,7 @@ public class TrainPanel extends JPanel {
 		return btnTrain;
 	}
 
-	public void train(int noOfNodes, String modelFolder) {
+	public void trainDirGCRF(int noOfNodes, String modelFolder) {
 
 		double alpha = Double.parseDouble(txtAlpha.getText());
 		double beta = Double.parseDouble(txtBeta.getText());
@@ -488,8 +497,9 @@ public class TrainPanel extends JPanel {
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
-		double result = MyNN.learn(1, x, y, 0.3, 1000, modelFolder);
+		int noOfHidden = Integer.parseInt(txtHidden.getText());
+		int noOfIter = Integer.parseInt(txtIterNN.getText());
+		double result = MyNN.learn(noOfHidden, x, y, 0.003, noOfIter, modelFolder);
 
 		if (result != -5000) {
 			double[] r = Reader.readArray(modelFolder + "/data/r.txt",
@@ -511,12 +521,13 @@ public class TrainPanel extends JPanel {
 			frame.setLocationRelativeTo(null);
 
 			boolean both = false;
-			if (chckbxSymmetric.isSelected()) {
+			if (chckbxStandard.isSelected()) {
 				both = true;
 			}
-			TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder, frame,
-					mainFrame, s, r, y, alpha, beta, lr, maxIter,
-					panelForTable, both, 10, 10, lblTime);
+			TrainMyModelForGUI t = new TrainMyModelForGUI(modelFolder
+					+ "/results", frame, mainFrame, s, r, y,
+					alpha, beta, lr, maxIter, both);
+			// 10, 10
 			t.start();
 		} else {
 			JOptionPane.showMessageDialog(mainFrame,
@@ -532,7 +543,7 @@ public class TrainPanel extends JPanel {
 			lblMaxIterations = new JLabel("Max. iterations:");
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(529, 429, 132, 30);
+			lblMaxIterations.setBounds(483, 469, 132, 30);
 		}
 		return lblMaxIterations;
 	}
@@ -559,6 +570,12 @@ public class TrainPanel extends JPanel {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
 		}
+		if (cmbPredictor.getSelectedIndex() == 0) {
+			return "Choose predictor.";
+		}
+		if (cmbMethod.getSelectedIndex() == 0) {
+			return "Choose method.";
+		}
 		try {
 			Double.parseDouble(txtAlpha.getText());
 		} catch (NumberFormatException e) {
@@ -584,7 +601,7 @@ public class TrainPanel extends JPanel {
 	}
 
 	public String validateDataForTestPredictor() {
-		
+
 		if (txtMatrixFile.getText().equals("")) {
 			return "Choose file with edges.";
 		}
@@ -599,7 +616,7 @@ public class TrainPanel extends JPanel {
 		} catch (NumberFormatException e) {
 			return "No. of nodes should be integer.";
 		}
-		
+
 		if (cmbPredictor.getSelectedIndex() == 0) {
 			return "Choose predictor.";
 		}
@@ -610,7 +627,7 @@ public class TrainPanel extends JPanel {
 			} catch (NumberFormatException e) {
 				return "No. of hidden neurons should be integer.";
 			}
-			
+
 			try {
 				Integer.parseInt(txtIterNN.getText());
 			} catch (NumberFormatException e) {
@@ -626,7 +643,7 @@ public class TrainPanel extends JPanel {
 			txtIter = new JTextField();
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(677, 429, 91, 30);
+			txtIter.setBounds(631, 469, 91, 30);
 		}
 		return txtIter;
 	}
@@ -658,44 +675,46 @@ public class TrainPanel extends JPanel {
 		return txtNoOfNodes;
 	}
 
-	private JCheckBox getChckbxSymmetric() {
-		if (chckbxSymmetric == null) {
-			chckbxSymmetric = new JCheckBox("");
-			chckbxSymmetric.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-			chckbxSymmetric.setBounds(675, 477, 91, 23);
+	private JCheckBox getChckbxStandard() {
+		if (chckbxStandard == null) {
+			chckbxStandard = new JCheckBox("");
+			chckbxStandard.setVisible(false);
+			chckbxStandard.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			chckbxStandard.setBounds(629, 517, 91, 23);
 		}
-		return chckbxSymmetric;
+		return chckbxStandard;
 	}
 
-	private JLabel getLabel_1() {
-		if (label_1 == null) {
-			label_1 = new JLabel("Train symmetric:");
-			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
-			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(529, 470, 132, 30);
+	private JLabel getLblStandard() {
+		if (lblStandard == null) {
+			lblStandard = new JLabel("Apply standard GCRF:");
+			lblStandard.setVisible(false);
+			lblStandard.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblStandard.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblStandard.setBounds(450, 510, 165, 30);
 		}
-		return label_1;
+		return lblStandard;
 	}
 
-	private JPanel getPanelForTable() {
-		if (panelForTable == null) {
-			panelForTable = new JPanel();
-			panelForTable.setLayout(null);
-			panelForTable.setBounds(35, 496, 850, 114);
-		}
-		return panelForTable;
-	}
+	// private JPanel getPanelForTable() {
+	// if (panelForTable == null) {
+	// panelForTable = new JPanel();
+	// panelForTable.setLayout(null);
+	// panelForTable.setBounds(35, 496, 850, 114);
+	// }
+	// return panelForTable;
+	// }
 
-	private JLabel getLblTime() {
-		if (lblTime == null) {
-			lblTime = new JLabel("Time:");
-			lblTime.setVisible(false);
-			lblTime.setHorizontalAlignment(SwingConstants.LEFT);
-			lblTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblTime.setBounds(35, 610, 421, 30);
-		}
-		return lblTime;
-	}
+	// private JLabel getLblTime() {
+	// if (lblTime == null) {
+	// lblTime = new JLabel("Time:");
+	// lblTime.setVisible(false);
+	// lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+	// lblTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
+	// lblTime.setBounds(35, 610, 421, 30);
+	// }
+	// return lblTime;
+	// }
 
 	public String readParametersFromCfg() {
 		try {
@@ -766,7 +785,7 @@ public class TrainPanel extends JPanel {
 
 	private JLabel getLblModel() {
 		if (lblModel == null) {
-			lblModel = new JLabel("MODEL:");
+			lblModel = new JLabel("METHOD:");
 			lblModel.setOpaque(true);
 			lblModel.setHorizontalAlignment(SwingConstants.CENTER);
 			lblModel.setForeground(Color.WHITE);
@@ -848,13 +867,15 @@ public class TrainPanel extends JPanel {
 							return;
 						}
 
-						double result = MyNN.learn(noOfHidden, x, y, 0.003, noOfIter,
-								null);
+						double result = MyNN.learn(noOfHidden, x, y, 0.003,
+								noOfIter, null);
 
 						if (result != -5000) {
+							DecimalFormat df = new DecimalFormat("#.####");
 							JOptionPane.showMessageDialog(mainFrame,
-									"R^2 value for neural network is: "
-											+ result);
+									"Testing with same data\nR^2 value for neural network is: "
+											+ df.format(result), "Results",
+									JOptionPane.INFORMATION_MESSAGE);
 						} else {
 							JOptionPane
 									.showMessageDialog(
@@ -865,7 +886,7 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			btnTestPredictr.setBounds(289, 440, 140, 45);
+			btnTestPredictr.setBounds(204, 438, 140, 45);
 		}
 		return btnTestPredictr;
 	}
@@ -912,5 +933,37 @@ public class TrainPanel extends JPanel {
 			txtIterNN.setBounds(204, 397, 91, 30);
 		}
 		return txtIterNN;
+	}
+
+	private JComboBox<String> getCmbMethod() {
+		if (cmbMethod == null) {
+			cmbMethod = new JComboBox<String>();
+			cmbMethod.setBounds(631, 309, 227, 30);
+			cmbMethod.addItem("choose method");
+			cmbMethod.addItem("GCRF");
+			cmbMethod.addItem("DirGCRF");
+			cmbMethod.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent arg0) {
+					if (cmbMethod.getSelectedItem().toString().contains("Dir")) {
+						lblStandard.setVisible(true);
+						chckbxStandard.setVisible(true);
+					} else {
+						lblStandard.setVisible(false);
+						chckbxStandard.setVisible(false);
+					}
+				}
+			});
+		}
+		return cmbMethod;
+	}
+
+	private JLabel getLblMethod() {
+		if (lblMethod == null) {
+			lblMethod = new JLabel("Method:");
+			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblMethod.setBounds(515, 309, 100, 30);
+		}
+		return lblMethod;
 	}
 }

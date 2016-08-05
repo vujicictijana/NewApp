@@ -1,12 +1,9 @@
 package app.gui.threads;
 
 import java.awt.Color;
-
+import java.text.DecimalFormat;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JOptionPane;
 
 import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.asymmetric.GradientDescentAsymmetric;
@@ -15,7 +12,6 @@ import app.algorithms.symmetric.GradientDescentSymmetric;
 import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
-import app.gui.style.Style;
 
 public class TrainMyModelForGUI extends Thread {
 	private ProgressBar frame;
@@ -28,18 +24,17 @@ public class TrainMyModelForGUI extends Thread {
 	private double beta;
 	private double lr;
 	private int maxIter;
-	private JPanel panel;
+	// private JPanel panel;
 	private boolean both;
 	private String modelFolder;
-	private int xTable;
-	private int yTable;
-	private JLabel timeLabel;
+	// private int xTable;
+	// private int yTable;
+	// private JLabel timeLabel;
 	private String time;
 
 	public TrainMyModelForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
-			double alpha, double beta, double lr, int maxIter, JPanel panel,
-			boolean both, int xTable, int yTable, JLabel timeLabel) {
+			double alpha, double beta, double lr, int maxIter, boolean both) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -50,36 +45,35 @@ public class TrainMyModelForGUI extends Thread {
 		this.beta = beta;
 		this.lr = lr;
 		this.maxIter = maxIter;
-		this.panel = panel;
+		// this.panel = panel;
 		this.both = both;
 		this.modelFolder = modelFolder;
-		this.xTable = xTable;
-		this.yTable = yTable;
-		this.timeLabel = timeLabel;
-		time = "Time in milis - ";
+		// this.xTable = xTable;
+		// this.yTable = yTable;
+		// this.timeLabel = timeLabel;
+		time = "Time in milis: ";
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
-		frame.setTitle("Progress Asymmetric");
+		frame.setTitle("Progress DirGCRF");
 		long start = System.currentTimeMillis();
-		 GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
-		 beta, lr, s, r, y);
-		 double[] res = gda.learn(maxIter, false, frame.getCurrent());
-		
-		 AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s,
-		 r,
-		 y);
-		 double r2 = alg.rSquared();
+		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
+				beta, lr, s, r, y);
+		double[] res = gda.learn(maxIter, false, frame.getCurrent());
+
+		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
+				y);
+		double r2 = alg.rSquared();
 		// double[] res = { 0, 0 };
 		// double r2 = 0;
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "Asymmetric: " + elapsedTime;
+		time += "\n* DirGCRF: " + elapsedTime;
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
 			frame.getCurrent().setValue(0);
-			frame.setTitle("Progress Symmetric");
+			frame.setTitle("Progress standard GCRF");
 			start = System.currentTimeMillis();
 			double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 			GradientDescentSymmetric gdS = new GradientDescentSymmetric(alpha,
@@ -90,40 +84,50 @@ public class TrainMyModelForGUI extends Thread {
 					sS, r, y);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += " Symmetric: " + elapsedTime;
+			time += "\n* GCRF: " + elapsedTime;
 		}
-		createTable(res, r2, resS, r2S);
-		createFile("Asymmetric.txt", res);
+		// createTable(res, r2, resS, r2S);
+		createFile("DirGCRF.txt", res);
 		if (resS != null) {
-			createFile("Symmetric.txt", resS);
+			createFile("GCRF.txt", resS);
 		}
-		timeLabel.setText(time);
-		timeLabel.setVisible(true);
+		// timeLabel.setText(time);
+		// timeLabel.setVisible(true);
+		DecimalFormat df = new DecimalFormat("#.####");
+		String message = "Testing with same data:\n* R^2 value for DirGCRF is: "
+				+ df.format(r2);
+		if (resS != null) {
+			message += "\n* R^2 value for standard GCRF is: " + df.format(r2S);
+		}
+		message += "\n" + time;
+		JOptionPane.showMessageDialog(mainFrame, message, "Results",
+				JOptionPane.INFORMATION_MESSAGE);
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
 	}
 
-	public JTable createTable(double[] res, double r2, double[] resS, double r2S) {
-		String[] columnNames = { "Alg. ", "Alpha", "Beta",
-				"R^2 (with same data)" };
-		Object[][] data = fillData(res, r2, resS, r2S);
-
-		JTable table = new JTable(data, columnNames);
-
-		table.setBackground(new Color(240, 240, 240));
-		panel.removeAll();
-		panel.repaint();
-		panel.revalidate();
-		JScrollPane scrollPane = new JScrollPane(table);
-		Style.resultTable(table, -1);
-		panel.add(scrollPane);
-		if (resS == null) {
-			scrollPane.setBounds(xTable, yTable, 700, 50);
-		} else {
-			scrollPane.setBounds(xTable, yTable, 700, 75);
-		}
-		return table;
-	}
+	// public JTable createTable(double[] res, double r2, double[] resS, double
+	// r2S) {
+	// String[] columnNames = { "Alg. ", "Alpha", "Beta",
+	// "R^2 (with same data)" };
+	// Object[][] data = fillData(res, r2, resS, r2S);
+	//
+	// JTable table = new JTable(data, columnNames);
+	//
+	// table.setBackground(new Color(240, 240, 240));
+	// panel.removeAll();
+	// panel.repaint();
+	// panel.revalidate();
+	// JScrollPane scrollPane = new JScrollPane(table);
+	// Style.resultTable(table, -1);
+	// panel.add(scrollPane);
+	// if (resS == null) {
+	// scrollPane.setBounds(xTable, yTable, 700, 50);
+	// } else {
+	// scrollPane.setBounds(xTable, yTable, 700, 75);
+	// }
+	// return table;
+	// }
 
 	public void createFile(String symmetric, double[] results) {
 		Writer.createFolder(modelFolder);
@@ -137,17 +141,17 @@ public class TrainMyModelForGUI extends Thread {
 		Object[][] data = null;
 		if (resS == null) {
 			data = new Object[1][4];
-			data[0][0] = "Asymmetric";
+			data[0][0] = "DirGCRF";
 			data[0][1] = res[0];
 			data[0][2] = res[1];
 			data[0][3] = r2;
 		} else {
 			data = new Object[2][4];
-			data[0][0] = "Asymmetric";
+			data[0][0] = "DirGCRF";
 			data[0][1] = res[0];
 			data[0][2] = res[1];
 			data[0][3] = r2;
-			data[1][0] = "Symmetric";
+			data[1][0] = "GCRF";
 			data[1][1] = resS[0];
 			data[1][2] = resS[1];
 			data[1][3] = r2S;

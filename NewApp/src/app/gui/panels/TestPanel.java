@@ -7,16 +7,24 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.JTextField;
+
 import java.awt.Font;
+
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.style.Style;
 import app.gui.threads.TestMyModelForGUI;
+import app.predictors.neuralnetwork.MyNN;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JComboBox;
 
 public class TestPanel extends JPanel {
 
@@ -26,22 +34,25 @@ public class TestPanel extends JPanel {
 	private JFrame mainFrame;
 	private JPanel panelForTable;
 	private JTextField txtMatrixFile;
-	private JLabel label;
+	private JLabel lblFileWithEdges;
 	private JButton button;
 	private JButton btnQuestionS;
 	private JLabel label_1;
 	private JTextField txtModelName;
-	private JLabel label_2;
-	private JTextField txtRFile;
+	private JLabel lblFileWithAttributes;
+	private JTextField txtXFile;
 	private JButton button_2;
 	private JButton btnQuestionR;
-	private JLabel label_3;
+	private JLabel lblFileWithOutputs;
 	private JTextField txtYFile;
 	private JButton button_4;
 	private JButton btnQuestionY;
 	private JLabel label_4;
 	private JTextField txtNoOfNodes;
 	private JFileChooser fc;
+	private JLabel lblMethod;
+	private JComboBox<String> cmbMethod;
+
 	/**
 	 * Create the panel.
 	 */
@@ -58,11 +69,11 @@ public class TestPanel extends JPanel {
 		add(getBtnQuestionS());
 		add(getLabel_1_1());
 		add(getTxtModelName());
-		add(getLabel_2());
-		add(getTxtRFile());
+		add(getLblFileWithAttributes());
+		add(getTxtXFile());
 		add(getButton_2());
 		add(getBtnQuestionR());
-		add(getLabel_3());
+		add(getLblFileWithOutputs());
 		add(getTxtYFile());
 		add(getButton_4());
 		add(getBtnQuestionY());
@@ -70,6 +81,8 @@ public class TestPanel extends JPanel {
 		add(getTxtNoOfNodes());
 		fc = new JFileChooser();
 		panel = this;
+		add(getLblMethod());
+		add(getCmbMethod());
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
@@ -86,45 +99,69 @@ public class TestPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-
-						String dataPath = "MyModels/" + txtModelName.getText() + "/results";
-						
-						double[] r = Reader.readArray(txtRFile.getText(), noOfNodes);
-						if (r == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in R file should be " + noOfNodes + ".",
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
+						String method = cmbMethod.getSelectedItem().toString();
+						String dataPath = "MyModels" + method + "/"
+								+ txtModelName.getText();
+						File matrixFile = new File(txtMatrixFile.getText());
+						Writer.copyFile(matrixFile, dataPath + "/data/matrixTest.txt");
+						File xFile = new File(txtXFile.getText());
+						Writer.copyFile(xFile, dataPath + "/data/xTest.txt");
+						File yFile = new File(txtYFile.getText());
+						Writer.copyFile(yFile, dataPath + "/data/yTest.txt");
+						if (method.contains("Dir")) {
+							testDirGCRF(noOfNodes, dataPath);
 						}
-						double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
-						if (y == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in Y file should be " + noOfNodes + ".",
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						
-						double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
-						
-						if (s == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Ordinal number of node can be between 1 and " + noOfNodes + ".",
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						
-						TestMyModelForGUI test = new TestMyModelForGUI(
-								mainFrame, panelForTable, dataPath, s, r,
-								y);
-						test.start();
 					}
 				}
+
 			});
 
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(307, 230, 112, 45);
+			btnTrain.setBounds(330, 277, 112, 45);
 		}
 		return btnTrain;
+	}
+
+	private void testDirGCRF(int noOfNodes, String modelFolder) {
+		String[] x = Reader.read(txtXFile.getText());
+		if (x == null) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Number of lines in the file with attributes should be "
+							+ noOfNodes + ".", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+		if (y == null) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Number of lines in in the file with outputs should be "
+							+ noOfNodes + ".", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		double result = MyNN.test(modelFolder, x, y);
+		if (result != -5000) {
+			double[] r = Reader.readArray(modelFolder + "/data/rTest.txt",
+					noOfNodes);
+			double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
+
+			if (s == null) {
+				JOptionPane.showMessageDialog(mainFrame,
+						"Ordinal number of node can be between 1 and "
+								+ noOfNodes + ".", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			TestMyModelForGUI test = new TestMyModelForGUI(mainFrame,
+					panelForTable, modelFolder + "/results", s, r, y);
+			test.start();
+		} else {
+			JOptionPane.showMessageDialog(mainFrame,
+					"File with attributes is not in correct format.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+
+		}
 	}
 
 	public void chooseFile(JTextField txt) {
@@ -134,12 +171,14 @@ public class TestPanel extends JPanel {
 		}
 	}
 
-
 	public String validateData() {
+		if (cmbMethod.getSelectedIndex() == 0) {
+			return "Choose method.";
+		}
 		if (txtMatrixFile.getText().equals("")) {
 			return "Choose matrix file.";
 		}
-		if (txtRFile.getText().equals("")) {
+		if (txtXFile.getText().equals("")) {
 			return "Choose R file.";
 		}
 		if (txtYFile.getText().equals("")) {
@@ -153,7 +192,9 @@ public class TestPanel extends JPanel {
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
-		if (!Writer.checkFolder("MyModels/" + txtModelName.getText())) {
+		String method = cmbMethod.getSelectedItem().toString();
+		if (!Writer.checkFolder("MyModels" + method + "/"
+				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " does not exist.";
 		}
@@ -167,7 +208,7 @@ public class TestPanel extends JPanel {
 	private JPanel getPanelForTable() {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();
-			panelForTable.setBounds(49, 301, 850, 143);
+			panelForTable.setBounds(28, 347, 850, 143);
 			panelForTable.setLayout(null);
 		}
 		return panelForTable;
@@ -178,19 +219,19 @@ public class TestPanel extends JPanel {
 			txtMatrixFile = new JTextField();
 			txtMatrixFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtMatrixFile.setColumns(10);
-			txtMatrixFile.setBounds(155, 22, 315, 30);
+			txtMatrixFile.setBounds(178, 68, 315, 30);
 		}
 		return txtMatrixFile;
 	}
 
 	private JLabel getLabel_1() {
-		if (label == null) {
-			label = new JLabel("S matrix file:");
-			label.setHorizontalAlignment(SwingConstants.RIGHT);
-			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(39, 22, 100, 30);
+		if (lblFileWithEdges == null) {
+			lblFileWithEdges = new JLabel("File with edges:");
+			lblFileWithEdges.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblFileWithEdges.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblFileWithEdges.setBounds(34, 66, 129, 30);
 		}
-		return label;
+		return lblFileWithEdges;
 	}
 
 	private JButton getButton() {
@@ -201,7 +242,7 @@ public class TestPanel extends JPanel {
 					chooseFile(txtMatrixFile);
 				}
 			});
-			button.setBounds(487, 22, 100, 30);
+			button.setBounds(510, 68, 100, 30);
 		}
 		return button;
 	}
@@ -227,7 +268,7 @@ public class TestPanel extends JPanel {
 									Style.questionIcon());
 				}
 			});
-			btnQuestionS.setBounds(606, 22, 30, 30);
+			btnQuestionS.setBounds(629, 68, 30, 30);
 		}
 		return btnQuestionS;
 	}
@@ -237,7 +278,7 @@ public class TestPanel extends JPanel {
 			label_1 = new JLabel("Model name:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(39, 143, 100, 30);
+			label_1.setBounds(62, 190, 100, 30);
 		}
 		return label_1;
 	}
@@ -247,29 +288,29 @@ public class TestPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(155, 143, 315, 30);
+			txtModelName.setBounds(178, 190, 315, 30);
 		}
 		return txtModelName;
 	}
 
-	private JLabel getLabel_2() {
-		if (label_2 == null) {
-			label_2 = new JLabel("R array file:");
-			label_2.setHorizontalAlignment(SwingConstants.RIGHT);
-			label_2.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_2.setBounds(39, 62, 100, 30);
+	private JLabel getLblFileWithAttributes() {
+		if (lblFileWithAttributes == null) {
+			lblFileWithAttributes = new JLabel("File with attributes:");
+			lblFileWithAttributes.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblFileWithAttributes.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblFileWithAttributes.setBounds(25, 107, 138, 30);
 		}
-		return label_2;
+		return lblFileWithAttributes;
 	}
 
-	private JTextField getTxtRFile() {
-		if (txtRFile == null) {
-			txtRFile = new JTextField();
-			txtRFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtRFile.setColumns(10);
-			txtRFile.setBounds(155, 62, 315, 30);
+	private JTextField getTxtXFile() {
+		if (txtXFile == null) {
+			txtXFile = new JTextField();
+			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtXFile.setColumns(10);
+			txtXFile.setBounds(178, 109, 315, 30);
 		}
-		return txtRFile;
+		return txtXFile;
 	}
 
 	private JButton getButton_2() {
@@ -277,10 +318,10 @@ public class TestPanel extends JPanel {
 			button_2 = new JButton("Browse");
 			button_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtRFile);
+					chooseFile(txtXFile);
 				}
 			});
-			button_2.setBounds(487, 62, 100, 30);
+			button_2.setBounds(510, 109, 100, 30);
 		}
 		return button_2;
 	}
@@ -288,7 +329,7 @@ public class TestPanel extends JPanel {
 	private JButton getBtnQuestionR() {
 		if (btnQuestionR == null) {
 			btnQuestionR = new JButton("");
-			btnQuestionR.setBounds(606, 62, 30, 30);
+			btnQuestionR.setBounds(629, 109, 30, 30);
 			Style.questionButtonStyle(btnQuestionR);
 			btnQuestionR.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -296,9 +337,11 @@ public class TestPanel extends JPanel {
 					JOptionPane
 							.showMessageDialog(
 									mainFrame,
-									"Text file (.txt) that contains output predicted by unstructured predictor for each node."
-											+ "\nEach output should be in a separate line. "
-											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
+									"Text file (.txt) that contains value of each atribute for each node."
+											+ "\nAtributes for each node should be in a separate line. "
+											+ "\nAtributes should be separated by comma. "
+											+ "\nAll atributes should be numbers. "
+											+ "\nOrder should be consistent with ordinal numbers of nodes in the file with edges.",
 									"Help", JOptionPane.QUESTION_MESSAGE,
 									Style.questionIcon());
 				}
@@ -307,14 +350,14 @@ public class TestPanel extends JPanel {
 		return btnQuestionR;
 	}
 
-	private JLabel getLabel_3() {
-		if (label_3 == null) {
-			label_3 = new JLabel("Y array file:");
-			label_3.setHorizontalAlignment(SwingConstants.RIGHT);
-			label_3.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_3.setBounds(39, 102, 100, 30);
+	private JLabel getLblFileWithOutputs() {
+		if (lblFileWithOutputs == null) {
+			lblFileWithOutputs = new JLabel("File with outputs:");
+			lblFileWithOutputs.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblFileWithOutputs.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblFileWithOutputs.setBounds(34, 149, 128, 30);
 		}
-		return label_3;
+		return lblFileWithOutputs;
 	}
 
 	private JTextField getTxtYFile() {
@@ -322,7 +365,7 @@ public class TestPanel extends JPanel {
 			txtYFile = new JTextField();
 			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYFile.setColumns(10);
-			txtYFile.setBounds(155, 102, 315, 30);
+			txtYFile.setBounds(178, 149, 315, 30);
 		}
 		return txtYFile;
 	}
@@ -335,7 +378,7 @@ public class TestPanel extends JPanel {
 					chooseFile(txtYFile);
 				}
 			});
-			button_4.setBounds(487, 102, 100, 30);
+			button_4.setBounds(510, 149, 100, 30);
 		}
 		return button_4;
 	}
@@ -343,7 +386,7 @@ public class TestPanel extends JPanel {
 	private JButton getBtnQuestionY() {
 		if (btnQuestionY == null) {
 			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(606, 102, 30, 30);
+			btnQuestionY.setBounds(629, 149, 30, 30);
 			Style.questionButtonStyle(btnQuestionY);
 			btnQuestionY.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -367,7 +410,7 @@ public class TestPanel extends JPanel {
 			label_4 = new JLabel("No. of nodes:");
 			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_4.setBounds(39, 185, 100, 30);
+			label_4.setBounds(62, 232, 100, 30);
 		}
 		return label_4;
 	}
@@ -377,8 +420,29 @@ public class TestPanel extends JPanel {
 			txtNoOfNodes = new JTextField();
 			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoOfNodes.setColumns(10);
-			txtNoOfNodes.setBounds(155, 184, 91, 30);
+			txtNoOfNodes.setBounds(178, 231, 91, 30);
 		}
 		return txtNoOfNodes;
+	}
+
+	private JLabel getLblMethod() {
+		if (lblMethod == null) {
+			lblMethod = new JLabel("Method:");
+			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblMethod.setBounds(62, 27, 100, 30);
+		}
+		return lblMethod;
+	}
+
+	private JComboBox<String> getCmbMethod() {
+		if (cmbMethod == null) {
+			cmbMethod = new JComboBox<String>();
+			cmbMethod.setBounds(178, 27, 227, 30);
+			cmbMethod.addItem("choose method");
+			cmbMethod.addItem("GCRF");
+			cmbMethod.addItem("DirGCRF");
+		}
+		return cmbMethod;
 	}
 }

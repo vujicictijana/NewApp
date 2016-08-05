@@ -1,7 +1,6 @@
 package app.predictors.neuralnetwork;
 
-import java.util.Stack;
-
+import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 import org.neuroph.nnet.MultiLayerPerceptron;
@@ -61,6 +60,34 @@ public class MyNN {
 			expectedY[i] = row.getDesiredOutput()[0];
 			rArray[i] = outputs[i] + "";
 			i++;
+		}
+		return Helper.rSquared(expectedY, outputs);
+	}
+
+	public static double test(String folder, String[] x, double[] y) {
+		MultiLayerPerceptron neuralNetwork = (MultiLayerPerceptron) NeuralNetwork
+				.createFromFile(folder+"/nn/nn.nnet");
+		DataSet testSet = Helper.prepareDataForNN(x, y);
+		if (testSet == null) {
+			return -5000;
+		}
+		double[] outputs = new double[testSet.getRows().size()];
+		double[] expectedY = new double[testSet.getRows().size()];
+		String[] rArray = new String[outputs.length];
+		int i = 0;
+		for (DataSetRow row : testSet.getRows()) {
+			neuralNetwork.setInput(row.getInput());
+			neuralNetwork.calculate();
+			outputs[i] = neuralNetwork.getOutput()[0];
+			expectedY[i] = row.getDesiredOutput()[0];
+			rArray[i] = outputs[i] + "";
+
+			i++;
+		}
+		if (folder != null) {
+			Writer.createFolder(folder + "/nn");
+			neuralNetwork.save(folder + "/nn/nn.nnet");
+			Writer.write(rArray, folder + "/data/rTest.txt");
 		}
 		return Helper.rSquared(expectedY, outputs);
 	}

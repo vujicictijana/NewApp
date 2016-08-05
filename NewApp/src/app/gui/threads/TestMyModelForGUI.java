@@ -42,10 +42,10 @@ public class TestMyModelForGUI extends Thread {
 
 	public void run() {
 		mainFrame.setEnabled(false);
-		double[] param = read(modelFolder + "/Asymmetric.txt");
+		double[] param = read(modelFolder + "/DirGCRF.txt");
 		double result = resultAsymmetric(param[0], param[1]);
 		// System.out.println("A " + param[0] + " " + param[1]);
-		double[] paramS = read(modelFolder + "/Symmetric.txt");
+		double[] paramS = read(modelFolder + "/GCRF.txt");
 		double resultS = -1;
 		if (paramS != null) {
 			resultS = resultSymmetric(paramS[0], paramS[1]);
@@ -85,11 +85,11 @@ public class TestMyModelForGUI extends Thread {
 	public JTable createTable(double result, double resultS) {
 		JTable table = null;
 		if (resultS != -1) {
-			String[] columnNames = { "R^2 Asymmetric", "R^2 Symmetric" };
+			String[] columnNames = { "R^2 DirGCRF", "R^2 GCRF" };
 			Object[][] data = fillData(result, resultS);
 			table = new JTable(data, columnNames);
 		} else {
-			String[] columnNames = { "R^2 Asymmetric" };
+			String[] columnNames = { "R^2 DirGCRF" };
 			Object[][] data = fillData(result, resultS);
 			table = new JTable(data, columnNames);
 		}
@@ -129,10 +129,10 @@ public class TestMyModelForGUI extends Thread {
 		}
 		
 		if (resultS != -1) {
-			txt[outputs.length] = "R^2 Asymmetric: " + result;
-			txt[outputs.length+1] = "R^2 Symmetric: " + resultS;
+			txt[outputs.length] = "R^2 DirGCRF: " + result;
+			txt[outputs.length+1] = "R^2 GCRF: " + resultS;
 		} else {
-			txt[outputs.length] = "R^2 Asymmetric: " + result;
+			txt[outputs.length] = "R^2 DirGCRF: " + result;
 		}
 		return txt;
 	}
