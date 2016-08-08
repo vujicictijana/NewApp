@@ -8,6 +8,7 @@ import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.TransferFunctionType;
 
 import app.file.io.Writer;
+import app.predictors.helper.Helper;
 
 public class MyNN {
 
@@ -85,8 +86,6 @@ public class MyNN {
 			i++;
 		}
 		if (folder != null) {
-			Writer.createFolder(folder + "/nn");
-			neuralNetwork.save(folder + "/nn/nn.nnet");
 			Writer.write(rArray, folder + "/data/rTest.txt");
 		}
 		return Helper.rSquared(expectedY, outputs);

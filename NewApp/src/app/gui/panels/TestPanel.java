@@ -19,6 +19,10 @@ import app.file.io.Writer;
 import app.gui.style.Style;
 import app.gui.threads.GCRFTestMyModelForGUI;
 import app.gui.threads.DirGCRFTestMyModelForGUI;
+import app.predictors.helper.Helper;
+import app.predictors.linearregression.LinearRegression;
+import app.predictors.linearregression.MultivariateLinearRegression;
+import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -129,8 +133,29 @@ public class TestPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						double result = MyNN.test(dataPath, x, y);
-						if (result != -5000) {
+						double result = callPredictor(dataPath, x, y);
+
+						if (result == -7000) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Unknown predictor.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -3000) {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"Predictor cannot be applied to your data. Choose different predictor.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -5000) {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"File with attributes is not in correct format.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+						} else {
 							double[] r = Reader.readArray(dataPath
 									+ "/data/rTest.txt", noOfNodes);
 							double[][] s = Reader.readGraph(
@@ -146,12 +171,6 @@ public class TestPanel extends JPanel {
 
 							callMethod(noOfNodes, method, dataPath, y, r, s);
 
-						} else {
-							JOptionPane
-									.showMessageDialog(
-											mainFrame,
-											"File with attributes is not in correct format.",
-											"Error", JOptionPane.ERROR_MESSAGE);
 						}
 
 					}
@@ -399,6 +418,29 @@ public class TestPanel extends JPanel {
 			lblFileWithOutputs.setBounds(34, 149, 128, 30);
 		}
 		return lblFileWithOutputs;
+	}
+
+	private double callPredictor(String path, String[] x, double[] y) {
+		if (Writer.checkFolder(path + "/nn")) {
+			MyNN.test(path, x, y);
+		}
+		if (Writer.checkFolder(path + "/mlr")) {
+			double[][] xMlr = Helper.prepareDataForLR(x);
+			MultivariateLinearRegression m = (MultivariateLinearRegression) Helper
+					.deserilazie(path + "/mlr/lr.txt");
+			return m.test(y, xMlr, path, true);
+		}
+		if (Writer.checkFolder(path + "/lr")) {
+			double[][] xMlr = Helper.prepareDataForLR(x);
+			double[] xOne = new double[xMlr.length];
+			for (int i = 0; i < xOne.length; i++) {
+				xOne[i] = xMlr[i][0];
+			}
+			LinearRegression lr = (LinearRegression) Helper.deserilazie(path + "/lr/lr.txt");
+			return LinearRegression.test(y, xOne, path, lr, true);
+		}
+		return -7000;
+
 	}
 
 	private JTextField getTxtYFile() {

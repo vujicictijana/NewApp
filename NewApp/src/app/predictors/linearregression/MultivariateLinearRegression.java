@@ -1,18 +1,22 @@
 package app.predictors.linearregression;
 
+import java.io.Serializable;
+
 import app.file.io.Writer;
-import app.predictors.neuralnetwork.Helper;
+import app.predictors.helper.Helper;
 import Jama.Matrix;
 import Jama.QRDecomposition;
 
-public class MultipleLinearRegression {
+public class MultivariateLinearRegression implements Serializable {
+
+	private static final long serialVersionUID = 2267604643584597866L;
 	private final int N; // number of
 	private final int p; // number of dependent variables
 	private final Matrix beta; // regression coefficients
 	private double SSE; // sum of squared
 	private double SST; // sum of squared
 
-	public MultipleLinearRegression(double[][] x, double[] y) {
+	public MultivariateLinearRegression(double[][] x, double[] y) {
 		if (x.length != y.length)
 			throw new RuntimeException("dimensions don't agree");
 		N = y.length;
@@ -53,22 +57,30 @@ public class MultipleLinearRegression {
 		return 1.0 - SSE / SST;
 	}
 
-
-	public double test(double[] y1, double[][] x1, String folder, String type) {
+	public double test(double[] y1, double[][] x1, String folder, boolean test) {
 
 		double[] outputs = new double[y1.length];
 		for (int i = 0; i < y1.length; i++) {
 			outputs[i] = 0;
 			for (int j = 0; j < x1[i].length; j++) {
-				System.out.println(j + " " + beta(j));
+				// System.out.println(j + " " + beta(j));
 				outputs[i] += beta(j) * x1[i][j];
 			}
 		}
-		for (int j = 0; j < x1[0].length; j++) {
-			System.out.println(j + " " + beta(j));
+		// for (int j = 0; j < x1[0].length; j++) {
+		// System.out.println(j + " " + beta(j));
+		// }
+		if (folder != null) {
+			if (test) {
+				Writer.writeDoubleArray(outputs, folder + "/data/rTest.txt");
+			} else {
+				Writer.createFolder(folder + "/mlr");
+				Helper.serilazie(this, folder + "/mlr/lr.txt");
+				Writer.writeDoubleArray(outputs, folder + "/data/r.txt");
+			}
 		}
-		Writer.writeDoubleArray(outputs,
-				folder + "/data/" + type + "MlrR.txt");
+
 		return Helper.rSquared(y1, outputs);
 	}
+
 }

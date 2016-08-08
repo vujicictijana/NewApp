@@ -1,5 +1,11 @@
-package app.predictors.neuralnetwork;
+package app.predictors.helper;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -158,6 +164,63 @@ public class Helper {
 			// System.out.println("NE TREBA");
 			return array;
 		}
+
+	}
+
+	public static double[][] prepareDataForLR(String[] data) {
+		int no = data[0].split(",").length;
+		double[][] x = getAllDataNormalized(data, no);
+		String[] values = null;
+		for (int i = 0; i < data.length; i++) {
+			values = data[i].split(",");
+			if (values.length != no) {
+				return null;
+			} else {
+				for (int j = 0; j < values.length; j++) {
+					x[i][j] = Double.parseDouble(values[j]);
+				}
+			}
+		}
+		return x;
+	}
+
+	public static String serilazie(Object o, String filePath) {
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(filePath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(o);
+			out.close();
+			fileOut.close();
+			return null;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "Saving predictor failed.";
+
+	}
+
+	public static Object deserilazie(String filePath) {
+		try {
+			FileInputStream fileIn = new FileInputStream(filePath);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			Object o = in.readObject();
+			in.close();
+			fileIn.close();
+			return o;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "Reading predictor failed.";
 
 	}
 }

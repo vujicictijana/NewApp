@@ -24,6 +24,7 @@ import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
+import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -487,12 +488,32 @@ public class TrainPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						int noOfHidden = Integer.parseInt(txtHidden.getText());
-						int noOfIter = Integer.parseInt(txtIterNN.getText());
-						double result = MyNN.learn(noOfHidden, x, y, 0.003,
-								noOfIter, path);
 
-						if (result != -5000) {
+						double result = callPredictor(path, x, y);
+
+						if (result == -7000) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Unknown predictor.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -3000) {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											cmbPredictor.getSelectedItem()
+													.toString()
+													+ " cannot be applied to your data. Choose different predictor.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -5000) {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											"File with attributes is not in correct format.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+						} else {
 							double[] r = Reader.readArray(path + "/data/r.txt",
 									noOfNodes);
 
@@ -508,12 +529,6 @@ public class TrainPanel extends JPanel {
 							}
 							callMethod(method, path, noOfNodes, alpha, beta,
 									lr, maxIter, y, r, s);
-						} else {
-							JOptionPane
-									.showMessageDialog(
-											mainFrame,
-											"File with attributes is not in correct format.",
-											"Error", JOptionPane.ERROR_MESSAGE);
 						}
 
 					}
@@ -524,6 +539,19 @@ public class TrainPanel extends JPanel {
 			btnTrain.setBounds(773, 606, 112, 45);
 		}
 		return btnTrain;
+	}
+
+	private double callPredictor(String path, String[] x, double[] y) {
+		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
+			int noOfHidden = Integer.parseInt(txtHidden.getText());
+			int noOfIter = Integer.parseInt(txtIterNN.getText());
+			return MyNN.learn(noOfHidden, x, y, 0.003, noOfIter, path);
+		}
+		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
+			return MyLR.learn(x, y, path);
+		}
+		return -7000;
+
 	}
 
 	private void callMethod(String method, String path, int noOfNodes,
@@ -563,8 +591,9 @@ public class TrainPanel extends JPanel {
 		if (chckbxStandard.isSelected()) {
 			both = true;
 		}
-		DirGCRFTrainMyModelForGUI t = new DirGCRFTrainMyModelForGUI(modelFolder + "/results",
-				frame, mainFrame, s, r, y, alpha, beta, lr, maxIter, both);
+		DirGCRFTrainMyModelForGUI t = new DirGCRFTrainMyModelForGUI(modelFolder
+				+ "/results", frame, mainFrame, s, r, y, alpha, beta, lr,
+				maxIter, both);
 		// 10, 10
 		t.start();
 
@@ -614,15 +643,18 @@ public class TrainPanel extends JPanel {
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
-		if (Writer.checkFolder("MyModels/" + txtModelName.getText())) {
-			return "Model with name " + txtModelName.getText()
-					+ " already exists.";
-		}
+
 		if (cmbPredictor.getSelectedIndex() == 0) {
 			return "Choose predictor.";
 		}
 		if (cmbMethod.getSelectedIndex() == 0) {
 			return "Choose method.";
+		}
+		String method = cmbMethod.getSelectedItem().toString();
+		if (Writer.checkFolder("MyModels" + method + "/"
+				+ txtModelName.getText())) {
+			return "Model with name " + txtModelName.getText()
+					+ " already exists.";
 		}
 		try {
 			Double.parseDouble(txtAlpha.getText());
@@ -644,6 +676,20 @@ public class TrainPanel extends JPanel {
 			Integer.parseInt(txtIter.getText());
 		} catch (NumberFormatException e) {
 			return "Max. iterations should be integer.";
+		}
+		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
+
+			try {
+				Integer.parseInt(txtHidden.getText());
+			} catch (NumberFormatException e) {
+				return "No. of hidden neurons should be integer.";
+			}
+
+			try {
+				Integer.parseInt(txtIterNN.getText());
+			} catch (NumberFormatException e) {
+				return "No. of iterations should be integer.";
+			}
 		}
 		return null;
 	}
@@ -876,7 +922,7 @@ public class TrainPanel extends JPanel {
 			cmbPredictor.setBounds(204, 309, 227, 30);
 			cmbPredictor.addItem("choose predictor");
 			cmbPredictor.addItem("neural networks");
-			cmbPredictor.addItem("linar regression");
+			cmbPredictor.addItem("linear regression");
 		}
 		return cmbPredictor;
 	}
@@ -893,8 +939,6 @@ public class TrainPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						int noOfHidden = Integer.parseInt(txtHidden.getText());
-						int noOfIter = Integer.parseInt(txtIterNN.getText());
 
 						String[] x = Reader.read(txtXFile.getText());
 						if (x == null) {
@@ -915,21 +959,38 @@ public class TrainPanel extends JPanel {
 							return;
 						}
 
-						double result = MyNN.learn(noOfHidden, x, y, 0.003,
-								noOfIter, null);
-
-						if (result != -5000) {
-							DecimalFormat df = new DecimalFormat("#.####");
+						double result = callPredictor(null, x, y);
+						if (result == -7000) {
 							JOptionPane.showMessageDialog(mainFrame,
-									"Testing with same data\nR^2 value for neural network is: "
-											+ df.format(result), "Results",
-									JOptionPane.INFORMATION_MESSAGE);
-						} else {
+									"Unknown predictor.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -3000) {
+							JOptionPane
+									.showMessageDialog(
+											mainFrame,
+											cmbPredictor.getSelectedItem()
+													.toString()
+													+ " cannot be applied to your data. Choose different predictor.",
+											"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (result == -5000) {
 							JOptionPane
 									.showMessageDialog(
 											mainFrame,
 											"File with attributes is not in correct format.",
 											"Error", JOptionPane.ERROR_MESSAGE);
+						} else {
+							DecimalFormat df = new DecimalFormat("#.####");
+							JOptionPane.showMessageDialog(
+									mainFrame,
+									"Testing with same data\nR^2 value for "
+											+ cmbPredictor.getSelectedItem()
+													.toString() + " is: "
+											+ df.format(result), "Results",
+									JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 				}

@@ -1,6 +1,13 @@
 package app.predictors.linearregression;
 
-public class LinearRegression {
+import java.io.Serializable;
+
+import app.file.io.Writer;
+import app.predictors.helper.Helper;
+
+public class LinearRegression implements Serializable {
+
+	private static final long serialVersionUID = 281809303636659399L;
 	private final int N;
 	private final double intercept, slope;
 	private final double R2;
@@ -132,6 +139,25 @@ public class LinearRegression {
 		String s = "";
 		s += String.format("%.2f N + %.2f", slope(), intercept());
 		return s + "  (R^2 = " + String.format("%.3f", R2()) + ")";
+	}
+
+	public static double test(double[] y1, double[] x1, String folder,
+			LinearRegression lr, boolean test) {
+
+		double[] outputs = new double[y1.length];
+		for (int i = 0; i < outputs.length; i++) {
+			outputs[i] = lr.predict(x1[i]);
+		}
+		if (folder != null) {
+			if (test) {
+				Writer.writeDoubleArray(outputs, folder + "/data/rTest.txt");
+			} else {
+				Writer.createFolder(folder + "/lr");
+				Helper.serilazie(lr, folder + "/lr/lr.txt");
+				Writer.writeDoubleArray(outputs, folder + "/data/r.txt");
+			}
+		}
+		return Helper.rSquared(y1, outputs);
 	}
 
 }
