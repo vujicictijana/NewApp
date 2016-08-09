@@ -106,78 +106,77 @@ public class TrainPanel extends JPanel {
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-		// if (Reader.checkFile("cfg.txt")) {
-		// String result = readParametersFromCfg();
-		// if (result != null) {
-		// JOptionPane
-		// .showMessageDialog(
-		// mainFrame,
-		// result
-		// +
-		// " Please configure parameters values in Settings->Configure Parameters.",
-		// "Error", JOptionPane.ERROR_MESSAGE);
-		// } else {
-		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getTxtMatrixFile());
-		add(getLblFile());
-		add(getBtnBrowseS());
-		add(getBtnQuestionS());
-		add(getLblModelName());
-		add(getTxtModelName());
-		add(getLblRArrayFile());
-		add(getTxtXFile());
-		add(getBtnBrowseX());
-		add(getLblAlpha());
-		add(getLblFirstBeta());
-		add(getTxtAlpha());
-		add(getTxtBeta());
-		add(getLblLearningRate());
-		add(getTxtLr());
-		add(getBtnQuestionX());
-		add(getLblYArrayFile());
-		add(getTxtYFile());
-		add(getBtnBrowseY());
-		add(getBtnQuestionY());
-		add(getBtnTrain());
-		add(getLblMaxIterations());
-		add(getTxtMaxIter());
-		fc = new JFileChooser();
-		panel = this;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"TEXT FILES", "txt", "text");
-		fc.setFileFilter(filter);
-		this.mainFrame = mainFrame;
-		// add(getLblTime());
-		add(getLabel());
-		add(getTxtNoOfNodes());
-		add(getChckbxStandard());
-		add(getLblStandard());
-		// add(getPanelForTable());
-		add(getSeparator());
-		add(getLblData());
-		add(getSeparator_1());
-		add(getLblPredictor());
-		add(getLblModel());
-		add(getLblPredictor_1());
-		add(getBtnTestPredictr());
-		add(getLblNoOfHidden());
-		add(getTxtHidden());
+		if (Reader.checkFile("cfg.txt")) {
+			String result = readParametersFromCfg();
+			if (result != null) {
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configure Parameters.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				setBackground(UIManager.getColor("Button.background"));
+				setLayout(null);
+				add(getTxtMatrixFile());
+				add(getLblFile());
+				add(getBtnBrowseS());
+				add(getBtnQuestionS());
+				add(getLblModelName());
+				add(getTxtModelName());
+				add(getLblRArrayFile());
+				add(getTxtXFile());
+				add(getBtnBrowseX());
+				add(getLblAlpha());
+				add(getLblFirstBeta());
+				add(getTxtAlpha());
+				add(getTxtBeta());
+				add(getLblLearningRate());
+				add(getTxtLr());
+				add(getBtnQuestionX());
+				add(getLblYArrayFile());
+				add(getTxtYFile());
+				add(getBtnBrowseY());
+				add(getBtnQuestionY());
+				add(getBtnTrain());
+				add(getLblMaxIterations());
+				add(getTxtMaxIter());
+				fc = new JFileChooser();
+				panel = this;
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"TEXT FILES", "txt", "text");
+				fc.setFileFilter(filter);
+				this.mainFrame = mainFrame;
+				// add(getLblTime());
+				add(getLabel());
+				add(getTxtNoOfNodes());
+				add(getChckbxStandard());
+				add(getLblStandard());
+				// add(getPanelForTable());
+				add(getSeparator());
+				add(getLblData());
+				add(getSeparator_1());
+				add(getLblPredictor());
+				add(getLblModel());
+				add(getLblPredictor_1());
+				add(getBtnTestPredictr());
+				add(getLblNoOfHidden());
+				add(getTxtHidden());
 
-		add(getLblNoOfIterations());
-		add(getTxtIterNN());
-		setTxtValues();
-		add(getCmbPredictor());
-		add(getCmbMethod());
-		add(getLblMethod());
-		// }
-		// } else {
-		// JOptionPane
-		// .showMessageDialog(
-		// mainFrame,
-		// "Please configure parameters values in Settings->Configure Parameters.",
-		// "Error", JOptionPane.ERROR_MESSAGE);
-		// }
+				add(getLblNoOfIterations());
+				add(getTxtIterNN());
+				setTxtValues();
+				add(getCmbPredictor());
+				add(getCmbMethod());
+				add(getLblMethod());
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Please configure parameters values in Settings->Configure Parameters.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private JTextField getTxtMatrixFile() {
