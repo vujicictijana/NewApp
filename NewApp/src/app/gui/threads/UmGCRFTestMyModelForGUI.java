@@ -49,7 +49,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Please wait - UmGCRF is in progress ");
-		double theta = read(modelFolder + "/UmGCRF.txt");
+		double theta = read(modelFolder + "/parameters/UmGCRF.txt");
 
 		outputs = UmGCRF.test(s, y, r, theta);
 
@@ -68,7 +68,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 
 	public double read(String file) {
 		String[] txt = Reader.read(file);
-		return Double.parseDouble(txt[0]);
+		return Double.parseDouble(txt[0].substring(txt[0].indexOf("=")+1));
 	}
 
 	public JTable createTable(double resultS) {
@@ -90,8 +90,8 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/Test");
-				String fileName = modelFolder + "/Test/results.txt";
+				Writer.createFolder(modelFolder + "/test");
+				String fileName = modelFolder + "/test/results.txt";
 				String[] text = exportTxt(resultS);
 				Writer.write(text, fileName);
 				JOptionPane.showMessageDialog(mainFrame,

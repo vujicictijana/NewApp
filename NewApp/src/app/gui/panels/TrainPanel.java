@@ -608,8 +608,8 @@ public class TrainPanel extends JPanel {
 		if (chckbxStandard.isSelected()) {
 			both = true;
 		}
-		DirGCRFTrainMyModelForGUI t = new DirGCRFTrainMyModelForGUI(modelFolder
-				+ "/results", frame, mainFrame, s, r, y, alpha, beta, lr,
+		DirGCRFTrainMyModelForGUI t = new DirGCRFTrainMyModelForGUI(
+				modelFolder, frame, mainFrame, s, r, y, alpha, beta, lr,
 				maxIter, both);
 		// 10, 10
 		t.start();
@@ -625,8 +625,7 @@ public class TrainPanel extends JPanel {
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		GCRFTrainMyModelForGUI t = new GCRFTrainMyModelForGUI(modelFolder
-				+ "/results", frame, mainFrame, s, r, y, alpha, beta, lr,
+		GCRFTrainMyModelForGUI t = new GCRFTrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y, alpha, beta, lr,
 				maxIter);
 
 		t.start();
@@ -639,8 +638,7 @@ public class TrainPanel extends JPanel {
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(modelFolder
-				+ "/results", frame, mainFrame, s, r, y);
+		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y);
 
 		t.start();
 	}
@@ -898,7 +896,7 @@ public class TrainPanel extends JPanel {
 
 	private JLabel getLblPredictor() {
 		if (lblPredictor == null) {
-			lblPredictor = new JLabel("PREDICTOR:");
+			lblPredictor = new JLabel("UNSTRUCTURED PREDICTOR:");
 			lblPredictor.setOpaque(true);
 			lblPredictor.setHorizontalAlignment(SwingConstants.CENTER);
 			lblPredictor.setForeground(Color.WHITE);
@@ -924,10 +922,10 @@ public class TrainPanel extends JPanel {
 
 	private JLabel getLblPredictor_1() {
 		if (lblPredictor_1 == null) {
-			lblPredictor_1 = new JLabel("Predictor:");
+			lblPredictor_1 = new JLabel("Unstructured predictor:");
 			lblPredictor_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblPredictor_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPredictor_1.setBounds(88, 309, 100, 30);
+			lblPredictor_1.setBounds(0, 309, 188, 30);
 		}
 		return lblPredictor_1;
 	}

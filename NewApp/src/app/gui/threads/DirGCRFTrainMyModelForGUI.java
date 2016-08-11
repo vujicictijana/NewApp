@@ -130,9 +130,9 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 	// }
 
 	public void createFile(String symmetric, double[] results) {
-		Writer.createFolder(modelFolder);
-		String fileName = modelFolder + "/" + symmetric;
-		String[] resultsS = { results[0] + "", results[1] + "" };
+		Writer.createFolder(modelFolder+"/parameters");
+		String fileName = modelFolder + "/parameters/" + symmetric;
+		String[] resultsS = { "Alpha=" + results[0], "Beta=" + results[1]};
 		Writer.write(resultsS, fileName);
 	}
 

@@ -189,14 +189,14 @@ public class TestPanel extends JPanel {
 	private void testDirGCRF(int noOfNodes, String modelFolder, double[] r,
 			double[] y, double[][] s) {
 		DirGCRFTestMyModelForGUI test = new DirGCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder + "/results", s, r, y);
+				panelForTable, modelFolder, s, r, y);
 		test.start();
 	}
 
 	private void testGCRF(int noOfNodes, String modelFolder, double[] r,
 			double[] y, double[][] s) {
 		GCRFTestMyModelForGUI test = new GCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder + "/results", s, r, y);
+				panelForTable, modelFolder, s, r, y);
 		test.start();
 	}
 
@@ -208,7 +208,7 @@ public class TestPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 		
 		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder + "/results", s, r, y,frame);
+				panelForTable, modelFolder, s, r, y,frame);
 		test.start();
 	}
 
@@ -288,7 +288,7 @@ public class TestPanel extends JPanel {
 	private JPanel getPanelForTable() {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();
-			panelForTable.setBounds(28, 347, 850, 143);
+			panelForTable.setBounds(28, 347, 850, 63);
 			panelForTable.setLayout(null);
 		}
 		return panelForTable;

@@ -26,6 +26,7 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 	private double[] r;
 	private double[] y;
 	public double[] outputs;
+	public double[] outputsS;
 	DecimalFormat df = new DecimalFormat("#.######");
 
 	public DirGCRFTestMyModelForGUI(JFrame mainFrame, JPanel panel,
@@ -44,10 +45,10 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 
 	public void run() {
 		mainFrame.setEnabled(false);
-		double[] param = read(modelFolder + "/DirGCRF.txt");
+		double[] param = read(modelFolder + "/parameters/DirGCRF.txt");
 		double result = resultAsymmetric(param[0], param[1]);
 		// System.out.println("A " + param[0] + " " + param[1]);
-		double[] paramS = read(modelFolder + "/GCRF.txt");
+		double[] paramS = read(modelFolder + "/parameters/GCRF.txt");
 		double resultS = -1;
 		if (paramS != null) {
 			resultS = resultSymmetric(paramS[0], paramS[1]);
@@ -64,7 +65,7 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		if (txt != null) {
 			double[] params = new double[txt.length];
 			for (int i = 0; i < txt.length; i++) {
-				params[i] = Double.parseDouble(txt[i]);
+				params[i] = Double.parseDouble(txt[i].substring(txt[i].indexOf("=")+1));
 			}
 			return params;
 		}
@@ -81,6 +82,7 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 	public double resultSymmetric(double alpha, double beta) {
 		AlgorithmSymmetric alg = new AlgorithmSymmetric(alpha, beta, s, r, y);
 		// System.out.println(alg.rSquared());
+		outputsS = alg.outputs();
 		return alg.rSquared();
 	}
 
@@ -107,35 +109,31 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/Test");
-				String fileName = modelFolder + "/Test/results.txt";
-				String[] text = exportTxt(result, resultS);
+				Writer.createFolder(modelFolder + "/test");
+				String fileName = modelFolder + "/test/resultsDirGCRF.txt";
+				String[] text = exportTxt(outputs, result, "DirGCRF");
 				Writer.write(text, fileName);
+				if (resultS != -1) {
+					String fileName1 = modelFolder + "/test/resultsGCRF.txt";
+					String[] text1 = exportTxt(outputsS, resultS, "GCRF");
+					Writer.write(text1, fileName1);
+				}
 				JOptionPane.showMessageDialog(mainFrame,
 						"Export successfully completed.");
+			
 			}
 		});
 		return table;
 	}
 
-	public String[] exportTxt(double result, double resultS) {
-		String[] txt = null;
-		
-		if (resultS != -1) {
-			txt = new String[outputs.length + 2];
-		} else {
-			txt = new String[outputs.length + 1];
+	public String[] exportTxt(double[] array, double result, String method) {
+		String[] txt = new String[array.length + 1];
+
+		for (int i = 0; i < array.length; i++) {
+			txt[i] = array[i] + "";
 		}
-		for (int i = 0; i < outputs.length; i++) {
-			txt[i] = outputs[i]+"";
-		}
-		
-		if (resultS != -1) {
-			txt[outputs.length] = "R^2 DirGCRF: " + df.format(result);
-			txt[outputs.length+1] = "R^2 GCRF: " + df.format(resultS);
-		} else {
-			txt[outputs.length] = "R^2 DirGCRF: " + df.format(result);
-		}
+
+		txt[outputs.length] = "R^2 " + method + ": " + df.format(result);
 		return txt;
 	}
 

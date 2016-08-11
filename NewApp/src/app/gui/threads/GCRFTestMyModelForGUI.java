@@ -44,7 +44,7 @@ public class GCRFTestMyModelForGUI extends Thread {
 
 	public void run() {
 		mainFrame.setEnabled(false);
-		double[] paramS = read(modelFolder + "/GCRF.txt");
+		double[] paramS = read(modelFolder + "/parameters/GCRF.txt");
 
 		double resultS = resultSymmetric(paramS[0], paramS[1]);
 
@@ -58,7 +58,7 @@ public class GCRFTestMyModelForGUI extends Thread {
 		if (txt != null) {
 			double[] params = new double[txt.length];
 			for (int i = 0; i < txt.length; i++) {
-				params[i] = Double.parseDouble(txt[i]);
+				params[i] = Double.parseDouble(txt[i].substring(txt[i].indexOf("=")+1));
 			}
 			return params;
 		}
@@ -90,8 +90,8 @@ public class GCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/Test");
-				String fileName = modelFolder + "/Test/results.txt";
+				Writer.createFolder(modelFolder + "/test");
+				String fileName = modelFolder + "/test/results.txt";
 				String[] text = exportTxt(resultS);
 				Writer.write(text, fileName);
 				JOptionPane.showMessageDialog(mainFrame,

@@ -86,9 +86,9 @@ public class UmGCRF {
 				double theta = ((double[]) proxy.getVariable("theta"))[0];
 				double[] output = ((double[]) proxy.getVariable("mu"));
 
-				Writer.createFolder(modelFolder);
-				String fileName = modelFolder + "/UmGCRF.txt";
-				String[] text = { theta + "" };
+				Writer.createFolder(modelFolder + "/parameters");
+				String fileName = modelFolder + "/parameters/UmGCRF.txt";
+				String[] text = { "Theta=" + theta };
 				Writer.write(text, fileName);
 
 				double r2 = BasicCalcs.rSquared(output, y);
@@ -119,8 +119,9 @@ public class UmGCRF {
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
 	}
-	
-	public static double[] test(double[][] s, double[] y, double[] r, double theta) {
+
+	public static double[] test(double[][] s, double[] y, double[] r,
+			double theta) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true)
 				.setProxyTimeout(30000L)
@@ -138,7 +139,7 @@ public class UmGCRF {
 			path = path.substring(1, path.lastIndexOf("/"));
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab";
 			proxy.eval("addpath('" + path + "')");
-			
+
 			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
 			processor.setNumericArray("S", new MatlabNumericArray(s, null));
 
