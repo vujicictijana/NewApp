@@ -7,6 +7,7 @@ import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.TransferFunctionType;
 
+import app.algorithms.basic.BasicCalcs;
 import app.file.io.Writer;
 import app.predictors.helper.Helper;
 
@@ -62,7 +63,7 @@ public class MyNN {
 			rArray[i] = outputs[i] + "";
 			i++;
 		}
-		return Helper.rSquared(expectedY, outputs);
+		return BasicCalcs.rSquared(outputs,expectedY);
 	}
 
 	public static double test(String folder, String[] x, double[] y) {
@@ -88,7 +89,7 @@ public class MyNN {
 		if (folder != null) {
 			Writer.write(rArray, folder + "/data/rTest.txt");
 		}
-		return Helper.rSquared(expectedY, outputs);
+		return BasicCalcs.rSquared(outputs,expectedY);
 	}
 
 }

@@ -40,6 +40,31 @@ public class ProgressBar extends JFrame {
 		});
 	}
 
+	public ProgressBar() {
+		setResizable(false);
+		JPanel pane = new JPanel();
+		pane.setLayout(new FlowLayout());
+		int min = 0;
+		int max = 100;
+		current = new JProgressBar(min, max);
+		current.setIndeterminate(true);
+		Dimension prefSize = current.getPreferredSize();
+		prefSize.width = 350;
+		current.setPreferredSize(prefSize);
+		pane.add(current);
+		pane.setPreferredSize(new Dimension(400, 50));
+		setContentPane(pane);
+		frame = this;
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				JOptionPane.showMessageDialog(frame,
+						"Training process cannot be canceled.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
+	}
+
 	public JProgressBar getCurrent() {
 		return current;
 	}

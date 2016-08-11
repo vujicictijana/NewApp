@@ -1,6 +1,8 @@
 package app.algorithms.symmetric;
 import java.text.DecimalFormat;
 
+import app.algorithms.basic.BasicCalcs;
+
 public class AlgorithmSymmetric {
 
 	private double alpha;
@@ -23,23 +25,7 @@ public class AlgorithmSymmetric {
 		return calcs.mu(alpha, beta);
 	}
 
-	public double average(double[] array) {
-		double sum = 0;
-		for (int i = 0; i < array.length; i++) {
-			sum += array[i];
-		}
-		return sum / array.length;
-	}
-
 	public double rSquared() {
-		double[] output = outputs();
-		double avg = average(output);
-		double firstSum = 0;
-		double secondSum = 0;
-		for (int i = 0; i < output.length; i++) {
-			firstSum += Math.pow(expectedY[i] - output[i], 2);
-			secondSum += Math.pow(expectedY[i] - avg, 2);
-		}
-		return 1 - (firstSum / secondSum);
+		return BasicCalcs.rSquared(outputs(), expectedY);
 	}
 }

@@ -2,6 +2,7 @@ package app.predictors.linearregression;
 
 import java.io.Serializable;
 
+import app.algorithms.basic.BasicCalcs;
 import app.file.io.Writer;
 import app.predictors.helper.Helper;
 
@@ -157,7 +158,7 @@ public class LinearRegression implements Serializable {
 				Writer.writeDoubleArray(outputs, folder + "/data/r.txt");
 			}
 		}
-		return Helper.rSquared(y1, outputs);
+		return BasicCalcs.rSquared(outputs,y1);
 	}
 
 }

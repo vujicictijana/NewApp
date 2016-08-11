@@ -17,6 +17,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
 import app.algorithms.basic.BasicCalcs;
+import app.algorithms.matlab.UmGCRF;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
@@ -24,6 +25,7 @@ import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
+import app.gui.threads.UmGCRFTrainMyModelForGUI;
 import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
@@ -59,7 +61,7 @@ public class TrainPanel extends JPanel {
 	private JTextField txtXFile;
 	private JButton btnBrowseX;
 	private JLabel lblAlpha;
-	private JLabel lblFirstBeta;
+	private JLabel lblBeta;
 	private JTextField txtAlpha;
 	private JTextField txtBeta;
 	private JLabel lblLearningRate;
@@ -128,7 +130,7 @@ public class TrainPanel extends JPanel {
 				add(getTxtXFile());
 				add(getBtnBrowseX());
 				add(getLblAlpha());
-				add(getLblFirstBeta());
+				add(getLblBeta());
 				add(getTxtAlpha());
 				add(getTxtBeta());
 				add(getLblLearningRate());
@@ -297,6 +299,7 @@ public class TrainPanel extends JPanel {
 	private JLabel getLblAlpha() {
 		if (lblAlpha == null) {
 			lblAlpha = new JLabel("First alpha:");
+			lblAlpha.setVisible(false);
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblAlpha.setBounds(515, 349, 100, 30);
@@ -304,19 +307,21 @@ public class TrainPanel extends JPanel {
 		return lblAlpha;
 	}
 
-	private JLabel getLblFirstBeta() {
-		if (lblFirstBeta == null) {
-			lblFirstBeta = new JLabel("First beta:");
-			lblFirstBeta.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFirstBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFirstBeta.setBounds(515, 389, 100, 30);
+	private JLabel getLblBeta() {
+		if (lblBeta == null) {
+			lblBeta = new JLabel("First beta:");
+			lblBeta.setVisible(false);
+			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblBeta.setBounds(515, 389, 100, 30);
 		}
-		return lblFirstBeta;
+		return lblBeta;
 	}
 
 	private JTextField getTxtAlpha() {
 		if (txtAlpha == null) {
 			txtAlpha = new JTextField();
+			txtAlpha.setVisible(false);
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
 			txtAlpha.setBounds(631, 350, 91, 30);
@@ -327,6 +332,7 @@ public class TrainPanel extends JPanel {
 	private JTextField getTxtBeta() {
 		if (txtBeta == null) {
 			txtBeta = new JTextField();
+			txtBeta.setVisible(false);
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
 			txtBeta.setBounds(631, 391, 91, 30);
@@ -337,6 +343,7 @@ public class TrainPanel extends JPanel {
 	private JLabel getLblLearningRate() {
 		if (lblLearningRate == null) {
 			lblLearningRate = new JLabel("Learning rate:");
+			lblLearningRate.setVisible(false);
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblLearningRate.setBounds(515, 429, 100, 30);
@@ -347,6 +354,7 @@ public class TrainPanel extends JPanel {
 	private JTextField getTxtLr() {
 		if (txtLR == null) {
 			txtLR = new JTextField();
+			txtLR.setVisible(false);
 			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLR.setColumns(10);
 			txtLR.setBounds(631, 429, 91, 30);
@@ -442,6 +450,7 @@ public class TrainPanel extends JPanel {
 			btnTrain = new JButton("TRAIN");
 			btnTrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+
 					String message = validateData();
 					if (message != null) {
 						JOptionPane.showMessageDialog(mainFrame, message,
@@ -535,7 +544,7 @@ public class TrainPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(773, 606, 112, 45);
+			btnTrain.setBounds(628, 547, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -567,6 +576,15 @@ public class TrainPanel extends JPanel {
 				JOptionPane.showMessageDialog(mainFrame,
 						"For GCRF method matrix should be symmetric.", "Error",
 						JOptionPane.ERROR_MESSAGE);
+			}
+			break;
+		case "UmGCRF":
+			if (BasicCalcs.isSymmetric(s)) {
+				trainUmGCRF(path, r, y, s);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame,
+						"For UmGCRF method matrix should be symmetric.",
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
 		default:
@@ -614,9 +632,23 @@ public class TrainPanel extends JPanel {
 		t.start();
 	}
 
+	public void trainUmGCRF(String modelFolder, double[] r, double[] y,
+			double[][] s) {
+		ProgressBar frame = new ProgressBar();
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(modelFolder
+				+ "/results", frame, mainFrame, s, r, y);
+
+		t.start();
+	}
+
 	private JLabel getLblMaxIterations() {
 		if (lblMaxIterations == null) {
 			lblMaxIterations = new JLabel("Max. iterations:");
+			lblMaxIterations.setVisible(false);
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblMaxIterations.setBounds(483, 469, 132, 30);
@@ -734,6 +766,7 @@ public class TrainPanel extends JPanel {
 	private JTextField getTxtMaxIter() {
 		if (txtIter == null) {
 			txtIter = new JTextField();
+			txtIter.setVisible(false);
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
 			txtIter.setBounds(631, 469, 91, 30);
@@ -994,7 +1027,7 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			btnTestPredictr.setBounds(204, 438, 140, 45);
+			btnTestPredictr.setBounds(204, 547, 140, 45);
 		}
 		return btnTestPredictr;
 	}
@@ -1050,19 +1083,49 @@ public class TrainPanel extends JPanel {
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
+			cmbMethod.addItem("UmGCRF");
 			cmbMethod.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					if (cmbMethod.getSelectedItem().toString().contains("Dir")) {
+					String method = cmbMethod.getSelectedItem().toString();
+					if (method.contains("Dir")) {
 						lblStandard.setVisible(true);
 						chckbxStandard.setVisible(true);
 					} else {
 						lblStandard.setVisible(false);
 						chckbxStandard.setVisible(false);
 					}
+					if (method.equalsIgnoreCase("DirGCRF")
+							|| method.equalsIgnoreCase("GCRF")) {
+						showGradientDescentParams();
+					} else {
+						hideGradientDescentParams();
+					}
 				}
 			});
 		}
 		return cmbMethod;
+	}
+
+	public void showGradientDescentParams() {
+		lblAlpha.setVisible(true);
+		txtAlpha.setVisible(true);
+		lblBeta.setVisible(true);
+		txtBeta.setVisible(true);
+		lblLearningRate.setVisible(true);
+		txtLR.setVisible(true);
+		lblMaxIterations.setVisible(true);
+		txtIter.setVisible(true);
+	}
+
+	public void hideGradientDescentParams() {
+		lblAlpha.setVisible(false);
+		txtAlpha.setVisible(false);
+		lblBeta.setVisible(false);
+		txtBeta.setVisible(false);
+		lblLearningRate.setVisible(false);
+		txtLR.setVisible(false);
+		lblMaxIterations.setVisible(false);
+		txtIter.setVisible(false);
 	}
 
 	private JLabel getLblMethod() {

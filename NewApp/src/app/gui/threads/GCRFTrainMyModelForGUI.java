@@ -63,7 +63,7 @@ public class GCRFTrainMyModelForGUI extends Thread {
 		createFile("GCRF.txt", resS);
 
 		DecimalFormat df = new DecimalFormat("#.####");
-		String message = "Testing with same data:\n R^2 value for standard GCRF is: "
+		String message = "Testing with same data:\n* R^2 value for standard GCRF is: "
 				+ df.format(r2S);
 		message += "\n" + time;
 		JOptionPane.showMessageDialog(mainFrame, message, "Results",

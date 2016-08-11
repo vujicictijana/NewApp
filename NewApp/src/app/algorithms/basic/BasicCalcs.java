@@ -187,5 +187,24 @@ public class BasicCalcs {
 		}
 		return Math.sqrt(sum2 / array.length);
 	}
+	
+	public static double average(double[] array) {
+		double sum = 0;
+		for (int i = 0; i < array.length; i++) {
+			sum += array[i];
+		}
+		return sum / array.length;
+	}
+	
+	public static double rSquared(double[] output, double[] expectedY) {
+		double avg = average(output);
+		double firstSum = 0;
+		double secondSum = 0;
+		for (int i = 0; i < output.length; i++) {
+			firstSum += Math.pow(expectedY[i] - output[i], 2);
+			secondSum += Math.pow(expectedY[i] - avg, 2);
+		}
+		return 1 - (firstSum / secondSum);
+	}
 
 }

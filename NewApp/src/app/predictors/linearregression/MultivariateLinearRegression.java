@@ -2,6 +2,7 @@ package app.predictors.linearregression;
 
 import java.io.Serializable;
 
+import app.algorithms.basic.BasicCalcs;
 import app.file.io.Writer;
 import app.predictors.helper.Helper;
 import Jama.Matrix;
@@ -80,7 +81,7 @@ public class MultivariateLinearRegression implements Serializable {
 			}
 		}
 
-		return Helper.rSquared(y1, outputs);
+		return BasicCalcs.rSquared(outputs,y1);
 	}
 
 }

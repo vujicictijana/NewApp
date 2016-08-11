@@ -54,20 +54,6 @@ public class Helper {
 		return ints;
 	}
 
-	public static double rSquared(double[] expectedY, double[] outputs) {
-		double avg = average(outputs);
-		double firstSum = 0;
-		double secondSum = 0;
-		for (int i = 0; i < outputs.length; i++) {
-			firstSum += Math.pow(expectedY[i] - outputs[i], 2);
-			secondSum += Math.pow(expectedY[i] - avg, 2);
-		}
-		// System.out.println(firstSum);
-		// System.out.println(secondSum);
-		// System.out.println(firstSum / secondSum);
-		return 1 - (firstSum / secondSum);
-	}
-
 	public static void showMatrix(double[][] s) {
 		DecimalFormat df = new DecimalFormat("#.##");
 		for (int i = 0; i < s.length; i++) {
