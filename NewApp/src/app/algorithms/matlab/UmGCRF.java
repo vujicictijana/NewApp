@@ -8,6 +8,7 @@ import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.basic.BasicCalcs;
 import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import matlabcontrol.MatlabConnectionException;
@@ -21,7 +22,7 @@ import matlabcontrol.extensions.MatlabTypeConverter;
 public class UmGCRF {
 
 	public static String train(double[][] s, double[] y, double[] r,
-			ProgressBar frame) {
+			ProgressBar frame, String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true)
 				.setProxyTimeout(30000L)
@@ -82,7 +83,13 @@ public class UmGCRF {
 
 				proxy.eval("rmpath('" + path + "')");
 
+				double theta = ((double[]) proxy.getVariable("theta"))[0];
 				double[] output = ((double[]) proxy.getVariable("mu"));
+
+				Writer.createFolder(modelFolder);
+				String fileName = modelFolder + "/UmGCRF.txt";
+				String[] text = { theta + "" };
+				Writer.write(text, fileName);
 
 				double r2 = BasicCalcs.rSquared(output, y);
 				DecimalFormat df = new DecimalFormat("#.####");

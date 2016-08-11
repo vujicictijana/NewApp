@@ -33,7 +33,7 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 		frame.setTitle("Please wait - UmGCRF is in progress ");
 		long start = System.currentTimeMillis();
 
-		String message = UmGCRF.train(s, y, r, frame);
+		String message = UmGCRF.train(s, y, r, frame,modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		time += "\n* UmGCRF: " + elapsedTime;
