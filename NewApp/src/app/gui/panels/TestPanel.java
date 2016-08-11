@@ -16,9 +16,11 @@ import javax.swing.SwingConstants;
 import app.algorithms.basic.BasicCalcs;
 import app.file.io.Reader;
 import app.file.io.Writer;
+import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.GCRFTestMyModelForGUI;
 import app.gui.threads.DirGCRFTestMyModelForGUI;
+import app.gui.threads.UmGCRFTestMyModelForGUI;
 import app.predictors.helper.Helper;
 import app.predictors.linearregression.LinearRegression;
 import app.predictors.linearregression.MultivariateLinearRegression;
@@ -176,32 +178,6 @@ public class TestPanel extends JPanel {
 					}
 				}
 
-				private void callMethod(int noOfNodes, String method,
-						String dataPath, double[] y, double[] r, double[][] s) {
-
-					switch (method) {
-					case "DirGCRF":
-						testDirGCRF(noOfNodes, dataPath, r, y, s);
-						break;
-					case "GCRF":
-						if (BasicCalcs.isSymmetric(s)) {
-							testGCRF(noOfNodes, dataPath, r, y, s);
-						} else {
-							JOptionPane
-									.showMessageDialog(
-											mainFrame,
-											"For GCRF method matrix should be symmetric.",
-											"Error", JOptionPane.ERROR_MESSAGE);
-						}
-						break;
-					default:
-						JOptionPane.showMessageDialog(mainFrame,
-								"Unknown method.", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						break;
-					}
-				}
-
 			});
 
 			Style.buttonStyle(btnTrain);
@@ -224,10 +200,54 @@ public class TestPanel extends JPanel {
 		test.start();
 	}
 
+	private void testUmGCRF(String modelFolder, double[] r,
+			double[] y, double[][] s) {
+		ProgressBar frame = new ProgressBar("Testing");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+		
+		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(mainFrame,
+				panelForTable, modelFolder + "/results", s, r, y,frame);
+		test.start();
+	}
+
 	public void chooseFile(JTextField txt) {
 		int returnVal = fc.showOpenDialog(panel);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			txt.setText(fc.getSelectedFile().getPath());
+		}
+	}
+
+	private void callMethod(int noOfNodes, String method, String dataPath,
+			double[] y, double[] r, double[][] s) {
+
+		switch (method) {
+		case "DirGCRF":
+			testDirGCRF(noOfNodes, dataPath, r, y, s);
+			break;
+		case "GCRF":
+			if (BasicCalcs.isSymmetric(s)) {
+				testGCRF(noOfNodes, dataPath, r, y, s);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame,
+						"For GCRF method matrix should be symmetric.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			break;
+		case "UmGCRF":
+			if (BasicCalcs.isSymmetric(s)) {
+				testUmGCRF(dataPath, r, y, s);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame,
+						"For UmGCRF method matrix should be symmetric.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			break;
+		default:
+			JOptionPane.showMessageDialog(mainFrame, "Unknown method.",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			break;
 		}
 	}
 
@@ -421,8 +441,9 @@ public class TestPanel extends JPanel {
 	}
 
 	private double callPredictor(String path, String[] x, double[] y) {
+
 		if (Writer.checkFolder(path + "/nn")) {
-			MyNN.test(path, x, y);
+			return MyNN.test(path, x, y);
 		}
 		if (Writer.checkFolder(path + "/mlr")) {
 			double[][] xMlr = Helper.prepareDataForLR(x);
@@ -436,7 +457,8 @@ public class TestPanel extends JPanel {
 			for (int i = 0; i < xOne.length; i++) {
 				xOne[i] = xMlr[i][0];
 			}
-			LinearRegression lr = (LinearRegression) Helper.deserilazie(path + "/lr/lr.txt");
+			LinearRegression lr = (LinearRegression) Helper.deserilazie(path
+					+ "/lr/lr.txt");
 			return LinearRegression.test(y, xOne, path, lr, true);
 		}
 		return -7000;
@@ -525,6 +547,7 @@ public class TestPanel extends JPanel {
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
+			cmbMethod.addItem("UmGCRF");
 		}
 		return cmbMethod;
 	}

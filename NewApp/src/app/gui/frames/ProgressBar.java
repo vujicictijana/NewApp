@@ -40,7 +40,7 @@ public class ProgressBar extends JFrame {
 		});
 	}
 
-	public ProgressBar() {
+	public ProgressBar(String process) {
 		setResizable(false);
 		JPanel pane = new JPanel();
 		pane.setLayout(new FlowLayout());
@@ -59,7 +59,7 @@ public class ProgressBar extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				JOptionPane.showMessageDialog(frame,
-						"Training process cannot be canceled.", "Error",
+						process + " process cannot be canceled.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		});

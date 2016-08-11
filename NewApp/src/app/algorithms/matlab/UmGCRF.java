@@ -119,4 +119,73 @@ public class UmGCRF {
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
 	}
+	
+	public static double[] test(double[][] s, double[] y, double[] r, double theta) {
+		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
+				.setHidden(true)
+				.setProxyTimeout(30000L)
+				.setMatlabLocation(
+						"C:/Program Files/MATLAB/R2016a/bin/matlab.exe")
+				.build();
+		MatlabProxyFactory factory = new MatlabProxyFactory(options);
+		MatlabProxy proxy;
+		try {
+			proxy = factory.getProxy();
+
+			URL location = MainFrame.class.getProtectionDomain()
+					.getCodeSource().getLocation();
+			String path = location.getFile();
+			path = path.substring(1, path.lastIndexOf("/"));
+			path = path.substring(0, path.lastIndexOf("/")) + "/matlab";
+			proxy.eval("addpath('" + path + "')");
+			
+			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
+			processor.setNumericArray("S", new MatlabNumericArray(s, null));
+
+			proxy.setVariable("Rtest", r);
+			proxy.eval("Rtest = transpose(Rtest)");
+
+			proxy.setVariable("Ytest", y);
+			proxy.eval("Ytest = transpose(Ytest)");
+
+			proxy.setVariable("theta", theta);
+			// run train
+
+			String message = null;
+			try {
+				proxy.eval("[mu] = UMtest(Ytest,S,Rtest,theta);");
+
+				proxy.eval("rmpath('" + path + "')");
+
+				double[] output = ((double[]) proxy.getVariable("mu"));
+
+				proxy.disconnect();
+
+				Runtime rt = Runtime.getRuntime();
+				try {
+					rt.exec("taskkill /F /IM MATLAB.exe");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return output;
+			} catch (Exception e) {
+			}
+
+			// close matlab
+			Runtime rt = Runtime.getRuntime();
+			try {
+				rt.exec("taskkill /F /IM MATLAB.exe");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		} catch (MatlabConnectionException e) {
+			e.printStackTrace();
+		} catch (MatlabInvocationException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

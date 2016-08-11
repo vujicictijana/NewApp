@@ -634,7 +634,7 @@ public class TrainPanel extends JPanel {
 
 	public void trainUmGCRF(String modelFolder, double[] r, double[] y,
 			double[][] s) {
-		ProgressBar frame = new ProgressBar();
+		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
