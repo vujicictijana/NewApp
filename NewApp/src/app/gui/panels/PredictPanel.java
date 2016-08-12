@@ -36,13 +36,12 @@ import java.util.Map;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JComboBox;
 
-public class TestPanel extends JPanel {
+public class PredictPanel extends JPanel {
 
 	private static final long serialVersionUID = 356011421979477981L;
 	private JButton btnTrain;
 	private JPanel panel;
 	private JFrame mainFrame;
-	private JPanel panelForTable;
 	private JTextField txtMatrixFile;
 	private JLabel lblFileWithEdges;
 	private JButton button;
@@ -53,10 +52,6 @@ public class TestPanel extends JPanel {
 	private JTextField txtXFile;
 	private JButton button_2;
 	private JButton btnQuestionR;
-	private JLabel lblFileWithOutputs;
-	private JTextField txtYFile;
-	private JButton button_4;
-	private JButton btnQuestionY;
 	private JLabel label_4;
 	private JTextField txtNoOfNodes;
 	private JFileChooser fc;
@@ -70,14 +65,13 @@ public class TestPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public TestPanel(JFrame mainFrame) {
+	public PredictPanel(JFrame mainFrame) {
 		readParametersFromCfg();
 		setBackground(UIManager.getColor("Button.background"));
 		setLayout(null);
 		add(getBtnTrain());
 		panel = this;
 		this.mainFrame = mainFrame;
-		add(getPanelForTable());
 		add(getTxtMatrixFile());
 		add(getLabel_1());
 		add(getButton());
@@ -88,10 +82,6 @@ public class TestPanel extends JPanel {
 		add(getTxtXFile());
 		add(getButton_2());
 		add(getBtnQuestionR());
-		add(getLblFileWithOutputs());
-		add(getTxtYFile());
-		add(getButton_4());
-		add(getBtnQuestionY());
 		add(getLabel_4());
 		add(getTxtNoOfNodes());
 		panel = this;
@@ -119,11 +109,9 @@ public class TestPanel extends JPanel {
 								+ txtModelName.getText();
 						File matrixFile = new File(txtMatrixFile.getText());
 						Writer.copyFile(matrixFile, dataPath
-								+ "/data/matrixTest.txt");
+								+ "/data/matrixPredict.txt");
 						File xFile = new File(txtXFile.getText());
-						Writer.copyFile(xFile, dataPath + "/data/xTest.txt");
-						File yFile = new File(txtYFile.getText());
-						Writer.copyFile(yFile, dataPath + "/data/yTest.txt");
+						Writer.copyFile(xFile, dataPath + "/data/xPredict.txt");
 
 						String[] x = Reader.read(txtXFile.getText());
 						if (x == null) {
@@ -133,16 +121,8 @@ public class TestPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						double[] y = Reader.readArray(txtYFile.getText(),
-								noOfNodes);
-						if (y == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in in the file with outputs should be "
-											+ noOfNodes + ".", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						double result = callPredictor(dataPath, x, y);
+
+						double result = callPredictor(dataPath, x);
 
 						if (result == -7000) {
 							JOptionPane.showMessageDialog(mainFrame,
@@ -178,7 +158,7 @@ public class TestPanel extends JPanel {
 								return;
 							}
 
-							callMethod(noOfNodes, method, dataPath, y, r, s);
+							callMethod(noOfNodes, method, dataPath, r, s);
 
 						}
 
@@ -188,34 +168,35 @@ public class TestPanel extends JPanel {
 			});
 
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(330, 277, 112, 45);
+			btnTrain.setBounds(330, 235, 112, 45);
 		}
 		return btnTrain;
 	}
 
 	private void testDirGCRF(int noOfNodes, String modelFolder, double[] r,
-			double[] y, double[][] s) {
+			double[][] s) {
+		double[] y = new double[r.length];
 		DirGCRFTestMyModelForGUI test = new DirGCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder, s, r, y);
+				null, modelFolder, s, r, y);
 		test.start();
 	}
 
 	private void testGCRF(int noOfNodes, String modelFolder, double[] r,
-			double[] y, double[][] s) {
-		GCRFTestMyModelForGUI test = new GCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder, s, r, y);
+			double[][] s) {
+		double[] y = new double[r.length];
+		GCRFTestMyModelForGUI test = new GCRFTestMyModelForGUI(mainFrame, null,
+				modelFolder, s, r, y);
 		test.start();
 	}
 
-	private void testUmGCRF(String modelFolder, double[] r, double[] y,
-			double[][] s) {
+	private void testUmGCRF(String modelFolder, double[] r, double[][] s) {
 		ProgressBar frame = new ProgressBar("Testing");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-
-		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,mainFrame,
-				panelForTable, modelFolder, s, r, y, frame);
+		double[] y = new double[r.length];
+		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,
+				mainFrame, null, modelFolder, s, r, y, frame);
 		test.start();
 	}
 
@@ -227,15 +208,15 @@ public class TestPanel extends JPanel {
 	}
 
 	private void callMethod(int noOfNodes, String method, String dataPath,
-			double[] y, double[] r, double[][] s) {
+			double[] r, double[][] s) {
 
 		switch (method) {
 		case "DirGCRF":
-			testDirGCRF(noOfNodes, dataPath, r, y, s);
+			testDirGCRF(noOfNodes, dataPath, r, s);
 			break;
 		case "GCRF":
 			if (BasicCalcs.isSymmetric(s)) {
-				testGCRF(noOfNodes, dataPath, r, y, s);
+				testGCRF(noOfNodes, dataPath, r, s);
 			} else {
 				JOptionPane.showMessageDialog(mainFrame,
 						"For GCRF method matrix should be symmetric.", "Error",
@@ -244,7 +225,7 @@ public class TestPanel extends JPanel {
 			break;
 		case "UmGCRF":
 			if (BasicCalcs.isSymmetric(s)) {
-				testUmGCRF(dataPath, r, y, s);
+				testUmGCRF(dataPath, r, s);
 			} else {
 				JOptionPane.showMessageDialog(mainFrame,
 						"For UmGCRF method matrix should be symmetric.",
@@ -268,9 +249,6 @@ public class TestPanel extends JPanel {
 		if (txtXFile.getText().equals("")) {
 			return "Choose file with attributes.";
 		}
-		if (txtYFile.getText().equals("")) {
-			return "Choose file with outputs.";
-		}
 		try {
 			Integer.parseInt(txtNoOfNodes.getText());
 		} catch (NumberFormatException e) {
@@ -290,15 +268,6 @@ public class TestPanel extends JPanel {
 
 	public boolean checkModel(String path) {
 		return Writer.checkFolder(path);
-	}
-
-	private JPanel getPanelForTable() {
-		if (panelForTable == null) {
-			panelForTable = new JPanel();
-			panelForTable.setBounds(28, 347, 850, 63);
-			panelForTable.setLayout(null);
-		}
-		return panelForTable;
 	}
 
 	private JTextField getTxtMatrixFile() {
@@ -365,7 +334,7 @@ public class TestPanel extends JPanel {
 			label_1 = new JLabel("Model name:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(62, 190, 100, 30);
+			label_1.setBounds(62, 148, 100, 30);
 		}
 		return label_1;
 	}
@@ -375,7 +344,7 @@ public class TestPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(178, 190, 315, 30);
+			txtModelName.setBounds(178, 148, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -437,25 +406,16 @@ public class TestPanel extends JPanel {
 		return btnQuestionR;
 	}
 
-	private JLabel getLblFileWithOutputs() {
-		if (lblFileWithOutputs == null) {
-			lblFileWithOutputs = new JLabel("File with outputs:");
-			lblFileWithOutputs.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFileWithOutputs.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFileWithOutputs.setBounds(34, 149, 128, 30);
-		}
-		return lblFileWithOutputs;
-	}
-
-	private double callPredictor(String path, String[] x, double[] y) {
+	private double callPredictor(String path, String[] x) {
 
 		if (Writer.checkFolder(path + "/nn")) {
-			return MyNN.test(path, x, y);
+			return MyNN.testNoY(path, x);
 		}
 		if (Writer.checkFolder(path + "/mlr")) {
 			double[][] xMlr = Helper.prepareDataForLR(x);
 			MultivariateLinearRegression m = (MultivariateLinearRegression) Helper
 					.deserilazie(path + "/mlr/lr.txt");
+			double[] y = new double[x.length];
 			return m.test(y, xMlr, path, true);
 		}
 		if (Writer.checkFolder(path + "/lr")) {
@@ -466,55 +426,11 @@ public class TestPanel extends JPanel {
 			}
 			LinearRegression lr = (LinearRegression) Helper.deserilazie(path
 					+ "/lr/lr.txt");
+			double[] y = new double[x.length];
 			return LinearRegression.test(y, xOne, path, lr, true);
 		}
 		return -7000;
 
-	}
-
-	private JTextField getTxtYFile() {
-		if (txtYFile == null) {
-			txtYFile = new JTextField();
-			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtYFile.setColumns(10);
-			txtYFile.setBounds(178, 149, 315, 30);
-		}
-		return txtYFile;
-	}
-
-	private JButton getButton_4() {
-		if (button_4 == null) {
-			button_4 = new JButton("Browse");
-			button_4.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtYFile);
-				}
-			});
-			button_4.setBounds(510, 149, 100, 30);
-		}
-		return button_4;
-	}
-
-	private JButton getBtnQuestionY() {
-		if (btnQuestionY == null) {
-			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(629, 149, 30, 30);
-			Style.questionButtonStyle(btnQuestionY);
-			btnQuestionY.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains actual output for each node."
-											+ "\nEach output should be in a separate line. "
-											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
-				}
-			});
-		}
-		return btnQuestionY;
 	}
 
 	private JLabel getLabel_4() {
@@ -522,7 +438,7 @@ public class TestPanel extends JPanel {
 			label_4 = new JLabel("No. of nodes:");
 			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_4.setBounds(62, 232, 100, 30);
+			label_4.setBounds(62, 190, 100, 30);
 		}
 		return label_4;
 	}
@@ -532,7 +448,7 @@ public class TestPanel extends JPanel {
 			txtNoOfNodes = new JTextField();
 			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoOfNodes.setColumns(10);
-			txtNoOfNodes.setBounds(178, 231, 91, 30);
+			txtNoOfNodes.setBounds(178, 189, 91, 30);
 		}
 		return txtNoOfNodes;
 	}

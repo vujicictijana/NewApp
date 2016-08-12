@@ -63,12 +63,12 @@ public class MyNN {
 			rArray[i] = outputs[i] + "";
 			i++;
 		}
-		return BasicCalcs.rSquared(outputs,expectedY);
+		return BasicCalcs.rSquared(outputs, expectedY);
 	}
 
 	public static double test(String folder, String[] x, double[] y) {
 		MultiLayerPerceptron neuralNetwork = (MultiLayerPerceptron) NeuralNetwork
-				.createFromFile(folder+"/nn/nn.nnet");
+				.createFromFile(folder + "/nn/nn.nnet");
 		DataSet testSet = Helper.prepareDataForNN(x, y);
 		if (testSet == null) {
 			return -5000;
@@ -89,7 +89,31 @@ public class MyNN {
 		if (folder != null) {
 			Writer.write(rArray, folder + "/data/rTest.txt");
 		}
-		return BasicCalcs.rSquared(outputs,expectedY);
+		return BasicCalcs.rSquared(outputs, expectedY);
+	}
+
+	public static double testNoY(String folder, String[] x) {
+		MultiLayerPerceptron neuralNetwork = (MultiLayerPerceptron) NeuralNetwork
+				.createFromFile(folder + "/nn/nn.nnet");
+		double[] y = new double[x.length];
+		DataSet testSet = Helper.prepareDataForNN(x, y);
+		if (testSet == null) {
+			return -5000;
+		}
+		double[] outputs = new double[testSet.getRows().size()];
+		String[] rArray = new String[outputs.length];
+		int i = 0;
+		for (DataSetRow row : testSet.getRows()) {
+			neuralNetwork.setInput(row.getInput());
+			neuralNetwork.calculate();
+			outputs[i] = neuralNetwork.getOutput()[0];
+			rArray[i] = outputs[i] + "";
+			i++;
+		}
+		if (folder != null) {
+			Writer.write(rArray, folder + "/data/rPredict.txt");
+		}
+		return 1;
 	}
 
 }

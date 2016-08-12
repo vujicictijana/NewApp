@@ -38,9 +38,11 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		this.s = s;
 		this.r = r;
 		this.y = y;
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
+		if (panel != null) {
+			panel.removeAll();
+			panel.revalidate();
+			panel.repaint();
+		}
 	}
 
 	public void run() {
@@ -50,12 +52,20 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		// System.out.println("A " + param[0] + " " + param[1]);
 		double[] paramS = read(modelFolder + "/parameters/GCRF.txt");
 		double resultS = -1;
+
 		if (paramS != null) {
 			resultS = resultSymmetric(paramS[0], paramS[1]);
 			// System.out.println("S " + paramS[0] + " " + paramS[1]);
-			createTable(result, resultS);
+			if (panel != null) {
+				createTable(result, resultS);
+			}
 		} else {
-			createTable(result, -1);
+			if (panel != null) {
+				createTable(result, -1);
+			}
+		}
+		if (panel == null) {
+			exportResults(result, resultS, "predict");
 		}
 		mainFrame.setEnabled(true);
 	}
@@ -65,7 +75,8 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		if (txt != null) {
 			double[] params = new double[txt.length];
 			for (int i = 0; i < txt.length; i++) {
-				params[i] = Double.parseDouble(txt[i].substring(txt[i].indexOf("=")+1));
+				params[i] = Double.parseDouble(txt[i].substring(txt[i]
+						.indexOf("=") + 1));
 			}
 			return params;
 		}
@@ -109,19 +120,9 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/test");
-				String fileName = modelFolder + "/test/resultsDirGCRF.txt";
-				String[] text = exportTxt(outputs, result, "DirGCRF");
-				Writer.write(text, fileName);
-				if (resultS != -1) {
-					String fileName1 = modelFolder + "/test/resultsGCRF.txt";
-					String[] text1 = exportTxt(outputsS, resultS, "GCRF");
-					Writer.write(text1, fileName1);
-				}
-				JOptionPane.showMessageDialog(mainFrame,
-						"Export successfully completed.");
-			
+				exportResults(result, resultS, "test");
 			}
+
 		});
 		return table;
 	}
@@ -135,6 +136,21 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 
 		txt[outputs.length] = "R^2 " + method + ": " + df.format(result);
 		return txt;
+	}
+
+	private void exportResults(double result, double resultS, String folder) {
+		Writer.createFolder(modelFolder + "/" + folder);
+		String fileName = modelFolder + "/" + folder + "/resultsDirGCRF.txt";
+		String[] text = exportTxt(outputs, result, "DirGCRF");
+		Writer.write(text, fileName);
+		if (resultS != -1) {
+			String fileName1 = modelFolder + "/" + folder + "/resultsGCRF.txt";
+			String[] text1 = exportTxt(outputsS, resultS, "GCRF");
+			Writer.write(text1, fileName1);
+		}
+		JOptionPane.showMessageDialog(mainFrame,
+				"Export successfully completed.\nFile location: "
+						+ modelFolder + "/" + folder + ".");
 	}
 
 	public Object[][] fillData(double result, double resultS) {

@@ -31,9 +31,9 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	private String matlabPath;
 	DecimalFormat df = new DecimalFormat("#.######");
 
-	public UmGCRFTestMyModelForGUI(String matlabPath,JFrame mainFrame, JPanel panel,
-			String modelFolder, double[][] s, double[] r, double[] y,
-			ProgressBar frame) {
+	public UmGCRFTestMyModelForGUI(String matlabPath, JFrame mainFrame,
+			JPanel panel, String modelFolder, double[][] s, double[] r,
+			double[] y, ProgressBar frame) {
 		super();
 		this.mainFrame = mainFrame;
 		this.panel = panel;
@@ -43,15 +43,20 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		this.y = y;
 		this.frame = frame;
 		this.matlabPath = matlabPath;
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
+		if (panel != null) {
+			panel.removeAll();
+			panel.revalidate();
+			panel.repaint();
+		}
 	}
 
 	public void run() {
-		if(Reader.checkFile(matlabPath)==false){
-			JOptionPane.showMessageDialog(mainFrame, "Path to MATLAB.exe is not good. Please change path in Settings->Configuration", "Results",
-					JOptionPane.ERROR_MESSAGE);
+		if (Reader.checkFile(matlabPath) == false) {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Path to MATLAB.exe is not good. Please change path in Settings->Configuration",
+							"Results", JOptionPane.ERROR_MESSAGE);
 			frame.setVisible(false);
 			return;
 		}
@@ -59,7 +64,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		frame.setTitle("Please wait - UmGCRF is in progress ");
 		double theta = read(modelFolder + "/parameters/UmGCRF.txt");
 
-		outputs = UmGCRF.test(matlabPath,s, y, r, theta);
+		outputs = UmGCRF.test(matlabPath, s, y, r, theta);
 
 		double r2 = BasicCalcs.rSquared(outputs, y);
 		if (outputs == null) {
@@ -68,7 +73,11 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 					JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
-		createTable(r2);
+		if (panel != null) {
+			createTable(r2);
+		} else {
+			exportResults(r2, "predict");
+		}
 
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
@@ -76,7 +85,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 
 	public double read(String file) {
 		String[] txt = Reader.read(file);
-		return Double.parseDouble(txt[0].substring(txt[0].indexOf("=")+1));
+		return Double.parseDouble(txt[0].substring(txt[0].indexOf("=") + 1));
 	}
 
 	public JTable createTable(double resultS) {
@@ -98,15 +107,21 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/test");
-				String fileName = modelFolder + "/test/results.txt";
-				String[] text = exportTxt(resultS);
-				Writer.write(text, fileName);
-				JOptionPane.showMessageDialog(mainFrame,
-						"Export successfully completed.");
+				exportResults(resultS,"test");
 			}
+
 		});
 		return table;
+	}
+
+	private void exportResults(double result, String folder) {
+		Writer.createFolder(modelFolder + "/" + folder);
+		String fileName = modelFolder + "/" + folder + "/results.txt";
+		String[] text = exportTxt(result);
+		Writer.write(text, fileName);
+		JOptionPane.showMessageDialog(mainFrame,
+				"Export successfully completed. \nFile location: "
+						+ modelFolder + "/" + folder + ".");
 	}
 
 	public String[] exportTxt(double resultS) {

@@ -37,9 +37,11 @@ public class GCRFTestMyModelForGUI extends Thread {
 		this.s = s;
 		this.r = r;
 		this.y = y;
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
+		if (panel != null) {
+			panel.removeAll();
+			panel.revalidate();
+			panel.repaint();
+		}
 	}
 
 	public void run() {
@@ -47,8 +49,11 @@ public class GCRFTestMyModelForGUI extends Thread {
 		double[] paramS = read(modelFolder + "/parameters/GCRF.txt");
 
 		double resultS = resultSymmetric(paramS[0], paramS[1]);
-
-		createTable(resultS);
+		if (panel != null) {
+			createTable(resultS);
+		} else {
+			exportResults(resultS, "predict");
+		}
 
 		mainFrame.setEnabled(true);
 	}
@@ -58,7 +63,8 @@ public class GCRFTestMyModelForGUI extends Thread {
 		if (txt != null) {
 			double[] params = new double[txt.length];
 			for (int i = 0; i < txt.length; i++) {
-				params[i] = Double.parseDouble(txt[i].substring(txt[i].indexOf("=")+1));
+				params[i] = Double.parseDouble(txt[i].substring(txt[i]
+						.indexOf("=") + 1));
 			}
 			return params;
 		}
@@ -90,15 +96,21 @@ public class GCRFTestMyModelForGUI extends Thread {
 		Style.buttonStyle(export);
 		export.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/test");
-				String fileName = modelFolder + "/test/results.txt";
-				String[] text = exportTxt(resultS);
-				Writer.write(text, fileName);
-				JOptionPane.showMessageDialog(mainFrame,
-						"Export successfully completed.");
+				exportResults(resultS, "test");
 			}
+
 		});
 		return table;
+	}
+
+	private void exportResults(double resultS, String folder) {
+		Writer.createFolder(modelFolder + "/" + folder);
+		String fileName = modelFolder + "/" + folder + "/results.txt";
+		String[] text = exportTxt(resultS);
+		Writer.write(text, fileName);
+		JOptionPane.showMessageDialog(mainFrame,
+				"Export successfully completed. \nFile location: "
+						+ modelFolder + "/" + folder + ".");
 	}
 
 	public String[] exportTxt(double resultS) {

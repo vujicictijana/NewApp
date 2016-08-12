@@ -12,6 +12,7 @@ import javax.swing.JSeparator;
 
 import app.file.io.Reader;
 import app.gui.panels.ConfigurePanel;
+import app.gui.panels.PredictPanel;
 import app.gui.panels.TestPanel;
 import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
@@ -19,6 +20,8 @@ import app.gui.panels.TrainRandomPanel;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -36,6 +39,8 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuParameters;
 	private JFrame frame;
 	private JPanel mainPanel;
+	private JMenu mnPredict;
+	private JMenuItem mnPredictYour;
 
 	/**
 	 * Launch the application.
@@ -104,6 +109,7 @@ public class MainFrame extends JFrame {
 			menuBar.setBounds(0, 0, 900, 59);
 			menuBar.add(getMnTrain());
 			menuBar.add(getMnTest());
+			menuBar.add(getMnPredict());
 			menuBar.add(getMnSettings());
 		}
 		return menuBar;
@@ -275,5 +281,36 @@ public class MainFrame extends JFrame {
 					});
 		}
 		return menuParameters;
+	}
+	private JMenu getMnPredict() {
+		if (mnPredict == null) {
+			mnPredict = new JMenu("Predict");
+			mnPredict.setFont(new Font("Segoe UI", Font.BOLD, 17));
+			mnPredict.setIcon(new ImageIcon("images/predict.png"));
+			mnPredict.add(getMnPredictYour());
+		}
+		return mnPredict;
+	}
+	private JMenuItem getMnPredictYour() {
+		if (mnPredictYour == null) {
+			mnPredictYour = new JMenuItem("Predict on your data");
+			mnPredictYour.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			mnPredictYour.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PredictPanel t = new PredictPanel(frame);
+					t.setBounds(0, 61, 900, 500);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+				}
+			});
+		}
+		return mnPredictYour;
 	}
 }
