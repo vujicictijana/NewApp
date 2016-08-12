@@ -90,6 +90,11 @@ public class TrainPanel extends JPanel {
 	private int beta;
 	private double lr;
 	private int iterations;
+	private int hidden;
+	private int iterNN;
+	private String matlabPath;
+	private boolean useMatlab;
+
 	private JSeparator separator;
 	private JLabel lblData;
 	private JSeparator separator_1;
@@ -115,7 +120,7 @@ public class TrainPanel extends JPanel {
 						.showMessageDialog(
 								mainFrame,
 								result
-										+ " Please configure parameters values in Settings->Configure Parameters.",
+										+ " Please configure parameters values in Settings->Configuration.",
 								"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
@@ -176,7 +181,7 @@ public class TrainPanel extends JPanel {
 			JOptionPane
 					.showMessageDialog(
 							mainFrame,
-							"Please configure parameters values in Settings->Configure Parameters.",
+							"Please configure parameters values in Settings->Configuration.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -625,8 +630,8 @@ public class TrainPanel extends JPanel {
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		GCRFTrainMyModelForGUI t = new GCRFTrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y, alpha, beta, lr,
-				maxIter);
+		GCRFTrainMyModelForGUI t = new GCRFTrainMyModelForGUI(modelFolder,
+				frame, mainFrame, s, r, y, alpha, beta, lr, maxIter);
 
 		t.start();
 	}
@@ -638,7 +643,8 @@ public class TrainPanel extends JPanel {
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(modelFolder, frame, mainFrame, s, r, y);
+		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(matlabPath,
+				modelFolder, frame, mainFrame, s, r, y);
 
 		t.start();
 	}
@@ -842,11 +848,25 @@ public class TrainPanel extends JPanel {
 
 	public String readParametersFromCfg() {
 		try {
-			Map<String, Double> params = Reader.readCfg();
-			alpha = params.get("Alpha").intValue();
-			beta = params.get("Beta").intValue();
-			lr = params.get("LR");
-			iterations = params.get("Iterations").intValue();
+			Map<String, String> params = Reader.readCfg();
+			try {
+				alpha = Integer.parseInt(params.get("Alpha").toString());
+				beta = Integer.parseInt(params.get("Beta").toString());
+				lr = Double.parseDouble(params.get("LR").toString());
+				iterations = Integer.parseInt(params.get("Iterations")
+						.toString());
+				hidden = Integer.parseInt(params.get("NN hidden").toString());
+				iterNN = Integer.parseInt(params.get("Iterations NN")
+						.toString());
+			} catch (NumberFormatException e) {
+				return "Configuration file reading failed. File has wrong format.";
+			}
+			if (params.get("Use MATLAB").toString().contains("true")) {
+				useMatlab = true;
+			} else {
+				useMatlab = false;
+			}
+			matlabPath = params.get("Path").toString();
 		} catch (ConfigurationParameterseException e) {
 			return e.getMessage();
 		}
@@ -858,6 +878,8 @@ public class TrainPanel extends JPanel {
 		txtBeta.setText(beta + "");
 		txtLR.setText(lr + "");
 		txtIter.setText(iterations + "");
+		txtIterNN.setText(iterNN + "");
+		txtHidden.setText(hidden + "");
 	}
 
 	private JSeparator getSeparator() {
@@ -951,7 +973,7 @@ public class TrainPanel extends JPanel {
 			});
 			cmbPredictor.setBounds(204, 309, 227, 30);
 			cmbPredictor.addItem("choose predictor");
-			cmbPredictor.addItem("neural networks");
+			cmbPredictor.addItem("neural network");
 			cmbPredictor.addItem("linear regression");
 		}
 		return cmbPredictor;
@@ -1081,7 +1103,9 @@ public class TrainPanel extends JPanel {
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
-			cmbMethod.addItem("UmGCRF");
+			if (useMatlab) {
+				cmbMethod.addItem("UmGCRF");
+			}
 			cmbMethod.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					String method = cmbMethod.getSelectedItem().toString();

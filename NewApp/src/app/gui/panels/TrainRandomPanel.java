@@ -77,7 +77,7 @@ public class TrainRandomPanel extends JPanel {
 						.showMessageDialog(
 								mainFrame,
 								result
-										+ " Please configure parameters values in Settings->Configure Parameters.",
+										+ " Please configure parameters values in Settings->Configuration.",
 								"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
@@ -110,7 +110,7 @@ public class TrainRandomPanel extends JPanel {
 			JOptionPane
 					.showMessageDialog(
 							mainFrame,
-							"Please configure parameters values in Settings->Configure Parameters.",
+							"Please configure parameters values in Settings->Configuration.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -487,20 +487,23 @@ public class TrainRandomPanel extends JPanel {
 
 	public String readParametersFromCfg() {
 		try {
-			Map<String, Double> params = Reader.readCfg();
-			alphaGen = params.get("AlphaGen").intValue();
-			betaGen = params.get("BetaGen").intValue();
-			alpha = params.get("Alpha").intValue();
-			beta = params.get("Beta").intValue();
-			lr = params.get("LR");
-			iterations = params.get("Iterations").intValue();
+			Map<String, String> params = Reader.readCfg();
+			try {
+				alpha = Integer.parseInt(params.get("Alpha").toString());
+				beta = Integer.parseInt(params.get("Beta").toString());
+				lr = Double.parseDouble(params.get("LR").toString());
+				iterations = Integer.parseInt(params.get("Iterations")
+						.toString());
+			} catch (NumberFormatException e) {
+				return "Configuration file reading failed. File has wrong format.";
+			}
 		} catch (ConfigurationParameterseException e) {
 			return e.getMessage();
 		}
 		return null;
 	}
-	
-	public void setTxtValues(){
+
+	public void setTxtValues() {
 		txtAlpha.setText(alpha + "");
 		txtBeta.setText(beta + "");
 		txtLR.setText(lr + "");

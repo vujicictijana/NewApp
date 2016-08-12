@@ -28,9 +28,10 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	private double[] r;
 	private double[] y;
 	public double[] outputs;
+	private String matlabPath;
 	DecimalFormat df = new DecimalFormat("#.######");
 
-	public UmGCRFTestMyModelForGUI(JFrame mainFrame, JPanel panel,
+	public UmGCRFTestMyModelForGUI(String matlabPath,JFrame mainFrame, JPanel panel,
 			String modelFolder, double[][] s, double[] r, double[] y,
 			ProgressBar frame) {
 		super();
@@ -41,17 +42,24 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		this.r = r;
 		this.y = y;
 		this.frame = frame;
+		this.matlabPath = matlabPath;
 		panel.removeAll();
 		panel.revalidate();
 		panel.repaint();
 	}
 
 	public void run() {
+		if(Reader.checkFile(matlabPath)==false){
+			JOptionPane.showMessageDialog(mainFrame, "Path to MATLAB.exe is not good. Please change path in Settings->Configuration", "Results",
+					JOptionPane.ERROR_MESSAGE);
+			frame.setVisible(false);
+			return;
+		}
 		mainFrame.setEnabled(false);
 		frame.setTitle("Please wait - UmGCRF is in progress ");
 		double theta = read(modelFolder + "/parameters/UmGCRF.txt");
 
-		outputs = UmGCRF.test(s, y, r, theta);
+		outputs = UmGCRF.test(matlabPath,s, y, r, theta);
 
 		double r2 = BasicCalcs.rSquared(outputs, y);
 		if (outputs == null) {

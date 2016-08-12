@@ -32,7 +32,6 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuTest;
 	private JMenuItem menuTestRandom;
 	private JMenu mnSettings;
-	private JMenuItem menuDatabase;
 	private JMenuItem menuFile;
 	private JMenuItem menuParameters;
 	private JFrame frame;
@@ -240,23 +239,14 @@ public class MainFrame extends JFrame {
 			mnSettings.add(new JSeparator());
 			mnSettings.add(getMenuFile());
 			mnSettings.add(new JSeparator());
-			mnSettings.add(getMenuDatabase());
 
 		}
 		return mnSettings;
 	}
 
-	private JMenuItem getMenuDatabase() {
-		if (menuDatabase == null) {
-			menuDatabase = new JMenuItem("Configure database");
-			menuDatabase.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		}
-		return menuDatabase;
-	}
-
 	private JMenuItem getMenuFile() {
 		if (menuFile == null) {
-			menuFile = new JMenuItem("Configure file system");
+			menuFile = new JMenuItem("File system");
 			menuFile.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		}
 		return menuFile;
@@ -264,7 +254,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuItem getMenuParameters() {
 		if (menuParameters == null) {
-			menuParameters = new JMenuItem("Configure parameters");
+			menuParameters = new JMenuItem("Configuration");
 			menuParameters.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuParameters
 					.addActionListener(new java.awt.event.ActionListener() {

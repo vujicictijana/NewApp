@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import app.algorithms.basic.BasicCalcs;
+import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
@@ -30,6 +31,7 @@ import app.predictors.neuralnetwork.MyNN;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JComboBox;
@@ -61,10 +63,15 @@ public class TestPanel extends JPanel {
 	private JLabel lblMethod;
 	private JComboBox<String> cmbMethod;
 
+	// params
+	private String matlabPath;
+	private boolean useMatlab;
+
 	/**
 	 * Create the panel.
 	 */
 	public TestPanel(JFrame mainFrame) {
+		readParametersFromCfg();
 		setBackground(UIManager.getColor("Button.background"));
 		setLayout(null);
 		add(getBtnTrain());
@@ -87,10 +94,10 @@ public class TestPanel extends JPanel {
 		add(getBtnQuestionY());
 		add(getLabel_4());
 		add(getTxtNoOfNodes());
-		fc = new JFileChooser();
 		panel = this;
 		add(getLblMethod());
 		add(getCmbMethod());
+		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
@@ -200,15 +207,15 @@ public class TestPanel extends JPanel {
 		test.start();
 	}
 
-	private void testUmGCRF(String modelFolder, double[] r,
-			double[] y, double[][] s) {
+	private void testUmGCRF(String modelFolder, double[] r, double[] y,
+			double[][] s) {
 		ProgressBar frame = new ProgressBar("Testing");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-		
-		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(mainFrame,
-				panelForTable, modelFolder, s, r, y,frame);
+
+		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,mainFrame,
+				panelForTable, modelFolder, s, r, y, frame);
 		test.start();
 	}
 
@@ -240,8 +247,8 @@ public class TestPanel extends JPanel {
 				testUmGCRF(dataPath, r, y, s);
 			} else {
 				JOptionPane.showMessageDialog(mainFrame,
-						"For UmGCRF method matrix should be symmetric.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+						"For UmGCRF method matrix should be symmetric.",
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
 		default:
@@ -540,6 +547,22 @@ public class TestPanel extends JPanel {
 		return lblMethod;
 	}
 
+	public String readParametersFromCfg() {
+		try {
+			Map<String, String> params = Reader.readCfg();
+
+			if (params.get("Use MATLAB").toString().contains("true")) {
+				useMatlab = true;
+			} else {
+				useMatlab = false;
+			}
+			matlabPath = params.get("Path").toString();
+		} catch (ConfigurationParameterseException e) {
+			return e.getMessage();
+		}
+		return null;
+	}
+
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
@@ -547,7 +570,9 @@ public class TestPanel extends JPanel {
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
-			cmbMethod.addItem("UmGCRF");
+			if (useMatlab) {
+				cmbMethod.addItem("UmGCRF");
+			}
 		}
 		return cmbMethod;
 	}

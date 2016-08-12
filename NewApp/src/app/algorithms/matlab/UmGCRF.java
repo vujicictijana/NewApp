@@ -21,13 +21,13 @@ import matlabcontrol.extensions.MatlabTypeConverter;
 
 public class UmGCRF {
 
-	public static String train(double[][] s, double[] y, double[] r,
+	public static String train(String matlabPath, double[][] s, double[] y, double[] r,
 			ProgressBar frame, String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true)
 				.setProxyTimeout(30000L)
 				.setMatlabLocation(
-						"C:/Program Files/MATLAB/R2016a/bin/matlab.exe")
+						matlabPath)
 				.build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
@@ -120,13 +120,12 @@ public class UmGCRF {
 		return "Connection with MATLAB cannot be established.";
 	}
 
-	public static double[] test(double[][] s, double[] y, double[] r,
+	public static double[] test(String matlabPath, double[][] s, double[] y, double[] r,
 			double theta) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true)
 				.setProxyTimeout(30000L)
-				.setMatlabLocation(
-						"C:/Program Files/MATLAB/R2016a/bin/matlab.exe")
+				.setMatlabLocation(matlabPath)
 				.build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;

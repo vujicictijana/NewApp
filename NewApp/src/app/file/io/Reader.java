@@ -28,7 +28,7 @@ public class Reader {
 			line = text[k].split(",");
 			i = Integer.parseInt(line[0]);
 			j = Integer.parseInt(line[1]);
-			if(i<=0 || i>noOfNodes || j<=0 || j>noOfNodes){
+			if (i <= 0 || i > noOfNodes || j <= 0 || j > noOfNodes) {
 				return null;
 			}
 			weigth = Double.parseDouble(line[2]);
@@ -41,7 +41,7 @@ public class Reader {
 		double[] r = new double[noOfNodes];
 
 		String[] text = Reader.read(path);
-		if(text.length!=noOfNodes){
+		if (text.length != noOfNodes) {
 			return null;
 		}
 		for (int k = 0; k < text.length; k++) {
@@ -106,11 +106,11 @@ public class Reader {
 		return false;
 	}
 
-	public static Map<String, Double> readCfg()
+	public static Map<String, String> readCfg()
 			throws ConfigurationParameterseException {
-		Map<String, Double> params = new HashMap<>();
+		Map<String, String> params = new HashMap<>();
 		String[] text = read("cfg.txt");
-		if (text.length != 6) {
+		if (text.length != 10) {
 			throw new ConfigurationParameterseException(
 					"Configuration file reading failed. File has wrong format.");
 		}
@@ -120,16 +120,13 @@ public class Reader {
 						"Configuration file reading failed. File has wrong format.");
 			}
 			String[] line = text[i].split("=");
-			try {
-				double value = Double.parseDouble(line[1]);
-				params.put(line[0], value);
-			} catch (NumberFormatException e) {
-				throw new ConfigurationParameterseException(
-						"Configuration file reading failed. File has wrong format.");
+			if (line.length == 2) {
+				params.put(line[0], line[1]);
+			} else {
+				params.put(line[0], "");
 			}
 		}
 		return params;
 	}
-
 
 }
