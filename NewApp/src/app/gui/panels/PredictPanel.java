@@ -395,7 +395,7 @@ public class PredictPanel extends JPanel {
 									mainFrame,
 									"Text file (.txt) that contains value of each atribute for each node."
 											+ "\nAtributes for each node should be in a separate line. "
-											+ "\nAtributes should be separated by comma. "
+											+ "\nAtributes should be comma separated."
 											+ "\nAll atributes should be numbers. "
 											+ "\nOrder should be consistent with ordinal numbers of nodes in the file with edges.",
 									"Help", JOptionPane.QUESTION_MESSAGE,

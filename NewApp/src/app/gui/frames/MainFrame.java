@@ -17,6 +17,7 @@ import app.gui.panels.TestPanel;
 import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
 import app.gui.panels.TrainRandomPanel;
+import app.gui.panels.TrainTemporalPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -41,6 +42,7 @@ public class MainFrame extends JFrame {
 	private JPanel mainPanel;
 	private JMenu mnPredict;
 	private JMenuItem mnPredictYour;
+	private JMenuItem mntmNewMenuItem;
 
 	/**
 	 * Launch the application.
@@ -121,6 +123,8 @@ public class MainFrame extends JFrame {
 			mnTrain.setIcon(new ImageIcon("images/train.png"));
 			mnTrain.setFont(new Font("Segoe UI", Font.BOLD, 17));
 			mnTrain.add(getMenuTrain());
+			mnTrain.add(new JSeparator());
+			mnTrain.add(getMntmNewMenuItem());
 			mnTrain.add(new JSeparator());
 			mnTrain.add(getMenuTrainRandom());
 		}
@@ -312,5 +316,27 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return mnPredictYour;
+	}
+	private JMenuItem getMntmNewMenuItem() {
+		if (mntmNewMenuItem == null) {
+			mntmNewMenuItem = new JMenuItem("Train on temporal data");
+			mntmNewMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					TrainTemporalPanel t = new TrainTemporalPanel(frame);
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+				}
+			});
+			mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		}
+		return mntmNewMenuItem;
 	}
 }

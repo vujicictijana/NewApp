@@ -45,6 +45,9 @@ public class ConfigurePanel extends JPanel {
 	private int iterNN;
 	private String matlabPath;
 	private boolean useMatlab;
+	private int alphaReg;
+	private int betaReg;
+	private int iterJelena;
 
 	private JTextField txtAlphaGen;
 	private JLabel lblub;
@@ -74,6 +77,13 @@ public class ConfigurePanel extends JPanel {
 	private JTextField txtPath;
 	private JFileChooser fc;
 	private JLabel lblHelp;
+	private JLabel lblParametersForTraining;
+	private JLabel label_2;
+	private JLabel label_3;
+	private JLabel label_4;
+	private JTextField txtBetaReg;
+	private JTextField txtAlphaReg;
+	private JTextField txtIterJelena;
 
 	public ConfigurePanel(JFrame mainFrame) {
 		setBackground(UIManager.getColor("Button.background"));
@@ -107,6 +117,13 @@ public class ConfigurePanel extends JPanel {
 		add(getButton());
 		add(getTxtPath());
 		add(getLblHelp());
+		add(getLblParametersForTraining());
+		add(getLabel_2());
+		add(getLabel_3());
+		add(getLabel_4());
+		add(getTxtBetaReg());
+		add(getTextField_1_4());
+		add(getTextField_2_1());
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"EXE FILES", "exe", "exe");
@@ -137,6 +154,9 @@ public class ConfigurePanel extends JPanel {
 		iterNN = 1000;
 		useMatlab = true;
 		matlabPath = "";
+		alphaReg = 10000;
+		betaReg = 10;
+		iterJelena = 50;
 	}
 
 	private JTextField getTxtAlphaGen() {
@@ -144,7 +164,7 @@ public class ConfigurePanel extends JPanel {
 			txtAlphaGen = new JTextField();
 			txtAlphaGen.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlphaGen.setColumns(10);
-			txtAlphaGen.setBounds(169, 74, 169, 30);
+			txtAlphaGen.setBounds(178, 57, 169, 30);
 		}
 		return txtAlphaGen;
 	}
@@ -154,7 +174,7 @@ public class ConfigurePanel extends JPanel {
 			lblub = new JLabel("Alpha:");
 			lblub.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblub.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblub.setBounds(53, 74, 100, 30);
+			lblub.setBounds(62, 57, 100, 30);
 		}
 		return lblub;
 	}
@@ -165,7 +185,7 @@ public class ConfigurePanel extends JPanel {
 					"Parameters for random data generation:");
 			lblParametersForRandom.setHorizontalAlignment(SwingConstants.LEFT);
 			lblParametersForRandom.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblParametersForRandom.setBounds(34, 28, 374, 30);
+			lblParametersForRandom.setBounds(32, 11, 374, 30);
 		}
 		return lblParametersForRandom;
 	}
@@ -175,7 +195,7 @@ public class ConfigurePanel extends JPanel {
 			txtBetaGen = new JTextField();
 			txtBetaGen.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBetaGen.setColumns(10);
-			txtBetaGen.setBounds(169, 115, 169, 30);
+			txtBetaGen.setBounds(178, 98, 169, 30);
 		}
 		return txtBetaGen;
 	}
@@ -185,17 +205,17 @@ public class ConfigurePanel extends JPanel {
 			lblBeta = new JLabel("Beta:");
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(53, 115, 100, 30);
+			lblBeta.setBounds(62, 98, 100, 30);
 		}
 		return lblBeta;
 	}
 
 	private JLabel getLblParametersForModel() {
 		if (lblParametersForModel == null) {
-			lblParametersForModel = new JLabel("Parameters for training:");
+			lblParametersForModel = new JLabel("Parameters for training GCRF and DirGCRF:");
 			lblParametersForModel.setHorizontalAlignment(SwingConstants.LEFT);
 			lblParametersForModel.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblParametersForModel.setBounds(34, 167, 434, 30);
+			lblParametersForModel.setBounds(36, 168, 331, 30);
 		}
 		return lblParametersForModel;
 	}
@@ -205,7 +225,7 @@ public class ConfigurePanel extends JPanel {
 			label = new JLabel("Alpha:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(53, 209, 100, 30);
+			label.setBounds(66, 209, 100, 30);
 		}
 		return label;
 	}
@@ -215,7 +235,7 @@ public class ConfigurePanel extends JPanel {
 			txtAlpha = new JTextField();
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(169, 209, 169, 30);
+			txtAlpha.setBounds(182, 209, 169, 30);
 		}
 		return txtAlpha;
 	}
@@ -225,7 +245,7 @@ public class ConfigurePanel extends JPanel {
 			label_1 = new JLabel("Beta:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(53, 250, 100, 30);
+			label_1.setBounds(66, 250, 100, 30);
 		}
 		return label_1;
 	}
@@ -235,7 +255,7 @@ public class ConfigurePanel extends JPanel {
 			txtBeta = new JTextField();
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(169, 250, 169, 30);
+			txtBeta.setBounds(182, 250, 169, 30);
 		}
 		return txtBeta;
 	}
@@ -245,7 +265,7 @@ public class ConfigurePanel extends JPanel {
 			lblLearningRate = new JLabel("Learning rate:");
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLearningRate.setBounds(53, 291, 100, 30);
+			lblLearningRate.setBounds(66, 291, 100, 30);
 		}
 		return lblLearningRate;
 	}
@@ -255,7 +275,7 @@ public class ConfigurePanel extends JPanel {
 			txtLR = new JTextField();
 			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLR.setColumns(10);
-			txtLR.setBounds(169, 291, 169, 30);
+			txtLR.setBounds(182, 291, 169, 30);
 		}
 		return txtLR;
 	}
@@ -265,7 +285,7 @@ public class ConfigurePanel extends JPanel {
 			txtIter = new JTextField();
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(169, 332, 169, 30);
+			txtIter.setBounds(182, 332, 169, 30);
 		}
 		return txtIter;
 	}
@@ -275,7 +295,7 @@ public class ConfigurePanel extends JPanel {
 			lblMaxIterations = new JLabel("Max. iterations:");
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(34, 332, 119, 30);
+			lblMaxIterations.setBounds(47, 332, 119, 30);
 		}
 		return lblMaxIterations;
 	}
@@ -300,13 +320,13 @@ public class ConfigurePanel extends JPanel {
 					}
 				}
 			});
-			btnSave.setBounds(239, 432, 169, 45);
+			btnSave.setBounds(254, 580, 169, 45);
 		}
 		return btnSave;
 	}
 
 	public String[] prepareForFile() {
-		String[] text = new String[10];
+		String[] text = new String[13];
 		alphaGen = Integer.parseInt(txtAlphaGen.getText());
 		betaGen = Integer.parseInt(txtBetaGen.getText());
 		alpha = Integer.parseInt(txtAlpha.getText());
@@ -315,6 +335,9 @@ public class ConfigurePanel extends JPanel {
 		iterations = Integer.parseInt(txtIter.getText());
 		hidden = Integer.parseInt(txtHidden.getText());
 		iterNN = Integer.parseInt(txtIterNN.getText());
+		alphaReg= Integer.parseInt(txtAlphaReg.getText());
+		betaReg= Integer.parseInt(txtBetaReg.getText());
+		iterJelena= Integer.parseInt(txtIterJelena.getText());
 		useMatlab = chckMatlab.isSelected();
 		matlabPath = txtPath.getText();
 		text[0] = "AlphaGen=" + alphaGen;
@@ -325,8 +348,11 @@ public class ConfigurePanel extends JPanel {
 		text[5] = "Iterations=" + iterations;
 		text[6] = "NN hidden=" + hidden;
 		text[7] = "Iterations NN=" + iterNN;
-		text[8] = "Use MATLAB=" + useMatlab;
-		text[9] = "Path=" + matlabPath;
+		text[8] = "AlphaReg=" + alphaReg;
+		text[9] = "BetaReg=" + betaReg;
+		text[10] = "Iterations Jelena=" + iterJelena;
+		text[11] = "Use MATLAB=" + useMatlab;
+		text[12] = "Path=" + matlabPath;
 		return text;
 	}
 
@@ -389,6 +415,7 @@ public class ConfigurePanel extends JPanel {
 		} catch (NumberFormatException e) {
 			return "No. of hidden neurons for neural network should be integer.";
 		}
+		
 		try {
 			int b = Integer.parseInt(txtIterNN.getText());
 			if (b <= 0) {
@@ -397,6 +424,34 @@ public class ConfigurePanel extends JPanel {
 		} catch (NumberFormatException e) {
 			return "No. of iteration for neural network training should be integer.";
 		}
+		
+		try {
+			int a = Integer.parseInt(txtAlphaReg.getText());
+			if (a <= 0) {
+				return "Alpha for regularization should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Alpha for regularization should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtBetaReg.getText());
+			if (b <= 0) {
+				return "Beta for regularization should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Beta for regularization should be integer.";
+		}
+		
+		try {
+			int b = Integer.parseInt(txtIterJelena.getText());
+			if (b <= 0) {
+				return "No. of iteration for Jelena training should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of iteration for Jelena training should be integer.";
+		}
+		
+		
 		if (chckMatlab.isSelected() && txtPath.getText().equals("")) {
 			return "Choose path to MATLAB.exe or deselect 'Use methods implemented in MATLAB' check box.";
 		}
@@ -416,6 +471,10 @@ public class ConfigurePanel extends JPanel {
 						.toString());
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
 				iterNN = Integer.parseInt(params.get("Iterations NN")
+						.toString());
+				alphaReg = Integer.parseInt(params.get("AlphaReg").toString());
+				betaReg = Integer.parseInt(params.get("BetaReg").toString());
+				iterJelena = Integer.parseInt(params.get("Iterations Jelena")
 						.toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
@@ -443,6 +502,9 @@ public class ConfigurePanel extends JPanel {
 		txtHidden.setText(hidden + "");
 		chckMatlab.setSelected(useMatlab);
 		txtPath.setText(matlabPath);
+		txtAlphaReg.setText(alphaReg+"");	
+		txtBetaReg.setText(betaReg+"");
+		txtIterJelena.setText(iterJelena + "");
 	}
 
 	private JButton getBtnResetToDefaults() {
@@ -454,7 +516,7 @@ public class ConfigurePanel extends JPanel {
 					setTxtValues();
 				}
 			});
-			btnResetToDefaults.setBounds(435, 432, 169, 45);
+			btnResetToDefaults.setBounds(450, 580, 169, 45);
 		}
 		return btnResetToDefaults;
 	}
@@ -462,10 +524,10 @@ public class ConfigurePanel extends JPanel {
 	private JLabel getLblParametersForNeural() {
 		if (lblParametersForNeural == null) {
 			lblParametersForNeural = new JLabel(
-					"Parameters for neural network:");
+					"Parameters for training neural network:");
 			lblParametersForNeural.setHorizontalAlignment(SwingConstants.LEFT);
 			lblParametersForNeural.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblParametersForNeural.setBounds(418, 28, 434, 30);
+			lblParametersForNeural.setBounds(36, 399, 434, 30);
 		}
 		return lblParametersForNeural;
 	}
@@ -475,7 +537,7 @@ public class ConfigurePanel extends JPanel {
 			lblHidden = new JLabel("No. of hidden neurons:");
 			lblHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblHidden.setBounds(457, 74, 164, 30);
+			lblHidden.setBounds(75, 445, 164, 30);
 		}
 		return lblHidden;
 	}
@@ -485,7 +547,7 @@ public class ConfigurePanel extends JPanel {
 			txtHidden = new JTextField();
 			txtHidden.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtHidden.setColumns(10);
-			txtHidden.setBounds(646, 74, 91, 30);
+			txtHidden.setBounds(264, 445, 91, 30);
 		}
 		return txtHidden;
 	}
@@ -495,7 +557,7 @@ public class ConfigurePanel extends JPanel {
 			txtIterNN = new JTextField();
 			txtIterNN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIterNN.setColumns(10);
-			txtIterNN.setBounds(646, 115, 91, 30);
+			txtIterNN.setBounds(264, 486, 91, 30);
 		}
 		return txtIterNN;
 	}
@@ -505,7 +567,7 @@ public class ConfigurePanel extends JPanel {
 			lblIterNN = new JLabel("No. of iterations:");
 			lblIterNN.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblIterNN.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblIterNN.setBounds(490, 118, 130, 30);
+			lblIterNN.setBounds(108, 489, 130, 30);
 		}
 		return lblIterNN;
 	}
@@ -515,7 +577,7 @@ public class ConfigurePanel extends JPanel {
 			lblMatlab = new JLabel("MATLAB:");
 			lblMatlab.setHorizontalAlignment(SwingConstants.LEFT);
 			lblMatlab.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMatlab.setBounds(418, 167, 434, 30);
+			lblMatlab.setBounds(416, 168, 434, 30);
 		}
 		return lblMatlab;
 	}
@@ -525,7 +587,7 @@ public class ConfigurePanel extends JPanel {
 			lblPathToMatlabexe = new JLabel("Path to MATLAB.exe:");
 			lblPathToMatlabexe.setHorizontalAlignment(SwingConstants.LEFT);
 			lblPathToMatlabexe.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPathToMatlabexe.setBounds(447, 242, 164, 30);
+			lblPathToMatlabexe.setBounds(445, 243, 164, 30);
 		}
 		return lblPathToMatlabexe;
 	}
@@ -533,7 +595,7 @@ public class ConfigurePanel extends JPanel {
 	private JCheckBox getChckMatlab() {
 		if (chckMatlab == null) {
 			chckMatlab = new JCheckBox("Use methods implemented in MATLAB");
-			chckMatlab.setBounds(447, 208, 269, 23);
+			chckMatlab.setBounds(445, 209, 269, 23);
 		}
 		return chckMatlab;
 	}
@@ -546,7 +608,7 @@ public class ConfigurePanel extends JPanel {
 					chooseFile(txtPath);
 				}
 			});
-			button.setBounds(779, 283, 100, 30);
+			button.setBounds(777, 284, 100, 30);
 		}
 		return button;
 	}
@@ -563,7 +625,7 @@ public class ConfigurePanel extends JPanel {
 			txtPath = new JTextField();
 			txtPath.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtPath.setColumns(10);
-			txtPath.setBounds(447, 283, 315, 30);
+			txtPath.setBounds(445, 284, 315, 30);
 		}
 		return txtPath;
 	}
@@ -572,8 +634,74 @@ public class ConfigurePanel extends JPanel {
 		if (lblHelp == null) {
 			lblHelp = new JLabel(
 					"Example for Windows: C:/Program Files/MATLAB/Version/bin/matlab.exe");
-			lblHelp.setBounds(447, 324, 447, 23);
+			lblHelp.setBounds(445, 325, 447, 23);
 		}
 		return lblHelp;
+	}
+	private JLabel getLblParametersForTraining() {
+		if (lblParametersForTraining == null) {
+			lblParametersForTraining = new JLabel("Parameters for training Jelena:");
+			lblParametersForTraining.setHorizontalAlignment(SwingConstants.LEFT);
+			lblParametersForTraining.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblParametersForTraining.setBounds(416, 11, 434, 30);
+		}
+		return lblParametersForTraining;
+	}
+	private JLabel getLabel_2() {
+		if (label_2 == null) {
+			label_2 = new JLabel("Regularization alpha:");
+			label_2.setHorizontalAlignment(SwingConstants.RIGHT);
+			label_2.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label_2.setBounds(427, 46, 197, 30);
+		}
+		return label_2;
+	}
+	private JLabel getLabel_3() {
+		if (label_3 == null) {
+			label_3 = new JLabel("Regularization beta:");
+			label_3.setHorizontalAlignment(SwingConstants.RIGHT);
+			label_3.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label_3.setBounds(417, 86, 207, 30);
+		}
+		return label_3;
+	}
+	private JLabel getLabel_4() {
+		if (label_4 == null) {
+			label_4 = new JLabel("Max. iterations:");
+			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
+			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label_4.setBounds(492, 127, 132, 30);
+		}
+		return label_4;
+	}
+	private JTextField getTxtBetaReg() {
+		if (txtBetaReg == null) {
+			txtBetaReg = new JTextField();
+			txtBetaReg.setText("0");
+			txtBetaReg.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtBetaReg.setColumns(10);
+			txtBetaReg.setBounds(640, 88, 91, 30);
+		}
+		return txtBetaReg;
+	}
+	private JTextField getTextField_1_4() {
+		if (txtAlphaReg == null) {
+			txtAlphaReg = new JTextField();
+			txtAlphaReg.setText("0");
+			txtAlphaReg.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtAlphaReg.setColumns(10);
+			txtAlphaReg.setBounds(640, 47, 91, 30);
+		}
+		return txtAlphaReg;
+	}
+	private JTextField getTextField_2_1() {
+		if (txtIterJelena == null) {
+			txtIterJelena = new JTextField();
+			txtIterJelena.setText("0");
+			txtIterJelena.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtIterJelena.setColumns(10);
+			txtIterJelena.setBounds(640, 127, 91, 30);
+		}
+		return txtIterJelena;
 	}
 }
