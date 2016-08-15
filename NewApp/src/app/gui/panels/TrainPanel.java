@@ -17,7 +17,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
 import app.algorithms.basic.BasicCalcs;
-import app.algorithms.matlab.UmGCRF;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
@@ -26,12 +25,12 @@ import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.gui.threads.UmGCRFTrainMyModelForGUI;
+import app.predictors.helper.Helper;
 import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -44,6 +43,8 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import javax.swing.JComboBox;
+
+import org.neuroph.core.data.DataSet;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -461,22 +462,10 @@ public class TrainPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						String method = cmbMethod.getSelectedItem().toString();
-						Writer.createFolder("MyModels" + method);
-						String path = "MyModels" + method + "/"
-								+ txtModelName.getText();
-						Writer.createFolder(path);
-						String dataPath = "MyModels" + method + "/"
-								+ txtModelName.getText() + "/data";
-						Writer.createFolder(dataPath);
-						File matrixFile = new File(txtMatrixFile.getText());
-						Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
-						File xFile = new File(txtXFile.getText());
-						Writer.copyFile(xFile, dataPath + "/x.txt");
-						File yFile = new File(txtYFile.getText());
-						Writer.copyFile(yFile, dataPath + "/y.txt");
+
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						Writer.createFolder(path);
+
+						String method = cmbMethod.getSelectedItem().toString();
 
 						double alpha = Double.parseDouble(txtAlpha.getText());
 						double beta = Double.parseDouble(txtBeta.getText());
@@ -484,24 +473,20 @@ public class TrainPanel extends JPanel {
 						int maxIter = Integer.parseInt(txtIter.getText());
 
 						String[] x = Reader.read(txtXFile.getText());
-						if (x == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in the file with attributes should be "
-											+ noOfNodes + ".", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-
 						double[] y = Reader.readArray(txtYFile.getText(),
 								noOfNodes);
-						if (y == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in in the file with outputs should be "
-											+ noOfNodes + ".", "Error",
-									JOptionPane.ERROR_MESSAGE);
+						double[][] s = Reader.readGraph(
+								txtMatrixFile.getText(), noOfNodes);
+
+						String message1 = checkFiles(noOfNodes, x, y, s);
+
+						if (message1 != null) {
+							JOptionPane.showMessageDialog(mainFrame, message1,
+									"Error", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 
+						String path = createFolderAndSaveData(method);
 						double result = callPredictor(path, x, y);
 
 						if (result == -7000) {
@@ -527,19 +512,10 @@ public class TrainPanel extends JPanel {
 											"File with attributes is not in correct format.",
 											"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
+
 							double[] r = Reader.readArray(path + "/data/r.txt",
 									noOfNodes);
 
-							double[][] s = Reader.readGraph(
-									txtMatrixFile.getText(), noOfNodes);
-
-							if (s == null) {
-								JOptionPane.showMessageDialog(mainFrame,
-										"Ordinal number of node can be between 1 and "
-												+ noOfNodes + ".", "Error",
-										JOptionPane.ERROR_MESSAGE);
-								return;
-							}
 							callMethod(method, path, noOfNodes, alpha, beta,
 									lr, maxIter, y, r, s);
 						}
@@ -558,13 +534,55 @@ public class TrainPanel extends JPanel {
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 			int noOfHidden = Integer.parseInt(txtHidden.getText());
 			int noOfIter = Integer.parseInt(txtIterNN.getText());
-			return MyNN.learn(noOfHidden, x, y, 0.003, noOfIter, path);
+			DataSet trainingSet = Helper.prepareDataForNN(x, y);
+			return MyNN.learn(noOfHidden, trainingSet, 0.003, noOfIter, path);
 		}
 		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
 			return MyLR.learn(x, y, path);
 		}
 		return -7000;
 
+	}
+
+	private String checkFiles(int noOfNodes, String[] x, double[] y,
+			double[][] s) {
+		if (x == null) {
+			return "Error while reading file with attributes.";
+		}
+
+		if (x.length != noOfNodes) {
+			return "Number of lines in the file with attributes should be "
+					+ noOfNodes + ".";
+		}
+
+		if (y == null) {
+			return "Number of lines in in the file with outputs should be "
+					+ noOfNodes + ".";
+		}
+
+		if (s == null) {
+			return "Ordinal number of node can be between 1 and " + noOfNodes
+					+ ".";
+		}
+		return null;
+	}
+
+	private String createFolderAndSaveData(String method) {
+		File matrixFile = new File(txtMatrixFile.getText());
+		File xFile = new File(txtXFile.getText());
+		File yFile = new File(txtYFile.getText());
+		Writer.createFolder("MyModels" + method);
+		String path = "MyModels" + method + "/" + txtModelName.getText();
+		Writer.createFolder(path);
+		String dataPath = "MyModels" + method + "/" + txtModelName.getText()
+				+ "/data";
+		Writer.createFolder(dataPath);
+		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
+		Writer.copyFile(xFile, dataPath + "/x.txt");
+
+		Writer.copyFile(yFile, dataPath + "/y.txt");
+		Writer.createFolder(path);
+		return path;
 	}
 
 	private void callMethod(String method, String path, int noOfNodes,

@@ -47,7 +47,7 @@ public class ConfigurePanel extends JPanel {
 	private boolean useMatlab;
 	private int alphaReg;
 	private int betaReg;
-	private int iterJelena;
+	private int iterMGCRF;
 
 	private JTextField txtAlphaGen;
 	private JLabel lblub;
@@ -83,7 +83,7 @@ public class ConfigurePanel extends JPanel {
 	private JLabel label_4;
 	private JTextField txtBetaReg;
 	private JTextField txtAlphaReg;
-	private JTextField txtIterJelena;
+	private JTextField txtIterMGCRF;
 
 	public ConfigurePanel(JFrame mainFrame) {
 		setBackground(UIManager.getColor("Button.background"));
@@ -156,7 +156,7 @@ public class ConfigurePanel extends JPanel {
 		matlabPath = "";
 		alphaReg = 10000;
 		betaReg = 10;
-		iterJelena = 50;
+		iterMGCRF = 50;
 	}
 
 	private JTextField getTxtAlphaGen() {
@@ -337,7 +337,7 @@ public class ConfigurePanel extends JPanel {
 		iterNN = Integer.parseInt(txtIterNN.getText());
 		alphaReg= Integer.parseInt(txtAlphaReg.getText());
 		betaReg= Integer.parseInt(txtBetaReg.getText());
-		iterJelena= Integer.parseInt(txtIterJelena.getText());
+		iterMGCRF= Integer.parseInt(txtIterMGCRF.getText());
 		useMatlab = chckMatlab.isSelected();
 		matlabPath = txtPath.getText();
 		text[0] = "AlphaGen=" + alphaGen;
@@ -350,7 +350,7 @@ public class ConfigurePanel extends JPanel {
 		text[7] = "Iterations NN=" + iterNN;
 		text[8] = "AlphaReg=" + alphaReg;
 		text[9] = "BetaReg=" + betaReg;
-		text[10] = "Iterations Jelena=" + iterJelena;
+		text[10] = "Iterations m-GCRF=" + iterMGCRF;
 		text[11] = "Use MATLAB=" + useMatlab;
 		text[12] = "Path=" + matlabPath;
 		return text;
@@ -443,12 +443,12 @@ public class ConfigurePanel extends JPanel {
 		}
 		
 		try {
-			int b = Integer.parseInt(txtIterJelena.getText());
+			int b = Integer.parseInt(txtIterMGCRF.getText());
 			if (b <= 0) {
-				return "No. of iteration for Jelena training should be greater than 0.";
+				return "No. of iteration for m-GCRF training should be greater than 0.";
 			}
 		} catch (NumberFormatException e) {
-			return "No. of iteration for Jelena training should be integer.";
+			return "No. of iteration for m-GCRF training should be integer.";
 		}
 		
 		
@@ -474,7 +474,7 @@ public class ConfigurePanel extends JPanel {
 						.toString());
 				alphaReg = Integer.parseInt(params.get("AlphaReg").toString());
 				betaReg = Integer.parseInt(params.get("BetaReg").toString());
-				iterJelena = Integer.parseInt(params.get("Iterations Jelena")
+				iterMGCRF = Integer.parseInt(params.get("Iterations m-GCRF")
 						.toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
@@ -504,7 +504,7 @@ public class ConfigurePanel extends JPanel {
 		txtPath.setText(matlabPath);
 		txtAlphaReg.setText(alphaReg+"");	
 		txtBetaReg.setText(betaReg+"");
-		txtIterJelena.setText(iterJelena + "");
+		txtIterMGCRF.setText(iterMGCRF + "");
 	}
 
 	private JButton getBtnResetToDefaults() {
@@ -640,7 +640,7 @@ public class ConfigurePanel extends JPanel {
 	}
 	private JLabel getLblParametersForTraining() {
 		if (lblParametersForTraining == null) {
-			lblParametersForTraining = new JLabel("Parameters for training Jelena:");
+			lblParametersForTraining = new JLabel("Parameters for training m-GCRF:");
 			lblParametersForTraining.setHorizontalAlignment(SwingConstants.LEFT);
 			lblParametersForTraining.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblParametersForTraining.setBounds(416, 11, 434, 30);
@@ -695,13 +695,13 @@ public class ConfigurePanel extends JPanel {
 		return txtAlphaReg;
 	}
 	private JTextField getTextField_2_1() {
-		if (txtIterJelena == null) {
-			txtIterJelena = new JTextField();
-			txtIterJelena.setText("0");
-			txtIterJelena.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtIterJelena.setColumns(10);
-			txtIterJelena.setBounds(640, 127, 91, 30);
+		if (txtIterMGCRF == null) {
+			txtIterMGCRF = new JTextField();
+			txtIterMGCRF.setText("0");
+			txtIterMGCRF.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtIterMGCRF.setColumns(10);
+			txtIterMGCRF.setBounds(640, 127, 91, 30);
 		}
-		return txtIterJelena;
+		return txtIterMGCRF;
 	}
 }

@@ -8,6 +8,6 @@ NN hidden=1
 Iterations NN=1000
 AlphaReg=10000
 BetaReg=10
-Iterations Jelena=50
+Iterations m-GCRF=50
 Use MATLAB=true
 Path=C:\Program Files\MATLAB\R2016a\bin\matlab.exe

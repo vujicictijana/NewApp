@@ -100,6 +100,40 @@ public class Helper {
 		return d;
 	}
 
+	public static DataSet prepareTemporalDataForNN(String[] data, String[] y,
+			int x, int time) {
+		DataSet d = new DataSet(x, 1);
+		double[] oneX = null;
+		String[] line = null;
+		String[] lineY = null;
+		for (int i = 0; i < data.length; i++) {
+			line = data[i].split(",");
+			lineY = y[i].split(",");
+			int indexY = 0;
+			int indexX = 0;
+			oneX = new double[x];
+			for (int j = 0; j < line.length; j++) {
+				oneX[indexX] = Double.parseDouble(line[j]);
+				if (oneX[indexX] > 1 || oneX[indexX] < 0) {
+					return null;
+				}
+				indexX++;
+				if ((j + 1) % time == 0) {
+					double yValue = Double.parseDouble(lineY[indexY]);
+					if (yValue > 1 || yValue < 0) {
+						return null;
+					}
+					d.addRow(new DataSetRow(oneX, new double[] { yValue }));
+					oneX = new double[x];
+					indexY++;
+					indexX = 0;
+				}
+			}
+		}
+		// System.out.println(d);
+		return d;
+	}
+
 	public static double[][] getAllDataNormalized(String[] data, int no) {
 		double[][] xValues = new double[data.length][no];
 		String[] values = null;

@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import app.algorithms.basic.BasicCalcs;
 import app.algorithms.matlab.UmGCRF;
+import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
@@ -25,7 +26,9 @@ import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
+import app.gui.threads.MGCRFTrainMyModelForGUI;
 import app.gui.threads.UmGCRFTrainMyModelForGUI;
+import app.predictors.helper.Helper;
 import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
@@ -44,6 +47,8 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import javax.swing.JComboBox;
+
+import org.neuroph.core.data.DataSet;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -83,13 +88,12 @@ public class TrainTemporalPanel extends JPanel {
 
 	private int alphaReg;
 	private int betaReg;
-	private int iterJelena;
+	private int iterMGCRF;
 	private int hidden;
 	private int iterNN;
 	private String matlabPath;
 	private boolean useMatlab;
-	
-	
+
 	private JLabel lblData;
 	private JLabel lblModel;
 	private JLabel lblPredictor_1;
@@ -101,8 +105,8 @@ public class TrainTemporalPanel extends JPanel {
 	private JComboBox<String> cmbMethod;
 	private JLabel lblMethod;
 	private JLabel lblNoOfTime;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtNoTime;
+	private JTextField txtNoTimeTrain;
 	private JLabel lblNoOfTime_1;
 	private JCheckBox chkLearn;
 	private JButton btnQuestionS;
@@ -169,8 +173,8 @@ public class TrainTemporalPanel extends JPanel {
 		add(getCmbMethod());
 		add(getLblMethod());
 		add(getLblNoOfTime());
-		add(getTextField());
-		add(getTextField_1());
+		add(getTxtNoTime());
+		add(getTxtNoTimeTrain());
 		add(getLblNoOfTime_1());
 		add(getChkLearn());
 		add(getBtnQuestionS());
@@ -416,14 +420,92 @@ public class TrainTemporalPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						String method = cmbMethod.getSelectedItem().toString();
-						Writer.createFolder("MyModels" + method);
-						String path = "MyModels" + method + "/"
-								+ txtModelName.getText();
-						Writer.createFolder(path);
-						String dataPath = "MyModels" + method + "/"
-								+ txtModelName.getText() + "/data";
-						Writer.createFolder(dataPath);
+
+						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
+						int noOfTime = Integer.parseInt(txtNoTime.getText());
+						int noOfTimeTrain = Integer.parseInt(txtNoTimeTrain
+								.getText());
+						int noOfX = Integer.parseInt(txtNoX.getText());
+
+						String[] x = Reader.read(txtXFile.getText());
+						String[] y = Reader.read(txtYFile.getText());
+						double[][] s = null;
+						if (!chkLearn.isSelected()) {
+							s = Reader.readGraph(txtMatrixFile.getText(),
+									noOfNodes);
+						}
+						String message1 = checkFiles(noOfNodes, noOfTime,
+								noOfX, x, y, s);
+
+						if (message1 != null) {
+							JOptionPane.showMessageDialog(mainFrame, message1,
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						String path = createFolderAndSaveData();
+						double result = 0;
+						if (isMGCRF()) {
+							result = callPredictor(path, x, y, noOfX, noOfTime,
+									noOfTimeTrain);
+
+							if (result == -7000) {
+								JOptionPane.showMessageDialog(mainFrame,
+										"Unknown predictor.", "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							if (result == -3000) {
+								JOptionPane
+										.showMessageDialog(
+												mainFrame,
+												cmbPredictor.getSelectedItem()
+														.toString()
+														+ " cannot be applied to your data. Choose different predictor.",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							if (result == -5000) {
+								JOptionPane.showMessageDialog(mainFrame,
+										"Files are not in correct format.",
+										"Error", JOptionPane.ERROR_MESSAGE);
+							}
+							if (result == -10000) {
+								JOptionPane
+										.showMessageDialog(
+												mainFrame,
+												"Values should be normalized (range from 0 to 1) for neural network.",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+							} else {
+								double[][] r = Reader.readMatrixTwoFiles(path
+										+ "/data/r.txt", path
+										+ "/data/rTest.txt", noOfNodes,
+										noOfTime, noOfTimeTrain);
+								double[][] yMatrix = Reader.readMatrix(path
+										+ "/data/y.txt", noOfNodes, noOfTime);
+								if (BasicCalcs.isSymmetric(s)) {
+									int maxIter = Integer.parseInt(txtIter
+											.getText());
+									int regAlpha = Integer.parseInt(txtAlpha
+											.getText());
+									int regBeta = Integer.parseInt(txtBeta
+											.getText());
+									trainMGCRF(matlabPath, r, yMatrix, s, noOfTime,
+											noOfTimeTrain, maxIter, regAlpha,
+											regBeta);
+								} else {
+									JOptionPane
+											.showMessageDialog(
+													mainFrame,
+													"For m-GCRF method matrix should be symmetric.",
+													"Error",
+													JOptionPane.ERROR_MESSAGE);
+								}
+							}
+
+						}
 
 					}
 				}
@@ -435,15 +517,98 @@ public class TrainTemporalPanel extends JPanel {
 		return btnTrain;
 	}
 
-	private double callPredictor(String path, String[] x, double[] y) {
+	public void trainMGCRF(String modelFolder, double[][] r, double[][] y,
+			double[][] s, int noTime, int training, int maxIter, int regAlpha,
+			int regBeta) {
+		ProgressBar frame = new ProgressBar("Training");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(modelFolder,
+				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
+				regAlpha, regBeta);
+
+		t.start();
+	}
+
+	private String checkFiles(int noOfNodes, int noOfTime, int noOfX,
+			String[] x, String[] y, double[][] s) {
+		int totalX = noOfTime * noOfX;
+		if (x == null) {
+			return "Error while reading file with attributes.";
+		}
+
+		if (x.length != noOfNodes) {
+			return "Number of lines in the file with attributes should be "
+					+ noOfNodes + ".";
+		}
+		for (int i = 0; i < x.length; i++) {
+			if (x[i].split(",").length != totalX) {
+				return "Number of values in each line in the file with attributes should be equal to no. of attributes * no. of time points: "
+						+ totalX;
+			}
+		}
+		if (y == null) {
+			return "Error while reading file with attributes.";
+		}
+		if (y.length != noOfNodes) {
+			return "Number of lines in the file with outputs should be "
+					+ noOfNodes + ".";
+		}
+		for (int i = 0; i < x.length; i++) {
+			if (y[i].split(",").length != noOfTime) {
+				return "Number of values in each line in the file with outputs should be equal to no. of time points: "
+						+ noOfTime;
+			}
+		}
+		if (s == null) {
+			return "Ordinal number of node can be between 1 and " + noOfNodes
+					+ ".";
+		}
+		return null;
+	}
+
+	private String createFolderAndSaveData() {
+		File matrixFile = null;
+		if (!chkLearn.isSelected()) {
+			matrixFile = new File(txtMatrixFile.getText());
+		}
+		File xFile = new File(txtXFile.getText());
+		File yFile = new File(txtYFile.getText());
+		String method = cmbMethod.getSelectedItem().toString();
+		Writer.createFolder("MyModels" + method);
+		String path = "MyModels" + method + "/" + txtModelName.getText();
+		Writer.createFolder(path);
+		String dataPath = "MyModels" + method + "/" + txtModelName.getText()
+				+ "/data";
+		Writer.createFolder(dataPath);
+		Writer.copyFile(xFile, dataPath + "/x.txt");
+		Writer.copyFile(yFile, dataPath + "/y.txt");
+		if (matrixFile != null) {
+			Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
+		}
+		return path;
+	}
+
+	private double callPredictor(String path, String[] x, String[] y, int noX,
+			int noT, int noTrain) {
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 			int noOfHidden = Integer.parseInt(txtHidden.getText());
 			int noOfIter = Integer.parseInt(txtIterNN.getText());
-			return MyNN.learn(noOfHidden, x, y, 0.003, noOfIter, path);
+			DataSet trainingSet = Helper.prepareTemporalDataForNN(x, y, noX,
+					noT);
+			if (trainingSet != null) {
+
+			} else {
+				return -10000;
+			}
+			return MyNN.learnAndTest(noOfHidden, trainingSet, 0.003, noOfIter,
+					path, noT, noTrain);
 		}
-		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
-			return MyLR.learn(x, y, path);
-		}
+		// if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
+		// return MyLR.learn(x, y, path);
+		// }
 		return -7000;
 
 	}
@@ -460,7 +625,48 @@ public class TrainTemporalPanel extends JPanel {
 	}
 
 	public String validateData() {
-		if (txtMatrixFile.getText().equals("")) {
+
+		try {
+			int a = Integer.parseInt(txtNoOfNodes.getText());
+			if (a <= 0) {
+				return "No. of nodes should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of nodes should be integer.";
+		}
+
+		int t = 0;
+		try {
+			t = Integer.parseInt(txtNoTime.getText());
+			if (t <= 0) {
+				return "No. of time points should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of time points should be integer.";
+		}
+		try {
+			int a = Integer.parseInt(txtNoTimeTrain.getText());
+			if (a <= 0) {
+				return "No. of time points for training should be greater than 0.";
+			}
+			if (a >= t) {
+				return "No. of time points for training should be lower than total no. of time points.";
+			}
+
+		} catch (NumberFormatException e) {
+			return "No. of time points for training should be integer.";
+		}
+
+		try {
+			int a = Integer.parseInt(txtNoX.getText());
+			if (a <= 0) {
+				return "No. of attributes pre node should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of attributes pre node should be integer.";
+		}
+
+		if (txtMatrixFile.getText().equals("") && !chkLearn.isSelected()) {
 			return "Choose matrix file.";
 		}
 		if (txtXFile.getText().equals("")) {
@@ -469,16 +675,12 @@ public class TrainTemporalPanel extends JPanel {
 		if (txtYFile.getText().equals("")) {
 			return "Choose file with output values.";
 		}
-		try {
-			Integer.parseInt(txtNoOfNodes.getText());
-		} catch (NumberFormatException e) {
-			return "No. of nodes should be integer.";
-		}
+
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
+		if (cmbPredictor.getSelectedIndex() == 0 && isMGCRF()) {
 
-		if (cmbPredictor.getSelectedIndex() == 0) {
 			return "Choose predictor.";
 		}
 		if (cmbMethod.getSelectedIndex() == 0) {
@@ -490,21 +692,32 @@ public class TrainTemporalPanel extends JPanel {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
 		}
-		try {
-			Double.parseDouble(txtAlpha.getText());
-		} catch (NumberFormatException e) {
-			return "First alpha should be number.";
-		}
-		try {
-			Double.parseDouble(txtBeta.getText());
-		} catch (NumberFormatException e) {
-			return "First beta should be number.";
-		}
+		if (isMGCRF()) {
+			try {
+				int a = Integer.parseInt(txtAlpha.getText());
+				if (a <= 0) {
+					return "Alpha for regularization should be greater than 0.";
+				}
+			} catch (NumberFormatException e) {
+				return "Alpha for regularization should be integer.";
+			}
+			try {
+				int b = Integer.parseInt(txtBeta.getText());
+				if (b <= 0) {
+					return "Beta for regularization should be greater than 0.";
+				}
+			} catch (NumberFormatException e) {
+				return "Beta for regularization should be integer.";
+			}
 
-		try {
-			Integer.parseInt(txtIter.getText());
-		} catch (NumberFormatException e) {
-			return "Max. iterations should be integer.";
+			try {
+				int b = Integer.parseInt(txtIter.getText());
+				if (b <= 0) {
+					return "No. of iteration for m-GCRF training should be greater than 0.";
+				}
+			} catch (NumberFormatException e) {
+				return "No. of iteration for m-GCRF training should be integer.";
+			}
 		}
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 
@@ -521,6 +734,10 @@ public class TrainTemporalPanel extends JPanel {
 			}
 		}
 		return null;
+	}
+
+	private boolean isMGCRF() {
+		return cmbMethod.getSelectedItem().toString().contains("m-GCRF");
 	}
 
 	public String validateDataForTestPredictor() {
@@ -625,7 +842,7 @@ public class TrainTemporalPanel extends JPanel {
 			try {
 				alphaReg = Integer.parseInt(params.get("AlphaReg").toString());
 				betaReg = Integer.parseInt(params.get("BetaReg").toString());
-				iterJelena = Integer.parseInt(params.get("Iterations Jelena")
+				iterMGCRF = Integer.parseInt(params.get("Iterations m-GCRF")
 						.toString());
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
 				iterNN = Integer.parseInt(params.get("Iterations NN")
@@ -648,7 +865,7 @@ public class TrainTemporalPanel extends JPanel {
 	public void setTxtValues() {
 		txtAlpha.setText(alphaReg + "");
 		txtBeta.setText(betaReg + "");
-		txtIter.setText(iterJelena + "");
+		txtIter.setText(iterMGCRF + "");
 		txtIterNN.setText(iterNN + "");
 		txtHidden.setText(hidden + "");
 	}
@@ -771,14 +988,14 @@ public class TrainTemporalPanel extends JPanel {
 				cmbMethod.addItem("choose method");
 				cmbMethod.addItem("Djole");
 				cmbMethod.addItem("Chao");
-				cmbMethod.addItem("Jelena");
+				cmbMethod.addItem("m-GCRF");
 			} else {
 				cmbMethod.addItem("no available methods without MATLAB");
 			}
 			cmbMethod.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					String method = cmbMethod.getSelectedItem().toString();
-					if (method.contains("Jelena")) {
+					if (isMGCRF()) {
 						showParams();
 					} else {
 						hideParams();
@@ -838,24 +1055,24 @@ public class TrainTemporalPanel extends JPanel {
 		return lblNoOfTime;
 	}
 
-	private JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			textField.setColumns(10);
-			textField.setBounds(237, 92, 91, 30);
+	private JTextField getTxtNoTime() {
+		if (txtNoTime == null) {
+			txtNoTime = new JTextField();
+			txtNoTime.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtNoTime.setColumns(10);
+			txtNoTime.setBounds(237, 92, 91, 30);
 		}
-		return textField;
+		return txtNoTime;
 	}
 
-	private JTextField getTextField_1() {
-		if (textField_1 == null) {
-			textField_1 = new JTextField();
-			textField_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			textField_1.setColumns(10);
-			textField_1.setBounds(237, 130, 91, 30);
+	private JTextField getTxtNoTimeTrain() {
+		if (txtNoTimeTrain == null) {
+			txtNoTimeTrain = new JTextField();
+			txtNoTimeTrain.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtNoTimeTrain.setColumns(10);
+			txtNoTimeTrain.setBounds(237, 130, 91, 30);
 		}
-		return textField_1;
+		return txtNoTimeTrain;
 	}
 
 	private JLabel getLblNoOfTime_1() {
@@ -878,13 +1095,13 @@ public class TrainTemporalPanel extends JPanel {
 						txtMatrixFile.setEnabled(false);
 						btnBrowseS.setEnabled(false);
 						lblSFile.setEnabled(false);
-						removeMethod("Jelena");
+						removeMethod("m-GCRF");
 					} else {
 						txtMatrixFile.setEditable(true);
 						txtMatrixFile.setEnabled(true);
 						btnBrowseS.setEnabled(true);
 						lblSFile.setEnabled(true);
-						addMethod("Jelena");
+						addMethod("m-GCRF");
 					}
 				}
 			});
@@ -897,8 +1114,10 @@ public class TrainTemporalPanel extends JPanel {
 		for (int i = 0; i < cmbMethod.getItemCount(); i++) {
 			if (cmbMethod.getItemAt(i).toString().contains(name)) {
 				cmbMethod.removeItemAt(i);
+				cmbMethod.setSelectedIndex(0);
 				panel.repaint();
 				panel.revalidate();
+
 				return;
 			}
 		}
@@ -906,6 +1125,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	public void addMethod(String name) {
 		cmbMethod.addItem(name);
+		cmbMethod.setSelectedIndex(0);
 		panel.repaint();
 		panel.revalidate();
 	}

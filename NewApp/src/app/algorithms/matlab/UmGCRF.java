@@ -38,7 +38,7 @@ public class UmGCRF {
 					.getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
-			path = path.substring(0, path.lastIndexOf("/")) + "/matlab";
+			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/UMGCRF";
 			proxy.eval("addpath('" + path + "')");
 
 			// random data from matlab
@@ -136,7 +136,7 @@ public class UmGCRF {
 					.getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
-			path = path.substring(0, path.lastIndexOf("/")) + "/matlab";
+			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/UMGCRF";
 			proxy.eval("addpath('" + path + "')");
 
 			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);

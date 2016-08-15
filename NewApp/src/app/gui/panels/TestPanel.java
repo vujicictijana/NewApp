@@ -36,6 +36,8 @@ import java.util.Map;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JComboBox;
 
+import org.neuroph.core.data.DataSet;
+
 public class TestPanel extends JPanel {
 
 	private static final long serialVersionUID = 356011421979477981L;
@@ -127,6 +129,13 @@ public class TestPanel extends JPanel {
 
 						String[] x = Reader.read(txtXFile.getText());
 						if (x == null) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Reading file error.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						if (x.length != noOfNodes) {
 							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in the file with attributes should be "
 											+ noOfNodes + ".", "Error",
@@ -450,7 +459,9 @@ public class TestPanel extends JPanel {
 	private double callPredictor(String path, String[] x, double[] y) {
 
 		if (Writer.checkFolder(path + "/nn")) {
-			return MyNN.test(path, x, y);
+
+			DataSet testSet = Helper.prepareDataForNN(x, y);
+			return MyNN.test(path, testSet);
 		}
 		if (Writer.checkFolder(path + "/mlr")) {
 			double[][] xMlr = Helper.prepareDataForLR(x);

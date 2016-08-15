@@ -116,6 +116,13 @@ public class PredictPanel extends JPanel {
 						String[] x = Reader.read(txtXFile.getText());
 						if (x == null) {
 							JOptionPane.showMessageDialog(mainFrame,
+									"Reading file error.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						if (x.length != noOfNodes) {
+							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in the file with attributes should be "
 											+ noOfNodes + ".", "Error",
 									JOptionPane.ERROR_MESSAGE);

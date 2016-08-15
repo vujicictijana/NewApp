@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.naming.ConfigurationException;
 
+import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 
 public class Reader {
@@ -48,6 +49,58 @@ public class Reader {
 			r[k] = Double.parseDouble(text[k]);
 		}
 		return r;
+	}
+
+	public static double[][] readMatrixTwoFiles(String path1, String path2,
+			int noOfNodes, int t, int train) {
+		double[][] r = new double[noOfNodes][t];
+
+		String[] text = Reader.read(path1);
+
+		if (text.length != noOfNodes * train) {
+			return null;
+		}
+		String[] text2 = Reader.read(path2);
+
+		if (text2.length != noOfNodes * (t - train)) {
+			return null;
+		}
+
+		int indexText = 0;
+		int indexText2 = 0;
+		for (int i = 0; i < noOfNodes; i++) {
+			for (int j = 0; j < t; j++) {
+				if (j <= train - 1) {
+					r[i][j] = Double.parseDouble(text[indexText]);
+					indexText++;
+				} else {
+					r[i][j] = Double.parseDouble(text2[indexText2]);
+					indexText2++;
+				}
+			}
+		}
+		// GraphGenerator.showMatrix(r);
+		return r;
+	}
+
+	public static double[][] readMatrix(String path, int noOfNodes, int t) {
+		double[][] matrix = new double[noOfNodes][t];
+
+		String[] text = Reader.read(path);
+
+		if (text.length != noOfNodes) {
+			return null;
+		}
+	
+		String[] line = null;
+		for (int i = 0; i < noOfNodes; i++) {
+			line = text[i].split(",");
+			for (int j = 0; j < t; j++) {
+				matrix[i][j] = Double.parseDouble(line[j]);
+			}
+		}
+		// GraphGenerator.showMatrix(matrix);
+		return matrix;
 	}
 
 	public static String[] read(String fileName) {
