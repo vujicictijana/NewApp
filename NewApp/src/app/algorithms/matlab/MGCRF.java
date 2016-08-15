@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import javax.swing.JOptionPane;
+
 import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.basic.BasicCalcs;
 import app.data.generators.ArrayGenerator;
@@ -11,6 +13,7 @@ import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
+import app.predictors.helper.Helper;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import matlabcontrol.MatlabProxy;
@@ -24,6 +27,7 @@ public class MGCRF {
 	public static String train(String matlabPath, double[][] s, double[][] y,
 			double[][] r, int noTime, int training, int maxIter, int regAlpha,
 			int regBeta, ProgressBar frame, String modelFolder) {
+
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true).setProxyTimeout(30000L)
 				.setMatlabLocation(matlabPath).build();
@@ -36,6 +40,7 @@ public class MGCRF {
 					.getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
+			String mainPath = path.substring(0, path.lastIndexOf("/"));
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/mGCRF";
 			proxy.eval("addpath('" + path + "')");
 
@@ -43,6 +48,7 @@ public class MGCRF {
 			processor.setNumericArray("similarity", new MatlabNumericArray(s,
 					null));
 			processor.setNumericArray("R", new MatlabNumericArray(r, null));
+			y = Helper.putNaN(y);
 			processor.setNumericArray("y", new MatlabNumericArray(y, null));
 
 			proxy.setVariable("numTimeSteps", noTime);
@@ -58,23 +64,36 @@ public class MGCRF {
 
 			String message = null;
 			try {
-				proxy.eval("[Data,predictionCRF] = mGCRF(numTimeSteps,training,maxiter,regAlpha,regBeta,RR,y,similarity);");
+				proxy.eval("[ualpha, ubeta, Data,predictionCRF] = mGCRF(numTimeSteps,training,maxiter,regAlpha,regBeta,RR,y,similarity);");
 
 				proxy.eval("rmpath('" + path + "')");
 
-				// double theta = ((double[]) proxy.getVariable("theta"))[0];
-				double[] output = ((double[]) proxy
+				double[] outputs = ((double[]) proxy
 						.getVariable("predictionCRF"));
 
-				// Writer.createFolder(modelFolder + "/parameters");
-				// String fileName = modelFolder + "/parameters/UmGCRF.txt";
-				// String[] text = { "Theta=" + theta };
-				// Writer.write(text, fileName);
-				double r2 = 0;
-				// double r2 = BasicCalcs.rSquared(output, y);
+				double ualpha = ((double[]) proxy.getVariable("ualpha"))[0];
+				double ubeta = ((double[]) proxy.getVariable("ubeta"))[0];
+
+				Writer.createFolder(modelFolder + "/parameters");
+				String fileName = mainPath + "/" + modelFolder
+						+ "/parameters/mGCRF.mat";
+				proxy.setVariable("fileName", fileName);
+
+				proxy.eval("save(fileName,'Data','-v7.3')");
+				double[] lastY = new double[s.length];
+				for (int i = 0; i < lastY.length; i++) {
+					lastY[i] = y[i][noTime - 1];
+				}
+
+				String fileName1 = modelFolder + "/parameters/mGCRF.txt";
+				String[] text = { "Alpha=" + ualpha, "Beta=" + ubeta };
+				Writer.write(text, fileName1);
+
+				double r2 = BasicCalcs.rSquaredWitNaN(outputs, lastY);
 				DecimalFormat df = new DecimalFormat("#.####");
-				message = "Testing with same data:\n* R^2 value for standard UmGCRF is: "
-						+ df.format(r2);
+				String export = exportResults(r2, outputs, modelFolder);
+				message = "m-GCRF results: \n* R^2 value for test data: "
+						+ df.format(r2) + export;
 				proxy.disconnect();
 
 			} catch (Exception e) {
@@ -82,13 +101,13 @@ public class MGCRF {
 			}
 
 			// close matlab
-			// Runtime rt = Runtime.getRuntime();
-			// try {
-			// rt.exec("taskkill /F /IM MATLAB.exe");
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
+			Runtime rt = Runtime.getRuntime();
+			try {
+				rt.exec("taskkill /F /IM MATLAB.exe");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			frame.setVisible(false);
 			return message;
 
@@ -99,5 +118,28 @@ public class MGCRF {
 		}
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
+	}
+
+	private static String exportResults(double r2, double[] outputs,
+			String folder) {
+		Writer.createFolder(folder + "/test");
+		String fileName = folder + "/test/results.txt";
+		String[] text = exportTxt(r2, outputs);
+		Writer.write(text, fileName);
+		return "\n* Results are successfully exported. \n* File location: "
+				+ folder + "/test";
+	}
+
+	private static String[] exportTxt(double r2, double[] outputs) {
+		DecimalFormat df = new DecimalFormat("#.######");
+		String[] txt = new String[outputs.length + 1];
+
+		for (int i = 0; i < outputs.length; i++) {
+			txt[i] = outputs[i] + "";
+		}
+
+		txt[outputs.length] = "R^2 UmGCRF: " + df.format(r2);
+
+		return txt;
 	}
 }

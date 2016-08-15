@@ -121,7 +121,11 @@ public class Helper {
 				if ((j + 1) % time == 0) {
 					double yValue = Double.parseDouble(lineY[indexY]);
 					if (yValue > 1 || yValue < 0) {
-						return null;
+						if (yValue != -9999) {
+							return null;
+						} else {
+							yValue = 0;
+						}
 					}
 					d.addRow(new DataSetRow(oneX, new double[] { yValue }));
 					oneX = new double[x];
@@ -132,6 +136,18 @@ public class Helper {
 		}
 		// System.out.println(d);
 		return d;
+	}
+
+	public static double[][] putNaN(double[][] y) {
+		for (int i = 0; i < y.length; i++) {
+			double[] array = y[i];
+			for (int j = 0; j < array.length; j++) {
+				if (y[i][j] == -9999) {
+					y[i][j] = Double.NaN;
+				}
+			}
+		}
+		return y;
 	}
 
 	public static double[][] getAllDataNormalized(String[] data, int no) {

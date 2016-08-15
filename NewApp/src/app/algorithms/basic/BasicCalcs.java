@@ -43,7 +43,7 @@ public class BasicCalcs {
 	public static boolean isSymmetric(double[][] matrix) {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix.length; j++) {
-				if(matrix[i][j]!=matrix[j][i]){
+				if (matrix[i][j] != matrix[j][i]) {
 					return false;
 				}
 			}
@@ -187,7 +187,7 @@ public class BasicCalcs {
 		}
 		return Math.sqrt(sum2 / array.length);
 	}
-	
+
 	public static double average(double[] array) {
 		double sum = 0;
 		for (int i = 0; i < array.length; i++) {
@@ -195,7 +195,7 @@ public class BasicCalcs {
 		}
 		return sum / array.length;
 	}
-	
+
 	public static double rSquared(double[] output, double[] expectedY) {
 		double avg = average(output);
 		double firstSum = 0;
@@ -205,6 +205,32 @@ public class BasicCalcs {
 			secondSum += Math.pow(expectedY[i] - avg, 2);
 		}
 		return 1 - (firstSum / secondSum);
+	}
+
+	public static double rSquaredWitNaN(double[] output, double[] expectedY) {
+		double avg = averageWitNaN(expectedY);
+		double firstSum = 0;
+		double secondSum = 0;
+		for (int i = 0; i < output.length; i++) {
+			if (!Double.isNaN(expectedY[i])) {
+				firstSum += Math.pow(expectedY[i] - output[i], 2);
+				secondSum += Math.pow(expectedY[i] - avg, 2);
+			}
+		}
+		return 1 - (firstSum / secondSum);
+	}
+
+	public static double averageWitNaN(double[] array) {
+		double sum = 0;
+		int no = 0;
+		for (int i = 0; i < array.length; i++) {
+			if (!Double.isNaN(array[i])) {
+				sum += array[i];
+				no++;
+			}
+		}
+		System.out.println(no);
+		return sum / no;
 	}
 
 }

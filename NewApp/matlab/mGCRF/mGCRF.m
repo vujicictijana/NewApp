@@ -1,4 +1,4 @@
-function [Data,predictionCRF] = mGCRF(numTimeSteps,training,maxiter,regAlpha,regBeta,RR,y,similarity)
+function [ualpha, ubeta, Data,predictionCRF] = mGCRF(numTimeSteps,training,maxiter,regAlpha,regBeta,RR,y,similarity)
 
 trainingTS = 1:training;
 testTS = numTimeSteps;

@@ -1,6 +1,7 @@
 package app.gui.panels;
 
 import javax.imageio.ImageIO;
+import javax.jws.WebParam.Mode;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -400,7 +401,8 @@ public class TrainTemporalPanel extends JPanel {
 									mainFrame,
 									"Text file (.txt) that contains actual output for each node for each time point."
 											+ "\nEach line should contain outputs for one node for all time points (comma separated). "
-											+ "\nOrder of arrays of outputs should be consistent with ordinal numbers of nodes in the file with attributes.",
+											+ "\nOrder of arrays of outputs should be consistent with ordinal numbers of nodes in the file with attributes."
+											+ "\nFor missing values put -9999.",
 									"Help", JOptionPane.QUESTION_MESSAGE,
 									Style.questionIcon());
 				}
@@ -492,9 +494,9 @@ public class TrainTemporalPanel extends JPanel {
 											.getText());
 									int regBeta = Integer.parseInt(txtBeta
 											.getText());
-									trainMGCRF(matlabPath, r, yMatrix, s, noOfTime,
-											noOfTimeTrain, maxIter, regAlpha,
-											regBeta);
+									trainMGCRF(matlabPath, path, r, yMatrix, s,
+											noOfTime, noOfTimeTrain, maxIter,
+											regAlpha, regBeta);
 								} else {
 									JOptionPane
 											.showMessageDialog(
@@ -517,15 +519,15 @@ public class TrainTemporalPanel extends JPanel {
 		return btnTrain;
 	}
 
-	public void trainMGCRF(String modelFolder, double[][] r, double[][] y,
-			double[][] s, int noTime, int training, int maxIter, int regAlpha,
-			int regBeta) {
+	public void trainMGCRF(String matlabPath, String modelFolder, double[][] r,
+			double[][] y, double[][] s, int noTime, int training, int maxIter,
+			int regAlpha, int regBeta) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(modelFolder,
+		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
 				regAlpha, regBeta);
 
