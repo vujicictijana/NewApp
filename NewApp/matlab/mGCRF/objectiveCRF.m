@@ -41,11 +41,11 @@ invQL=Qll-Qlh*Qhhinv*Qhl; % inv(A)*b je A\b; b/A for b*inv(A)
 %f = calcLikelihood(RR,QL,ylabel,mu);invQL               % f = calcLikelihood(RR,Qll,ylabel,mu_l);
 RR=chol(invQL);
 mu = Qll\bl; % mu je ustavari muL
-f = calcLikelihood(RR,invQL,ylabel,mu)+Data.regulrAlpha*(1/2)*exp(ualpha)^2+Data.regularBeta*(1/2)*exp(ubeta)^2;   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PROVERI DA LI JE INVERSE ILI NE
+f = calcLikelihood(RR,invQL,ylabel,mu)+Data.regularAlpha*(1/2)*exp(ualpha)^2+Data.regularBeta*(1/2)*exp(ubeta)^2;   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PROVERI DA LI JE INVERSE ILI NE
 %%%%%%%%%%%inverse je
 
 % calculate first derivatives with respect to parameters
-dualpha = derivativeAlpha(Data,invQL,Qhhinv,Qll,Qlh,Qhl,Qhh,ylabel,mu,ualpha)-Data.regulrAlpha*exp(ualpha);
+dualpha = derivativeAlpha(Data,invQL,Qhhinv,Qll,Qlh,Qhl,Qhh,ylabel,mu,ualpha)-Data.regularAlpha*exp(ualpha);
 dubeta = derivativeBeta(Data,invQL,Qhhinv,Qll,Qlh,Qhl,Qhh,ylabel,mu,ubeta)-Data.regularBeta*exp(ubeta);
 
 g =[-dualpha -dubeta];
