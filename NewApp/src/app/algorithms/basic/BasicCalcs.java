@@ -229,7 +229,7 @@ public class BasicCalcs {
 				no++;
 			}
 		}
-		System.out.println(no);
+		// System.out.println(no);
 		return sum / no;
 	}
 

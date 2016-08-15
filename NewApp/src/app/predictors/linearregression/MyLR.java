@@ -5,8 +5,8 @@ import app.predictors.helper.Helper;
 
 public class MyLR {
 
-	public static double learn(String[] attributes, double[] y, String folder) {
-		double[][] x = Helper.prepareDataForLR(attributes);
+	public static double learn(double[][] x, double[] y, String folder) {
+
 		if (x[0].length == 1) {
 			double[] xOne = new double[x.length];
 			for (int i = 0; i < xOne.length; i++) {

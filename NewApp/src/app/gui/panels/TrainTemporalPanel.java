@@ -30,7 +30,10 @@ import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.gui.threads.MGCRFTrainMyModelForGUI;
 import app.gui.threads.UmGCRFTrainMyModelForGUI;
 import app.predictors.helper.Helper;
+import app.predictors.linearregression.LinearRegression;
+import app.predictors.linearregression.MultivariateLinearRegression;
 import app.predictors.linearregression.MyLR;
+import app.predictors.linearregression.TemporalData;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -115,6 +118,10 @@ public class TrainTemporalPanel extends JPanel {
 	private JLabel lblNoOfAttributres;
 	private JTextField txtNoX;
 	private JLabel lblProvideTrainAn;
+	private JLabel lblLag;
+	private JTextField txtLag;
+	private JButton btnQuestionLag;
+	private JCheckBox chckUseX;
 
 	public TrainTemporalPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -183,6 +190,10 @@ public class TrainTemporalPanel extends JPanel {
 		add(getLblNoOfAttributres());
 		add(getTxtNoX());
 		add(getLblProvideTrainAn());
+		add(getLblLag());
+		add(getTxtLag());
+		add(getBtnQuestionLag());
+		add(getChckUseX());
 		// }
 		// } else {
 		// JOptionPane
@@ -449,7 +460,7 @@ public class TrainTemporalPanel extends JPanel {
 						double result = 0;
 						if (isMGCRF()) {
 							result = callPredictor(path, x, y, noOfX, noOfTime,
-									noOfTimeTrain);
+									noOfTimeTrain, noOfNodes);
 
 							if (result == -7000) {
 								JOptionPane.showMessageDialog(mainFrame,
@@ -594,23 +605,38 @@ public class TrainTemporalPanel extends JPanel {
 	}
 
 	private double callPredictor(String path, String[] x, String[] y, int noX,
-			int noT, int noTrain) {
+			int noT, int noTrain, int nodes) {
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 			int noOfHidden = Integer.parseInt(txtHidden.getText());
 			int noOfIter = Integer.parseInt(txtIterNN.getText());
 			DataSet trainingSet = Helper.prepareTemporalDataForNN(x, y, noX,
-					noT);
-			if (trainingSet != null) {
-
-			} else {
+					noT, true);
+			if (trainingSet == null) {
 				return -10000;
 			}
 			return MyNN.learnAndTest(noOfHidden, trainingSet, 0.003, noOfIter,
 					path, noT, noTrain);
 		}
-		// if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
-		// return MyLR.learn(x, y, path);
-		// }
+		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
+			TemporalData t = Helper.prepareTemporalDataForLR(x, y, noX, noT,
+					nodes, noTrain);
+			MyLR.learn(t.getxTrain(), t.getyTrain(), path);
+			if (Writer.checkFolder(path + "/mlr")) {
+				MultivariateLinearRegression m = (MultivariateLinearRegression) Helper
+						.deserilazie(path + "/mlr/lr.txt");
+				return m.test(t.getyTest(), t.getxTest(), path, true);
+			}
+			if (Writer.checkFolder(path + "/lr")) {
+				double[][] xMlr = t.getxTest();
+				double[] xOne = new double[xMlr.length];
+				for (int i = 0; i < xOne.length; i++) {
+					xOne[i] = xMlr[i][0];
+				}
+				LinearRegression lr = (LinearRegression) Helper
+						.deserilazie(path + "/lr/lr.txt");
+				return LinearRegression.test(t.getyTest(), xOne, path, lr, true);
+			}
+		}
 		return -7000;
 
 	}
@@ -681,45 +707,66 @@ public class TrainTemporalPanel extends JPanel {
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
-		if (cmbPredictor.getSelectedIndex() == 0 && isMGCRF()) {
 
-			return "Choose predictor.";
-		}
 		if (cmbMethod.getSelectedIndex() == 0) {
 			return "Choose method.";
 		}
+
+		if (isMGCRF()) {
+			String validate = validateDataForMGCRF();
+
+			if (validate != null) {
+				return validate;
+			}
+		}
+
+		if (isUpGCRF()) {
+			String validate = validateDataForUpGCRF();
+
+			if (validate != null) {
+				return validate;
+			}
+		}
+
 		String method = cmbMethod.getSelectedItem().toString();
 		if (Writer.checkFolder("MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
 		}
-		if (isMGCRF()) {
-			try {
-				int a = Integer.parseInt(txtAlpha.getText());
-				if (a <= 0) {
-					return "Alpha for regularization should be greater than 0.";
-				}
-			} catch (NumberFormatException e) {
-				return "Alpha for regularization should be integer.";
-			}
-			try {
-				int b = Integer.parseInt(txtBeta.getText());
-				if (b <= 0) {
-					return "Beta for regularization should be greater than 0.";
-				}
-			} catch (NumberFormatException e) {
-				return "Beta for regularization should be integer.";
-			}
 
-			try {
-				int b = Integer.parseInt(txtIter.getText());
-				if (b <= 0) {
-					return "No. of iteration for m-GCRF training should be greater than 0.";
-				}
-			} catch (NumberFormatException e) {
-				return "No. of iteration for m-GCRF training should be integer.";
+		return null;
+	}
+
+	private String validateDataForMGCRF() {
+		try {
+			int a = Integer.parseInt(txtAlpha.getText());
+			if (a <= 0) {
+				return "Alpha for regularization should be greater than 0.";
 			}
+		} catch (NumberFormatException e) {
+			return "Alpha for regularization should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtBeta.getText());
+			if (b <= 0) {
+				return "Beta for regularization should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Beta for regularization should be integer.";
+		}
+
+		try {
+			int b = Integer.parseInt(txtIter.getText());
+			if (b <= 0) {
+				return "No. of iteration for m-GCRF training should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of iteration for m-GCRF training should be integer.";
+		}
+		if (cmbPredictor.getSelectedIndex() == 0) {
+
+			return "Choose predictor.";
 		}
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 
@@ -738,8 +785,24 @@ public class TrainTemporalPanel extends JPanel {
 		return null;
 	}
 
+	private String validateDataForUpGCRF() {
+		try {
+			int a = Integer.parseInt(txtLag.getText());
+			if (a <= 0) {
+				return "Lag should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "Lag should be integer.";
+		}
+		return null;
+	}
+
 	private boolean isMGCRF() {
 		return cmbMethod.getSelectedItem().toString().contains("m-GCRF");
+	}
+
+	private boolean isUpGCRF() {
+		return cmbMethod.getSelectedItem().toString().contains("up-GCRF");
 	}
 
 	public String validateDataForTestPredictor() {
@@ -988,7 +1051,7 @@ public class TrainTemporalPanel extends JPanel {
 
 			if (useMatlab) {
 				cmbMethod.addItem("choose method");
-				cmbMethod.addItem("Djole");
+				cmbMethod.addItem("up-GCRF");
 				cmbMethod.addItem("Chao");
 				cmbMethod.addItem("m-GCRF");
 			} else {
@@ -998,22 +1061,27 @@ public class TrainTemporalPanel extends JPanel {
 				public void itemStateChanged(ItemEvent arg0) {
 					String method = cmbMethod.getSelectedItem().toString();
 					if (isMGCRF()) {
-						showParams();
+						showParamsMGCRF();
 					} else {
-						hideParams();
+						hideParamsMGCRF();
 					}
-					if (method.contains("Djole") || method.contains("Chao")) {
-						chkLearn.setSelected(true);
+					if (isUpGCRF()) {
+						showParamsUpGCRF();
 					} else {
-						chkLearn.setSelected(false);
+						hideParamsUpGCRF();
 					}
+					// if (isUpGCRF() || method.contains("Chao")) {
+					// chkLearn.setSelected(true);
+					// } else {
+					// chkLearn.setSelected(false);
+					// }
 				}
 			});
 		}
 		return cmbMethod;
 	}
 
-	public void showParams() {
+	public void showParamsMGCRF() {
 		lblAlpha.setVisible(true);
 		txtAlpha.setVisible(true);
 		lblBeta.setVisible(true);
@@ -1025,7 +1093,14 @@ public class TrainTemporalPanel extends JPanel {
 		btnQuestionRegAlpha.setVisible(true);
 	}
 
-	public void hideParams() {
+	public void showParamsUpGCRF() {
+		lblLag.setVisible(true);
+		txtLag.setVisible(true);
+		btnQuestionLag.setVisible(true);
+		chckUseX.setVisible(true);
+	}
+
+	public void hideParamsMGCRF() {
 		lblAlpha.setVisible(false);
 		txtAlpha.setVisible(false);
 		lblBeta.setVisible(false);
@@ -1035,6 +1110,13 @@ public class TrainTemporalPanel extends JPanel {
 		lblPredictor_1.setVisible(false);
 		cmbPredictor.setVisible(false);
 		btnQuestionRegAlpha.setVisible(false);
+	}
+
+	public void hideParamsUpGCRF() {
+		lblLag.setVisible(false);
+		txtLag.setVisible(false);
+		btnQuestionLag.setVisible(false);
+		chckUseX.setVisible(false);
 	}
 
 	private JLabel getLblMethod() {
@@ -1115,8 +1197,10 @@ public class TrainTemporalPanel extends JPanel {
 	public void removeMethod(String name) {
 		for (int i = 0; i < cmbMethod.getItemCount(); i++) {
 			if (cmbMethod.getItemAt(i).toString().contains(name)) {
+				if (isMGCRF()) {
+					cmbMethod.setSelectedIndex(0);
+				}
 				cmbMethod.removeItemAt(i);
-				cmbMethod.setSelectedIndex(0);
 				panel.repaint();
 				panel.revalidate();
 
@@ -1127,7 +1211,6 @@ public class TrainTemporalPanel extends JPanel {
 
 	public void addMethod(String name) {
 		cmbMethod.addItem(name);
-		cmbMethod.setSelectedIndex(0);
 		panel.repaint();
 		panel.revalidate();
 	}
@@ -1210,5 +1293,57 @@ public class TrainTemporalPanel extends JPanel {
 			lblProvideTrainAn.setBounds(0, 22, 901, 23);
 		}
 		return lblProvideTrainAn;
+	}
+
+	private JLabel getLblLag() {
+		if (lblLag == null) {
+			lblLag = new JLabel("Lag:");
+			lblLag.setVisible(false);
+			lblLag.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblLag.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblLag.setBounds(104, 448, 120, 30);
+		}
+		return lblLag;
+	}
+
+	private JTextField getTxtLag() {
+		if (txtLag == null) {
+			txtLag = new JTextField();
+			txtLag.setVisible(false);
+			txtLag.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtLag.setColumns(10);
+			txtLag.setBounds(244, 448, 91, 30);
+		}
+		return txtLag;
+	}
+
+	private JButton getBtnQuestionLag() {
+		if (btnQuestionLag == null) {
+			btnQuestionLag = new JButton("");
+			btnQuestionLag.setVisible(false);
+			btnQuestionLag.setBounds(345, 448, 30, 30);
+			Style.questionButtonStyle(btnQuestionLag);
+			btnQuestionLag.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Number of previous time step values that will be used as inputs",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
+		}
+		return btnQuestionLag;
+	}
+
+	private JCheckBox getChckUseX() {
+		if (chckUseX == null) {
+			chckUseX = new JCheckBox("Use attributes");
+			chckUseX.setSelected(true);
+			chckUseX.setVisible(false);
+			chckUseX.setBounds(244, 495, 140, 23);
+		}
+		return chckUseX;
 	}
 }

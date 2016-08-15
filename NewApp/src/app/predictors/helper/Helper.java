@@ -13,7 +13,9 @@ import java.util.Stack;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 
+import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
+import app.predictors.linearregression.TemporalData;
 
 public class Helper {
 
@@ -101,7 +103,7 @@ public class Helper {
 	}
 
 	public static DataSet prepareTemporalDataForNN(String[] data, String[] y,
-			int x, int time) {
+			int x, int time, boolean normalized) {
 		DataSet d = new DataSet(x, 1);
 		double[] oneX = null;
 		String[] line = null;
@@ -114,16 +116,24 @@ public class Helper {
 			oneX = new double[x];
 			for (int j = 0; j < line.length; j++) {
 				oneX[indexX] = Double.parseDouble(line[j]);
-				if (oneX[indexX] > 1 || oneX[indexX] < 0) {
-					return null;
+				if (normalized) {
+					if (oneX[indexX] > 1 || oneX[indexX] < 0) {
+						return null;
+					}
 				}
 				indexX++;
 				if ((j + 1) % time == 0) {
 					double yValue = Double.parseDouble(lineY[indexY]);
-					if (yValue > 1 || yValue < 0) {
-						if (yValue != -9999) {
-							return null;
-						} else {
+					if (normalized) {
+						if (yValue > 1 || yValue < 0) {
+							if (yValue != -9999) {
+								return null;
+							} else {
+								yValue = 0;
+							}
+						}
+					} else {
+						if (yValue == -9999) {
 							yValue = 0;
 						}
 					}
@@ -218,6 +228,47 @@ public class Helper {
 			}
 		}
 		return x;
+	}
+
+	public static TemporalData prepareTemporalDataForLR(String[] data,
+			String[] y, int x, int time, int nodes, int traning) {
+		DataSet d = prepareTemporalDataForNN(data, y, x, time,false);
+		DataSet trainingSet = new DataSet(d.getInputSize(), d.getOutputSize());
+		DataSet testSet = new DataSet(d.getInputSize(), d.getOutputSize());
+		int index = 0;
+		for (int i = 0; i < d.getRows().size(); i++) {
+
+			if (index == time - 1) {
+				testSet.addRow(d.getRowAt(i));
+				index = 0;
+			} else {
+				if (index < traning) {
+					trainingSet.addRow(d.getRowAt(i));
+				} else {
+					testSet.addRow(d.getRowAt(i));
+				}
+				index++;
+			}
+		}
+		double[][] xTrain = new double[nodes * traning][x];
+		double[] yTrain = new double[nodes * traning];
+
+		int trainInd = 0;
+		for (DataSetRow r : trainingSet.getRows()) {
+			xTrain[trainInd] = r.getInput();
+			yTrain[trainInd] = r.getDesiredOutput()[0];
+			trainInd++;
+		}
+		double[][] xTest = new double[nodes * (time - traning)][x];
+		double[] yTest = new double[nodes * (time - traning)];
+
+		int testInd = 0;
+		for (DataSetRow r : testSet.getRows()) {
+			xTest[testInd] = r.getInput();
+			yTest[testInd] = r.getDesiredOutput()[0];
+			testInd++;
+		}
+		return new TemporalData(xTrain, yTrain, xTest, yTest);
 	}
 
 	public static String serilazie(Object o, String filePath) {

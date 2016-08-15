@@ -538,7 +538,8 @@ public class TrainPanel extends JPanel {
 			return MyNN.learn(noOfHidden, trainingSet, 0.003, noOfIter, path);
 		}
 		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
-			return MyLR.learn(x, y, path);
+			double[][] xNumbers = Helper.prepareDataForLR(x);
+			return MyLR.learn(xNumbers, y, path);
 		}
 		return -7000;
 
