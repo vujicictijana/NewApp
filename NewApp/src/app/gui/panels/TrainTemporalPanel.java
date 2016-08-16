@@ -29,6 +29,7 @@ import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.gui.threads.MGCRFTrainMyModelForGUI;
 import app.gui.threads.UmGCRFTrainMyModelForGUI;
+import app.gui.threads.UpGCRFTrainMyModelForGUI;
 import app.predictors.helper.Helper;
 import app.predictors.linearregression.LinearRegression;
 import app.predictors.linearregression.MultivariateLinearRegression;
@@ -447,76 +448,27 @@ public class TrainTemporalPanel extends JPanel {
 							s = Reader.readGraph(txtMatrixFile.getText(),
 									noOfNodes);
 						}
-						String message1 = checkFiles(noOfNodes, noOfTime,
-								noOfX, x, y, s);
-
-						if (message1 != null) {
-							JOptionPane.showMessageDialog(mainFrame, message1,
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
+//						String message1 = checkFiles(noOfNodes, noOfTime,
+//								noOfX, x, y, s);
+//
+//						if (message1 != null) {
+//							JOptionPane.showMessageDialog(mainFrame, message1,
+//									"Error", JOptionPane.ERROR_MESSAGE);
+//							return;
+//						}
 
 						String path = createFolderAndSaveData();
-						double result = 0;
 						if (isMGCRF()) {
-							result = callPredictor(path, x, y, noOfX, noOfTime,
-									noOfTimeTrain, noOfNodes);
-
-							if (result == -7000) {
-								JOptionPane.showMessageDialog(mainFrame,
-										"Unknown predictor.", "Error",
-										JOptionPane.ERROR_MESSAGE);
-								return;
-							}
-							if (result == -3000) {
-								JOptionPane
-										.showMessageDialog(
-												mainFrame,
-												cmbPredictor.getSelectedItem()
-														.toString()
-														+ " cannot be applied to your data. Choose different predictor.",
-												"Error",
-												JOptionPane.ERROR_MESSAGE);
-								return;
-							}
-							if (result == -5000) {
-								JOptionPane.showMessageDialog(mainFrame,
-										"Files are not in correct format.",
-										"Error", JOptionPane.ERROR_MESSAGE);
-							}
-							if (result == -10000) {
-								JOptionPane
-										.showMessageDialog(
-												mainFrame,
-												"Values should be normalized (range from 0 to 1) for neural network.",
-												"Error",
-												JOptionPane.ERROR_MESSAGE);
-							} else {
-								double[][] r = Reader.readMatrixTwoFiles(path
-										+ "/data/r.txt", path
-										+ "/data/rTest.txt", noOfNodes,
-										noOfTime, noOfTimeTrain);
-								double[][] yMatrix = Reader.readMatrix(path
-										+ "/data/y.txt", noOfNodes, noOfTime);
-								if (BasicCalcs.isSymmetric(s)) {
-									int maxIter = Integer.parseInt(txtIter
-											.getText());
-									int regAlpha = Integer.parseInt(txtAlpha
-											.getText());
-									int regBeta = Integer.parseInt(txtBeta
-											.getText());
-									trainMGCRF(matlabPath, path, r, yMatrix, s,
-											noOfTime, noOfTimeTrain, maxIter,
-											regAlpha, regBeta);
-								} else {
-									JOptionPane
-											.showMessageDialog(
-													mainFrame,
-													"For m-GCRF method matrix should be symmetric.",
-													"Error",
-													JOptionPane.ERROR_MESSAGE);
-								}
-							}
+							trainTestMGCRF(noOfNodes, noOfTime, noOfTimeTrain,
+									noOfX, x, y, s, path);
+						} else {
+							int maxIter = Integer.parseInt(txtIter.getText());
+							int lag = Integer.parseInt(txtLag.getText());
+							double[][] x1 = new double[1000][1000];
+							double[][] yMatrix = Reader.readMatrix(path + "/data/y.txt",
+									noOfNodes, noOfTime);
+							trainUpGCRF(matlabPath, path, x1, yMatrix, s, noOfTime,
+									noOfTimeTrain, maxIter, noOfNodes, lag);
 
 						}
 
@@ -541,6 +493,21 @@ public class TrainTemporalPanel extends JPanel {
 		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
 				regAlpha, regBeta);
+
+		t.start();
+	}
+
+	public void trainUpGCRF(String matlabPath, String modelFolder,
+			double[][] r, double[][] y, double[][] s, int noTime, int training,
+			int maxIter, int noOfNodes, int lag) {
+		ProgressBar frame = new ProgressBar("Training");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+
+		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
+				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
+				noOfNodes, lag);
 
 		t.start();
 	}
@@ -580,6 +547,55 @@ public class TrainTemporalPanel extends JPanel {
 					+ ".";
 		}
 		return null;
+	}
+
+	private void trainTestMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain,
+			int noOfX, String[] x, String[] y, double[][] s, String path) {
+		double result = callPredictor(path, x, y, noOfX, noOfTime,
+				noOfTimeTrain, noOfNodes);
+
+		if (result == -7000) {
+			JOptionPane.showMessageDialog(mainFrame, "Unknown predictor.",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (result == -3000) {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							cmbPredictor.getSelectedItem().toString()
+									+ " cannot be applied to your data. Choose different predictor.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (result == -5000) {
+			JOptionPane.showMessageDialog(mainFrame,
+					"Files are not in correct format.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		if (result == -10000) {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Values should be normalized (range from 0 to 1) for neural network.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		} else {
+			double[][] r = Reader.readMatrixTwoFiles(path + "/data/r.txt", path
+					+ "/data/rTest.txt", noOfNodes, noOfTime, noOfTimeTrain);
+			double[][] yMatrix = Reader.readMatrix(path + "/data/y.txt",
+					noOfNodes, noOfTime);
+			if (BasicCalcs.isSymmetric(s)) {
+				int maxIter = Integer.parseInt(txtIter.getText());
+				int regAlpha = Integer.parseInt(txtAlpha.getText());
+				int regBeta = Integer.parseInt(txtBeta.getText());
+				trainMGCRF(matlabPath, path, r, yMatrix, s, noOfTime,
+						noOfTimeTrain, maxIter, regAlpha, regBeta);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame,
+						"For m-GCRF method matrix should be symmetric.",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 
 	private String createFolderAndSaveData() {
@@ -634,7 +650,8 @@ public class TrainTemporalPanel extends JPanel {
 				}
 				LinearRegression lr = (LinearRegression) Helper
 						.deserilazie(path + "/lr/lr.txt");
-				return LinearRegression.test(t.getyTest(), xOne, path, lr, true);
+				return LinearRegression
+						.test(t.getyTest(), xOne, path, lr, true);
 			}
 		}
 		return -7000;
@@ -793,6 +810,14 @@ public class TrainTemporalPanel extends JPanel {
 			}
 		} catch (NumberFormatException e) {
 			return "Lag should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtIter.getText());
+			if (b <= 0) {
+				return "No. of iteration for m-GCRF training should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of iteration for m-GCRF training should be integer.";
 		}
 		return null;
 	}
@@ -1061,15 +1086,17 @@ public class TrainTemporalPanel extends JPanel {
 				public void itemStateChanged(ItemEvent arg0) {
 					String method = cmbMethod.getSelectedItem().toString();
 					if (isMGCRF()) {
+						hideParamsUpGCRF();
 						showParamsMGCRF();
 					} else {
 						hideParamsMGCRF();
+						if (isUpGCRF()) {
+							showParamsUpGCRF();
+						} else {
+							hideParamsUpGCRF();
+						}
 					}
-					if (isUpGCRF()) {
-						showParamsUpGCRF();
-					} else {
-						hideParamsUpGCRF();
-					}
+
 					// if (isUpGCRF() || method.contains("Chao")) {
 					// chkLearn.setSelected(true);
 					// } else {
@@ -1098,6 +1125,8 @@ public class TrainTemporalPanel extends JPanel {
 		txtLag.setVisible(true);
 		btnQuestionLag.setVisible(true);
 		chckUseX.setVisible(true);
+		lblMaxIterations.setVisible(true);
+		txtIter.setVisible(true);
 	}
 
 	public void hideParamsMGCRF() {
@@ -1117,6 +1146,8 @@ public class TrainTemporalPanel extends JPanel {
 		txtLag.setVisible(false);
 		btnQuestionLag.setVisible(false);
 		chckUseX.setVisible(false);
+		lblMaxIterations.setVisible(false);
+		txtIter.setVisible(false);
 	}
 
 	private JLabel getLblMethod() {
