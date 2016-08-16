@@ -83,19 +83,19 @@ public class Reader {
 		return r;
 	}
 
-	public static double[][] readMatrix(String path, int noOfNodes, int t) {
-		double[][] matrix = new double[noOfNodes][t];
+	public static double[][] readMatrix(String path, int noOfRows, int noOfCols) {
+		double[][] matrix = new double[noOfRows][noOfCols];
 
 		String[] text = Reader.read(path);
 
-		if (text.length != noOfNodes) {
+		if (text.length != noOfRows) {
 			return null;
 		}
 	
 		String[] line = null;
-		for (int i = 0; i < noOfNodes; i++) {
+		for (int i = 0; i < noOfRows; i++) {
 			line = text[i].split(",");
-			for (int j = 0; j < t; j++) {
+			for (int j = 0; j < noOfCols; j++) {
 				matrix[i][j] = Double.parseDouble(line[j]);
 			}
 		}

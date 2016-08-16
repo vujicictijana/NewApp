@@ -1,14 +1,9 @@
 package app.algorithms.matlab;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
-import javax.swing.JOptionPane;
-
-import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.basic.BasicCalcs;
-import app.data.generators.ArrayGenerator;
 import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
@@ -26,10 +21,10 @@ public class UpGCRF {
 
 	public static String train(String matlabPath, double[][] s, double[][] y,
 			double[][] x, int noTime, int training, int maxIter, int noOfNodes,
-			int lag, ProgressBar frame, String modelFolder) {
-
+			int lag, int noX, boolean useX, ProgressBar frame,
+			String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true).setProxyTimeout(30000L)
+				.setHidden(true).setProxyTimeout(300000L)
 				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
@@ -44,25 +39,38 @@ public class UpGCRF {
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/upGCRF";
 			proxy.eval("addpath('" + path + "')");
 
-			// MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
-			// processor.setNumericArray("S", new MatlabNumericArray(s,
+			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
+			// processor.setNumericArray("S", new MatlabNumericArray(s, null));
+			// double[][][] x3d = Helper.get3DArray(x, noTime, noOfNodes, noX);
+			// processor.setNumericArray("X", new MatlabNumericArray(x3d,
 			// null));
-			// processor.setNumericArray("X", new MatlabNumericArray(x, null));
 			// y = Helper.putNaN(y);
 			// processor.setNumericArray("y", new MatlabNumericArray(y, null));
-
-			proxy.eval("load rain_data_northwest.mat");
+			//
 			// proxy.setVariable("lag", lag);
 			// proxy.setVariable("trainTs", training);
 			// proxy.setVariable("predictTs", noTime - training - lag);
 			// proxy.setVariable("maxiter", maxIter);
+			// if (!useX) {
+			// proxy.eval("select_features = [];");
+			// }else{
+			// String features = "[";
+			// for (int i = 1; i <= noX; i++) {
+			// features+=i+ ",";
+			// }
+			// features+="];";
+			// proxy.eval("select_features = " + features);
+			// }
+			// proxy.setVariable("N", noOfNodes);
+			// proxy.eval("similarities{1} = S");
+
+			// rain data test
+			proxy.eval("load rain_data_northwest.mat");
 			proxy.setVariable("lag", 12);
 			proxy.setVariable("trainTs", 20);
 			proxy.setVariable("predictTs", 20);
 			proxy.setVariable("maxiter", 20);
-			proxy.eval("select_features = []");
-			// proxy.setVariable("N", noOfNodes);
-			// proxy.eval("similarities{1} = S");
+			proxy.eval("select_features = [];");
 
 			// run train
 
@@ -72,31 +80,27 @@ public class UpGCRF {
 
 				proxy.eval("rmpath('" + path + "')");
 
-				double[][] outputs = ((double[][]) proxy
-						.getVariable("muNoisyGCRF"));
+				MatlabNumericArray array = processor
+						.getNumericArray("muNoisyGCRF");
+				double[][] outputs = array.getRealArray2D();
 
-				GraphGenerator.showMatrix(outputs);
+				MatlabNumericArray array1 = processor.getNumericArray("y");
+				double[][] y1 = array1.getRealArray2D();
+
+				// GraphGenerator.showMatrix(outputs);
 
 				Writer.createFolder(modelFolder + "/parameters");
 				String fileName = mainPath + "/" + modelFolder
-						+ "/parameters/mGCRF.mat";
+						+ "/parameters/upGCRF.mat";
 				proxy.setVariable("fileName", fileName);
 
 				proxy.eval("save(fileName,'Data','-v7.3')");
-				double[] lastY = new double[s.length];
-				for (int i = 0; i < lastY.length; i++) {
-					lastY[i] = y[i][noTime - 1];
-				}
-
-				// double r2 = BasicCalcs.rSquaredWitNaN(outputs, lastY);
-				// DecimalFormat df = new DecimalFormat("#.####");
-				// String export = exportResults(r2, outputs, modelFolder);
-				// message = "m-GCRF results: \n* R^2 value for test data: "
-				// + df.format(r2) + export;
-				message = "jee";
+				String export = exportResults(y1, outputs, modelFolder);
+				message = "up-GCRF results: \n* " + export;
 				proxy.disconnect();
 
 			} catch (Exception e) {
+				// e.printStackTrace();
 				message = "An internal MATLAB exception occurred. Please check your data.";
 			}
 
@@ -120,13 +124,32 @@ public class UpGCRF {
 		return "Connection with MATLAB cannot be established.";
 	}
 
-	private static String exportResults(double r2, double[] outputs,
+	private static String exportResults(double[][] y, double[][] outputs,
 			String folder) {
 		Writer.createFolder(folder + "/test");
-		String fileName = folder + "/test/results.txt";
-		String[] text = exportTxt(r2, outputs);
-		Writer.write(text, fileName);
-		return "\n* Results are successfully exported. \n* File location: "
+		String fileName = folder + "/test/results";
+		int cols = outputs[0].length;
+		double[] array = null;
+		double[] arrayY = null;
+		double sum = 0;
+		double r2 = 0;
+		DecimalFormat df = new DecimalFormat("#.####");
+		for (int i = 0; i < cols; i++) {
+			array = new double[outputs.length];
+			arrayY = new double[outputs.length];
+			for (int j = 0; j < array.length; j++) {
+				array[j] = outputs[j][i];
+				arrayY[j] = y[j][i];
+			}
+
+			r2 = BasicCalcs.rSquaredWitNaN(array, arrayY);
+			sum += r2;
+			String[] text = exportTxt(r2, array);
+			Writer.write(text, fileName + "T" + (i + 1) + ".txt");
+		}
+		double avg = sum / cols;
+		return "\n* Average R^2 value: " + df.format(avg)
+				+ "\n* Results are successfully exported. \n* File location: "
 				+ folder + "/test";
 	}
 

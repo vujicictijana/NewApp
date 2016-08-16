@@ -232,7 +232,7 @@ public class Helper {
 
 	public static TemporalData prepareTemporalDataForLR(String[] data,
 			String[] y, int x, int time, int nodes, int traning) {
-		DataSet d = prepareTemporalDataForNN(data, y, x, time,false);
+		DataSet d = prepareTemporalDataForNN(data, y, x, time, false);
 		DataSet trainingSet = new DataSet(d.getInputSize(), d.getOutputSize());
 		DataSet testSet = new DataSet(d.getInputSize(), d.getOutputSize());
 		int index = 0;
@@ -309,5 +309,26 @@ public class Helper {
 		}
 		return "Reading predictor failed.";
 
+	}
+
+	public static double[][][] get3DArray(double[][] matrix, int time,
+			int nodes, int x) {
+		double[][][] result = new double[time][nodes][x];
+		int firstCol = 0;
+		for (int i = 0; i < time; i++) {
+			double[][] oneTime = new double[nodes][x];
+			for (int j = 0; j < nodes; j++) {
+				int col = firstCol;
+				for (int j2 = 0; j2 < x; j2++) {
+					oneTime[j][j2] = matrix[j][col];
+					col++;
+				}
+			}
+			firstCol = firstCol + x;
+			// GraphGenerator.showMatrix(oneTime);
+			result[i] = oneTime;
+		}
+
+		return result;
 	}
 }

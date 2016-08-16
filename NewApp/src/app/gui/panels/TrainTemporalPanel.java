@@ -448,14 +448,14 @@ public class TrainTemporalPanel extends JPanel {
 							s = Reader.readGraph(txtMatrixFile.getText(),
 									noOfNodes);
 						}
-//						String message1 = checkFiles(noOfNodes, noOfTime,
-//								noOfX, x, y, s);
-//
-//						if (message1 != null) {
-//							JOptionPane.showMessageDialog(mainFrame, message1,
-//									"Error", JOptionPane.ERROR_MESSAGE);
-//							return;
-//						}
+						// String message1 = checkFiles(noOfNodes, noOfTime,
+						// noOfX, x, y, s);
+						//
+						// if (message1 != null) {
+						// JOptionPane.showMessageDialog(mainFrame, message1,
+						// "Error", JOptionPane.ERROR_MESSAGE);
+						// return;
+						// }
 
 						String path = createFolderAndSaveData();
 						if (isMGCRF()) {
@@ -464,11 +464,15 @@ public class TrainTemporalPanel extends JPanel {
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
 							int lag = Integer.parseInt(txtLag.getText());
-							double[][] x1 = new double[1000][1000];
-							double[][] yMatrix = Reader.readMatrix(path + "/data/y.txt",
-									noOfNodes, noOfTime);
-							trainUpGCRF(matlabPath, path, x1, yMatrix, s, noOfTime,
-									noOfTimeTrain, maxIter, noOfNodes, lag);
+							double[][] x1 = Reader.readMatrix(path
+									+ "/data/x.txt", noOfNodes, noOfTime
+									* noOfX);
+
+							double[][] yMatrix = Reader.readMatrix(path
+									+ "/data/y.txt", noOfNodes, noOfTime);
+							trainUpGCRF(matlabPath, path, x1, yMatrix, s,
+									noOfTime, noOfTimeTrain, maxIter,
+									noOfNodes, lag, noOfX);
 
 						}
 
@@ -499,15 +503,18 @@ public class TrainTemporalPanel extends JPanel {
 
 	public void trainUpGCRF(String matlabPath, String modelFolder,
 			double[][] r, double[][] y, double[][] s, int noTime, int training,
-			int maxIter, int noOfNodes, int lag) {
+			int maxIter, int noOfNodes, int lag, int noX) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-
+		boolean useX = true;
+		if (!chckUseX.isSelected()) {
+			useX = false;
+		}
 		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				noOfNodes, lag);
+				noOfNodes, lag, noX, useX);
 
 		t.start();
 	}
