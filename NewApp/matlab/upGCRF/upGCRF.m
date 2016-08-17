@@ -1,5 +1,17 @@
 function [Data,muNoisyGCRF] = upGCRF(lag,trainTs,predictTs,maxiter,select_features,N, X, y, similarities)
 
+
+addpath('Plotting');
+addpath('Predictors');
+addpath('Similarity metrics');
+addpath('Structure');
+addpath('Synthetic data');
+addpath('adaptiveGCRF');
+addpath('GCRF');
+addpath('fastExactGCRF');
+addpath(genpath('GPdyn-new'));
+addpath('Util');
+
 %% Setting parameters
 
 use_all_data = false;
@@ -67,8 +79,8 @@ end
 %% Prepare similarity metric (Initialize Gaussian kernel parameters by 
 % Gaussian Processes regression optimization)
 %shrink the data to speed-up training of gaussian processes
-input = xx(1:500,:);
-target = yy(1:500);
+input = xx(1:round(lag+trainTs+predictTs/3),:);
+target = yy(1:round(lag+trainTs+predictTs/3));
 
 cov = @covSEard;
 % Define covariance function: Gaussinan likelihood function.

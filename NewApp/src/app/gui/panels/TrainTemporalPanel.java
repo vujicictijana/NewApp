@@ -127,6 +127,7 @@ public class TrainTemporalPanel extends JPanel {
 	private JTextField txtLFSize;
 	private JTextField txtLambda;
 	private JButton btnQuestionLambda;
+	private JTextField txtNoTest;
 
 	public TrainTemporalPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -202,6 +203,7 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtLFSize());
 		add(getTxtLambda());
 		add(getBtnQuestionLambda());
+		add(getTxtNoTest());
 		// }
 		// } else {
 		// JOptionPane
@@ -318,7 +320,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblBeta.setVisible(false);
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(27, 489, 207, 30);
+			lblBeta.setBounds(0, 489, 234, 30);
 		}
 		return lblBeta;
 	}
@@ -450,45 +452,120 @@ public class TrainTemporalPanel extends JPanel {
 
 						String[] x = Reader.read(txtXFile.getText());
 						String[] y = Reader.read(txtYFile.getText());
-						double[][] s = null;
-						if (!chkLearn.isSelected()) {
-							s = Reader.readGraph(txtMatrixFile.getText(),
-									noOfNodes);
-						}
-						// String message1 = checkFiles(noOfNodes, noOfTime,
-						// noOfX, x, y, s);
-						//
-						// if (message1 != null) {
-						// JOptionPane.showMessageDialog(mainFrame, message1,
-						// "Error", JOptionPane.ERROR_MESSAGE);
-						// return;
-						// }
 
-						String path = createFolderAndSaveData();
 						if (isMGCRF()) {
+							double[][] s = Reader.readGraph(
+									txtMatrixFile.getText(), noOfNodes);
+
+							String message1 = checkAllFiles(noOfNodes,
+									noOfTime, noOfX, x, y, s);
+
+							if (message1 != null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										message1, "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+
+							String path = createFolderAndSaveData();
 							runMGCRF(noOfNodes, noOfTime, noOfTimeTrain, noOfX,
 									x, y, s, path);
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
-							double[][] x1 = Reader.readMatrix(path
-									+ "/data/x.txt", noOfNodes, noOfTime
-									* noOfX);
 
-							double[][] yMatrix = Reader.readMatrix(path
-									+ "/data/y.txt", noOfNodes, noOfTime);
+							String yMSg = checkY(noOfNodes, y, noOfX,
+									noOfTime);
+
+							if (yMSg != null) {
+								JOptionPane.showMessageDialog(mainFrame, yMSg,
+										"Error", JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+
+							double[][] yMatrix = Reader.readMatrix(txtYFile.getText(), noOfNodes, noOfTime);
+
 							if (isUpGCRF()) {
+
+								double[][] x1 = null;
+								if (chckUseX.isSelected()) {
+									String xMSg = checkX(noOfNodes, x, noOfX,
+											noOfTime);
+
+									if (xMSg != null) {
+										JOptionPane.showMessageDialog(
+												mainFrame, xMSg, "Error",
+												JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+
+									x1 = Reader.readMatrix(
+											txtXFile.getText(), noOfNodes,
+											noOfTime * noOfX);
+								}
+								double[][] s = null;
+								if (!chkLearn.isSelected()) {
+									String sMSg = checkS(noOfNodes, s);
+
+									if (sMSg != null) {
+										JOptionPane.showMessageDialog(
+												mainFrame, sMSg, "Error",
+												JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+									s = Reader.readGraph(
+											txtMatrixFile.getText(), noOfNodes);
+								}
+
+								String path = createFolderAndSaveData();
+								if (s == null) {
+									s = new double[noOfNodes][noOfNodes];
+								}
 								int lag = Integer.parseInt(txtLag.getText());
+								int test = Integer.parseInt(txtNoTest.getText());
 								trainUpGCRF(matlabPath, path, x1, yMatrix, s,
 										noOfTime, noOfTimeTrain, maxIter,
-										noOfNodes, lag, noOfX);
+										noOfNodes, lag, noOfX,test);
 							}
 							if (isRLSR()) {
-								int validation = Integer.parseInt(txtLag.getText());
-								int lfSize = Integer.parseInt(txtLFSize.getText());
-								String lambda  = txtLambda.getText();
+								double[][] x1 = null;
+								if (chckUseX.isSelected()) {
+									String xMSg = checkX(noOfNodes, x, noOfX,
+											noOfTime);
+
+									if (xMSg != null) {
+										JOptionPane.showMessageDialog(
+												mainFrame, xMSg, "Error",
+												JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+
+									x1 = Reader.readMatrix(
+											txtXFile.getText(), noOfNodes,
+											noOfTime * noOfX);
+								}
+								double[][] s = null;
+								if (!chkLearn.isSelected()) {
+									String sMSg = checkS(noOfNodes, s);
+
+									if (sMSg != null) {
+										JOptionPane.showMessageDialog(
+												mainFrame, sMSg, "Error",
+												JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+									s = Reader.readGraph(
+											txtMatrixFile.getText(), noOfNodes);
+								}
+								int validation = Integer.parseInt(txtLag
+										.getText());
+								int lfSize = Integer.parseInt(txtLFSize
+										.getText());
+								String lambda = txtLambda.getText();
+								String path = createFolderAndSaveData();
 								trainRLSR(matlabPath, path, x1, yMatrix, s,
 										noOfTime, noOfTimeTrain, maxIter,
-										noOfNodes, validation, noOfX, lfSize, lambda);
+										noOfNodes, validation, noOfX, lfSize,
+										lambda);
 							}
 
 						}
@@ -520,7 +597,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	public void trainUpGCRF(String matlabPath, String modelFolder,
 			double[][] r, double[][] y, double[][] s, int noTime, int training,
-			int maxIter, int noOfNodes, int lag, int noX) {
+			int maxIter, int noOfNodes, int lag, int noX, int test) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
@@ -531,7 +608,7 @@ public class TrainTemporalPanel extends JPanel {
 		}
 		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				noOfNodes, lag, noX, useX);
+				noOfNodes, lag, noX, useX, test);
 
 		t.start();
 	}
@@ -550,8 +627,15 @@ public class TrainTemporalPanel extends JPanel {
 		t.start();
 	}
 
-	private String checkFiles(int noOfNodes, int noOfTime, int noOfX,
-			String[] x, String[] y, double[][] s) {
+	private String checkS(int noOfNodes, double[][] s) {
+		if (s == null) {
+			return "Ordinal number of node can be between 1 and " + noOfNodes
+					+ ".";
+		}
+		return null;
+	}
+
+	private String checkX(int noOfNodes, String[] x, int noOfX, int noOfTime) {
 		int totalX = noOfTime * noOfX;
 		if (x == null) {
 			return "Error while reading file with attributes.";
@@ -567,6 +651,10 @@ public class TrainTemporalPanel extends JPanel {
 						+ totalX;
 			}
 		}
+		return null;
+	}
+
+	private String checkY(int noOfNodes, String[] y, int noOfX, int noOfTime) {
 		if (y == null) {
 			return "Error while reading file with attributes.";
 		}
@@ -574,15 +662,31 @@ public class TrainTemporalPanel extends JPanel {
 			return "Number of lines in the file with outputs should be "
 					+ noOfNodes + ".";
 		}
-		for (int i = 0; i < x.length; i++) {
+		for (int i = 0; i < y.length; i++) {
 			if (y[i].split(",").length != noOfTime) {
 				return "Number of values in each line in the file with outputs should be equal to no. of time points: "
 						+ noOfTime;
 			}
 		}
-		if (s == null) {
-			return "Ordinal number of node can be between 1 and " + noOfNodes
-					+ ".";
+		return null;
+	}
+
+	private String checkAllFiles(int noOfNodes, int noOfTime, int noOfX,
+			String[] x, String[] y, double[][] s) {
+
+		String xMsg = checkX(noOfNodes, x, noOfX, noOfTime);
+		if (xMsg != null) {
+			return xMsg;
+		}
+
+		String yMsg = checkY(noOfNodes, y, noOfX, noOfTime);
+		if (yMsg != null) {
+			return yMsg;
+		}
+
+		String sMsg = checkS(noOfNodes, s);
+		if (sMsg != null) {
+			return sMsg;
 		}
 		return null;
 	}
@@ -849,14 +953,30 @@ public class TrainTemporalPanel extends JPanel {
 	}
 
 	private String validateDataForUpGCRF() {
+
+		int t = Integer.parseInt(txtNoTime.getText());
+		int train = Integer.parseInt(txtNoTimeTrain.getText());
+		int lag = 0;
 		try {
-			int a = Integer.parseInt(txtLag.getText());
-			if (a <= 0) {
+			lag = Integer.parseInt(txtLag.getText());
+			if (lag <= 0) {
 				return "Lag should be greater than 0.";
 			}
 		} catch (NumberFormatException e) {
 			return "Lag should be integer.";
 		}
+		try {
+			int a = Integer.parseInt(txtNoTest.getText());
+			if (a <= 0) {
+				return "No. of time points for test should be greater than 0.";
+			}
+			if ((train + a + lag) >= t) {
+				return "Sum of no. of time points for training, for test and Lag should be lower than total no. of time points.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of time points for test should be integer.";
+		}
+
 		try {
 			int b = Integer.parseInt(txtIter.getText());
 			if (b <= 0) {
@@ -1235,6 +1355,9 @@ public class TrainTemporalPanel extends JPanel {
 		chckUseX.setVisible(true);
 		lblMaxIterations.setVisible(true);
 		txtIter.setVisible(true);
+		lblBeta.setText("No. of time points for test:");
+		lblBeta.setVisible(true);
+		txtNoTest.setVisible(true);
 	}
 
 	public void showParamsRLSR() {
@@ -1272,6 +1395,7 @@ public class TrainTemporalPanel extends JPanel {
 		chckUseX.setVisible(false);
 		lblMaxIterations.setVisible(false);
 		txtIter.setVisible(false);
+		txtNoTest.setVisible(false);
 	}
 
 	public void hideParamsRLSR() {
@@ -1508,7 +1632,7 @@ public class TrainTemporalPanel extends JPanel {
 			chckUseX = new JCheckBox("Use attributes");
 			chckUseX.setSelected(true);
 			chckUseX.setVisible(false);
-			chckUseX.setBounds(247, 495, 140, 23);
+			chckUseX.setBounds(247, 566, 140, 23);
 		}
 		return chckUseX;
 	}
@@ -1556,5 +1680,16 @@ public class TrainTemporalPanel extends JPanel {
 			});
 		}
 		return btnQuestionLambda;
+	}
+
+	private JTextField getTxtNoTest() {
+		if (txtNoTest == null) {
+			txtNoTest = new JTextField();
+			txtNoTest.setVisible(false);
+			txtNoTest.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtNoTest.setColumns(10);
+			txtNoTest.setBounds(247, 489, 91, 30);
+		}
+		return txtNoTest;
 	}
 }

@@ -1,5 +1,6 @@
 package app.algorithms.matlab;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
@@ -20,8 +21,8 @@ import matlabcontrol.extensions.MatlabTypeConverter;
 public class UpGCRF {
 
 	public static String train(String matlabPath, double[][] s, double[][] y,
-			double[][] x, int noTime, int training, int maxIter, int noOfNodes,
-			int lag, int noX, boolean useX, ProgressBar frame,
+			double[][] x, int noTime, int training, int test, int maxIter,
+			int noOfNodes, int lag, int noX, boolean useX, ProgressBar frame,
 			String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true).setProxyTimeout(300000L)
@@ -40,37 +41,42 @@ public class UpGCRF {
 			proxy.eval("addpath('" + path + "')");
 
 			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
-			// processor.setNumericArray("S", new MatlabNumericArray(s, null));
-			// double[][][] x3d = Helper.get3DArray(x, noTime, noOfNodes, noX);
-			// processor.setNumericArray("X", new MatlabNumericArray(x3d,
-			// null));
-			// y = Helper.putNaN(y);
-			// processor.setNumericArray("y", new MatlabNumericArray(y, null));
-			//
-			// proxy.setVariable("lag", lag);
-			// proxy.setVariable("trainTs", training);
-			// proxy.setVariable("predictTs", noTime - training - lag);
-			// proxy.setVariable("maxiter", maxIter);
-			// if (!useX) {
-			// proxy.eval("select_features = [];");
-			// }else{
-			// String features = "[";
-			// for (int i = 1; i <= noX; i++) {
-			// features+=i+ ",";
-			// }
-			// features+="];";
-			// proxy.eval("select_features = " + features);
-			// }
-			// proxy.setVariable("N", noOfNodes);
-			// proxy.eval("similarities{1} = S");
+			processor.setNumericArray("S", new MatlabNumericArray(s, null));
+			double[][][] x3d = null;
+			if (useX) {
+				x3d = Helper.get3DArray(x, noTime, noOfNodes, noX);
+			} else {
+				x3d = new double[noTime][noOfNodes][noX];
+				;
+			}
+			processor.setNumericArray("X", new MatlabNumericArray(x3d, null));
+			y = Helper.putNaN(y);
+			processor.setNumericArray("y", new MatlabNumericArray(y, null));
+
+			proxy.setVariable("lag", lag);
+			proxy.setVariable("trainTs", training);
+			proxy.setVariable("predictTs", test);
+			proxy.setVariable("maxiter", maxIter);
+			if (!useX) {
+				proxy.eval("select_features = [];");
+			} else {
+				String features = "[";
+				for (int i = 1; i <= noX; i++) {
+					features += i + ",";
+				}
+				features += "];";
+				proxy.eval("select_features = " + features);
+			}
+			proxy.setVariable("N", noOfNodes);
+			proxy.eval("similarities{1} = S");
 
 			// rain data test
-			proxy.eval("load rain_data_northwest.mat");
-			proxy.setVariable("lag", 12);
-			proxy.setVariable("trainTs", 20);
-			proxy.setVariable("predictTs", 20);
-			proxy.setVariable("maxiter", 20);
-			proxy.eval("select_features = [];");
+			// proxy.eval("load rain_data_northwest.mat");
+			// proxy.setVariable("lag", 12);
+			// proxy.setVariable("trainTs", 20);
+			// proxy.setVariable("predictTs", 20);
+			// proxy.setVariable("maxiter", 20);
+			// proxy.eval("select_features = [];");
 
 			// run train
 
@@ -96,7 +102,7 @@ public class UpGCRF {
 
 				proxy.eval("save(fileName,'Data','-v7.3')");
 				String export = exportResults(y1, outputs, modelFolder);
-				message = "up-GCRF results: \n* " + export;
+				message = "up-GCRF results: " + export;
 				proxy.disconnect();
 
 			} catch (Exception e) {
@@ -105,13 +111,13 @@ public class UpGCRF {
 			}
 
 			// close matlab
-			// Runtime rt = Runtime.getRuntime();
-			// try {
-			// rt.exec("taskkill /F /IM MATLAB.exe");
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
+			Runtime rt = Runtime.getRuntime();
+			try {
+				rt.exec("taskkill /F /IM MATLAB.exe");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			frame.setVisible(false);
 			return message;
 

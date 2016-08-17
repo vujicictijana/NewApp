@@ -19,6 +19,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 	private String time;
 	private String matlabPath;
 	private int noTime;
+	private int noTest;
 	private int training;
 	private int maxIter;
 	private int noOfNodes;
@@ -29,7 +30,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 	public UpGCRFTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] s, double[][] r,
 			double[][] y, int noTime, int training, int maxIter, int noOfNodes,
-			int lag, int noX, boolean useX) {
+			int lag, int noX, boolean useX,int noTest) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -45,6 +46,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 		this.lag = lag;
 		this.noX = noX;
 		this.useX = useX;
+		this.noTest = noTest;
 		time = "* Time in milis: ";
 	}
 
@@ -62,7 +64,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 		frame.setTitle("Please wait: up-GCRF is in progress ");
 		long start = System.currentTimeMillis();
 
-		String message = UpGCRF.train(matlabPath, s, y, x, noTime, training,
+		String message = UpGCRF.train(matlabPath, s, y, x, noTime, training,noTest,
 				maxIter, noOfNodes, lag, noX, useX, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
