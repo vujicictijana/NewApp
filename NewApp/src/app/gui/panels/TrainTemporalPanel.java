@@ -101,7 +101,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JLabel lblData;
 	private JLabel lblModel;
-	private JLabel lblPredictor_1;
+	private JLabel lblPredictor;
 	private JComboBox<String> cmbPredictor;
 	private JLabel lblNoOfHidden;
 	private JTextField txtHidden;
@@ -123,6 +123,9 @@ public class TrainTemporalPanel extends JPanel {
 	private JTextField txtLag;
 	private JButton btnQuestionLag;
 	private JCheckBox chckUseX;
+	private JTextField txtLFSize;
+	private JTextField txtLambda;
+	private JButton btnQuestionLambda;
 
 	public TrainTemporalPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -171,7 +174,7 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtNoOfNodes());
 		add(getLblData());
 		add(getLblModel());
-		add(getLblPredictor_1());
+		add(getLblPredictor());
 		add(getLblNoOfHidden());
 		add(getTxtHidden());
 
@@ -195,6 +198,9 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtLag());
 		add(getBtnQuestionLag());
 		add(getChckUseX());
+		add(getTxtLFSize());
+		add(getTxtLambda());
+		add(getBtnQuestionLambda());
 		// }
 		// } else {
 		// JOptionPane
@@ -209,7 +215,7 @@ public class TrainTemporalPanel extends JPanel {
 		if (txtMatrixFile == null) {
 			txtMatrixFile = new JTextField();
 			txtMatrixFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtMatrixFile.setBounds(237, 285, 315, 30);
+			txtMatrixFile.setBounds(247, 285, 315, 30);
 			txtMatrixFile.setColumns(10);
 		}
 		return txtMatrixFile;
@@ -220,7 +226,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblSFile = new JLabel("File with edges:");
 			lblSFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblSFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblSFile.setBounds(104, 285, 120, 30);
+			lblSFile.setBounds(114, 285, 120, 30);
 		}
 		return lblSFile;
 	}
@@ -234,7 +240,7 @@ public class TrainTemporalPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseS);
-			btnBrowseS.setBounds(569, 285, 100, 30);
+			btnBrowseS.setBounds(579, 285, 100, 30);
 
 		}
 		return btnBrowseS;
@@ -245,7 +251,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblModelName = new JLabel("Model name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(124, 326, 100, 30);
+			lblModelName.setBounds(134, 326, 100, 30);
 		}
 		return lblModelName;
 	}
@@ -255,7 +261,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(237, 326, 315, 30);
+			txtModelName.setBounds(247, 326, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -265,7 +271,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblRArrayFile = new JLabel("File with attributes:");
 			lblRArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblRArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblRArrayFile.setBounds(84, 205, 140, 30);
+			lblRArrayFile.setBounds(94, 205, 140, 30);
 		}
 		return lblRArrayFile;
 	}
@@ -275,7 +281,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtXFile = new JTextField();
 			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtXFile.setColumns(10);
-			txtXFile.setBounds(237, 207, 315, 30);
+			txtXFile.setBounds(247, 207, 315, 30);
 		}
 		return txtXFile;
 	}
@@ -289,7 +295,7 @@ public class TrainTemporalPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseX);
-			btnBrowseX.setBounds(569, 207, 100, 30);
+			btnBrowseX.setBounds(579, 207, 100, 30);
 		}
 		return btnBrowseX;
 	}
@@ -300,7 +306,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblAlpha.setVisible(false);
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(31, 448, 197, 30);
+			lblAlpha.setBounds(37, 449, 197, 30);
 		}
 		return lblAlpha;
 	}
@@ -311,7 +317,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblBeta.setVisible(false);
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(21, 488, 207, 30);
+			lblBeta.setBounds(27, 489, 207, 30);
 		}
 		return lblBeta;
 	}
@@ -322,7 +328,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtAlpha.setVisible(false);
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(244, 449, 91, 30);
+			txtAlpha.setBounds(247, 449, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -333,7 +339,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtBeta.setVisible(false);
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(244, 490, 91, 30);
+			txtBeta.setBounds(247, 490, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -341,7 +347,7 @@ public class TrainTemporalPanel extends JPanel {
 	private JButton getBtnQuestionX() {
 		if (btnQuestionX == null) {
 			btnQuestionX = new JButton("");
-			btnQuestionX.setBounds(688, 207, 30, 30);
+			btnQuestionX.setBounds(698, 207, 30, 30);
 			Style.questionButtonStyle(btnQuestionX);
 			btnQuestionX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -371,7 +377,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblYArrayFile = new JLabel("File with outputs:");
 			lblYArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblYArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblYArrayFile.setBounds(94, 247, 130, 30);
+			lblYArrayFile.setBounds(104, 247, 130, 30);
 		}
 		return lblYArrayFile;
 	}
@@ -381,7 +387,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtYFile = new JTextField();
 			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYFile.setColumns(10);
-			txtYFile.setBounds(237, 247, 315, 30);
+			txtYFile.setBounds(247, 247, 315, 30);
 		}
 		return txtYFile;
 	}
@@ -395,7 +401,7 @@ public class TrainTemporalPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseY);
-			btnBrowseY.setBounds(569, 247, 100, 30);
+			btnBrowseY.setBounds(579, 247, 100, 30);
 		}
 		return btnBrowseY;
 	}
@@ -403,7 +409,7 @@ public class TrainTemporalPanel extends JPanel {
 	private JButton getBtnQuestionY() {
 		if (btnQuestionY == null) {
 			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(688, 247, 30, 30);
+			btnQuestionY.setBounds(698, 247, 30, 30);
 			Style.questionButtonStyle(btnQuestionY);
 			btnQuestionY.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -459,20 +465,25 @@ public class TrainTemporalPanel extends JPanel {
 
 						String path = createFolderAndSaveData();
 						if (isMGCRF()) {
-							trainTestMGCRF(noOfNodes, noOfTime, noOfTimeTrain,
-									noOfX, x, y, s, path);
+							runMGCRF(noOfNodes, noOfTime, noOfTimeTrain, noOfX,
+									x, y, s, path);
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
-							int lag = Integer.parseInt(txtLag.getText());
 							double[][] x1 = Reader.readMatrix(path
 									+ "/data/x.txt", noOfNodes, noOfTime
 									* noOfX);
 
 							double[][] yMatrix = Reader.readMatrix(path
 									+ "/data/y.txt", noOfNodes, noOfTime);
-							trainUpGCRF(matlabPath, path, x1, yMatrix, s,
-									noOfTime, noOfTimeTrain, maxIter,
-									noOfNodes, lag, noOfX);
+							int lag = Integer.parseInt(txtLag.getText());
+							if (isUpGCRF()) {
+								trainUpGCRF(matlabPath, path, x1, yMatrix, s,
+										noOfTime, noOfTimeTrain, maxIter,
+										noOfNodes, lag, noOfX);
+							}
+							if(isRLSR()){
+								
+							}
 
 						}
 
@@ -481,7 +492,7 @@ public class TrainTemporalPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(349, 594, 112, 45);
+			btnTrain.setBounds(359, 594, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -556,7 +567,7 @@ public class TrainTemporalPanel extends JPanel {
 		return null;
 	}
 
-	private void trainTestMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain,
+	private void runMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain,
 			int noOfX, String[] x, String[] y, double[][] s, String path) {
 		double result = callPredictor(path, x, y, noOfX, noOfTime,
 				noOfTimeTrain, noOfNodes);
@@ -671,7 +682,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblMaxIterations.setVisible(false);
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(96, 529, 132, 30);
+			lblMaxIterations.setBounds(102, 530, 132, 30);
 		}
 		return lblMaxIterations;
 	}
@@ -746,6 +757,14 @@ public class TrainTemporalPanel extends JPanel {
 
 		if (isUpGCRF()) {
 			String validate = validateDataForUpGCRF();
+
+			if (validate != null) {
+				return validate;
+			}
+		}
+
+		if (isRLSR()) {
+			String validate = validateDataForRLSR();
 
 			if (validate != null) {
 				return validate;
@@ -829,12 +848,60 @@ public class TrainTemporalPanel extends JPanel {
 		return null;
 	}
 
+	private String validateDataForRLSR() {
+		int t = Integer.parseInt(txtNoTime.getText());
+		int train = Integer.parseInt(txtNoTimeTrain.getText());
+		try {
+			int a = Integer.parseInt(txtLag.getText());
+			if (a <= 0) {
+				return "No. of time points for validation should be greater than 0.";
+			}
+			if ((train + a) >= t) {
+				return "Sum of no. of time points for training and for validation should be lower than total no. of time points.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of time points for validation should be integer.";
+		}
+		try {
+			int b = Integer.parseInt(txtLFSize.getText());
+			if (b <= 0) {
+				return "LFSize should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "LFSize should be integer.";
+		}
+
+		String lambda = txtLambda.getText();
+		if (lambda.contains(",")) {
+			String[] allLambda = lambda.split(",");
+			for (int i = 0; i < allLambda.length; i++) {
+				try {
+					Double.parseDouble(allLambda[i]);
+				} catch (NumberFormatException e) {
+					return "Lambda should be comma separated array of double values or single double value.";
+				}
+			}
+
+		} else {
+			try {
+				Double.parseDouble(txtLambda.getText());
+			} catch (NumberFormatException e) {
+				return "Lambda should be comma separated array of double values or single double value.";
+			}
+		}
+		return null;
+	}
+
 	private boolean isMGCRF() {
 		return cmbMethod.getSelectedItem().toString().contains("m-GCRF");
 	}
 
 	private boolean isUpGCRF() {
 		return cmbMethod.getSelectedItem().toString().contains("up-GCRF");
+	}
+
+	private boolean isRLSR() {
+		return cmbMethod.getSelectedItem().toString().contains("RLSR");
 	}
 
 	public String validateDataForTestPredictor() {
@@ -881,7 +948,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtIter.setVisible(false);
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(244, 529, 91, 30);
+			txtIter.setBounds(247, 529, 91, 30);
 		}
 		return txtIter;
 	}
@@ -898,7 +965,7 @@ public class TrainTemporalPanel extends JPanel {
 			label = new JLabel("No. of nodes:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(124, 57, 100, 30);
+			label.setBounds(134, 57, 100, 30);
 		}
 		return label;
 	}
@@ -908,7 +975,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoOfNodes = new JTextField();
 			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoOfNodes.setColumns(10);
-			txtNoOfNodes.setBounds(237, 56, 91, 30);
+			txtNoOfNodes.setBounds(247, 56, 91, 30);
 		}
 		return txtNoOfNodes;
 	}
@@ -993,15 +1060,15 @@ public class TrainTemporalPanel extends JPanel {
 		return lblModel;
 	}
 
-	private JLabel getLblPredictor_1() {
-		if (lblPredictor_1 == null) {
-			lblPredictor_1 = new JLabel("Unstructured predictor:");
-			lblPredictor_1.setVisible(false);
-			lblPredictor_1.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblPredictor_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPredictor_1.setBounds(420, 448, 188, 30);
+	private JLabel getLblPredictor() {
+		if (lblPredictor == null) {
+			lblPredictor = new JLabel("Unstructured predictor:");
+			lblPredictor.setVisible(false);
+			lblPredictor.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblPredictor.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblPredictor.setBounds(430, 448, 188, 30);
 		}
-		return lblPredictor_1;
+		return lblPredictor;
 	}
 
 	private JComboBox<String> getCmbPredictor() {
@@ -1024,7 +1091,7 @@ public class TrainTemporalPanel extends JPanel {
 					}
 				}
 			});
-			cmbPredictor.setBounds(618, 451, 149, 30);
+			cmbPredictor.setBounds(628, 451, 149, 30);
 			cmbPredictor.addItem("choose predictor");
 			cmbPredictor.addItem("neural network");
 			cmbPredictor.addItem("linear regression");
@@ -1038,7 +1105,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfHidden.setVisible(false);
 			lblNoOfHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfHidden.setBounds(445, 488, 164, 30);
+			lblNoOfHidden.setBounds(455, 488, 164, 30);
 		}
 		return lblNoOfHidden;
 	}
@@ -1049,7 +1116,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtHidden.setVisible(false);
 			txtHidden.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtHidden.setColumns(10);
-			txtHidden.setBounds(619, 490, 91, 30);
+			txtHidden.setBounds(629, 490, 91, 30);
 		}
 		return txtHidden;
 	}
@@ -1060,7 +1127,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfIterations.setVisible(false);
 			lblNoOfIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfIterations.setBounds(474, 529, 130, 30);
+			lblNoOfIterations.setBounds(484, 529, 130, 30);
 		}
 		return lblNoOfIterations;
 	}
@@ -1071,7 +1138,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtIterNN.setVisible(false);
 			txtIterNN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIterNN.setColumns(10);
-			txtIterNN.setBounds(619, 531, 91, 30);
+			txtIterNN.setBounds(629, 531, 91, 30);
 		}
 		return txtIterNN;
 	}
@@ -1079,12 +1146,12 @@ public class TrainTemporalPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(244, 408, 315, 30);
+			cmbMethod.setBounds(247, 408, 315, 30);
 
 			if (useMatlab) {
 				cmbMethod.addItem("choose method");
+				cmbMethod.addItem("RLSR");
 				cmbMethod.addItem("up-GCRF");
-				cmbMethod.addItem("Chao");
 				cmbMethod.addItem("m-GCRF");
 			} else {
 				cmbMethod.addItem("no available methods without MATLAB");
@@ -1092,18 +1159,28 @@ public class TrainTemporalPanel extends JPanel {
 			cmbMethod.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					String method = cmbMethod.getSelectedItem().toString();
-					if (isMGCRF()) {
+					switch (method) {
+					case "m-GCRF":
 						hideParamsUpGCRF();
+						hideParamsRLSR();
 						showParamsMGCRF();
-					} else {
+						break;
+					case "up-GCRF":
+						hideParamsRLSR();
 						hideParamsMGCRF();
-						if (isUpGCRF()) {
-							showParamsUpGCRF();
-						} else {
-							hideParamsUpGCRF();
-						}
+						showParamsUpGCRF();
+						break;
+					case "RLSR":
+						hideParamsMGCRF();
+						hideParamsUpGCRF();
+						showParamsRLSR();
+						break;
+					default:
+						hideParamsMGCRF();
+						hideParamsUpGCRF();
+						hideParamsRLSR();
+						break;
 					}
-
 					// if (isUpGCRF() || method.contains("Chao")) {
 					// chkLearn.setSelected(true);
 					// } else {
@@ -1118,22 +1195,42 @@ public class TrainTemporalPanel extends JPanel {
 	public void showParamsMGCRF() {
 		lblAlpha.setVisible(true);
 		txtAlpha.setVisible(true);
+		lblBeta.setText("Regularization beta:");
 		lblBeta.setVisible(true);
 		txtBeta.setVisible(true);
 		lblMaxIterations.setVisible(true);
 		txtIter.setVisible(true);
-		lblPredictor_1.setVisible(true);
+		lblPredictor.setText("Unstructured predictor:");
+		lblPredictor.setVisible(true);
 		cmbPredictor.setVisible(true);
 		btnQuestionRegAlpha.setVisible(true);
 	}
 
 	public void showParamsUpGCRF() {
+		lblLag.setText("Lag:");
 		lblLag.setVisible(true);
+		txtLag.setText("");
 		txtLag.setVisible(true);
 		btnQuestionLag.setVisible(true);
 		chckUseX.setVisible(true);
 		lblMaxIterations.setVisible(true);
 		txtIter.setVisible(true);
+	}
+
+	public void showParamsRLSR() {
+		lblLag.setText("No. of time points for validation:");
+		lblLag.setVisible(true);
+		txtLag.setText("");
+		txtLag.setVisible(true);
+		lblMaxIterations.setVisible(true);
+		txtIter.setVisible(true);
+		lblBeta.setText("LFSize:");
+		lblBeta.setVisible(true);
+		txtLFSize.setVisible(true);
+		lblPredictor.setText("Lambda set:");
+		lblPredictor.setVisible(true);
+		btnQuestionLambda.setVisible(true);
+		txtLambda.setVisible(true);
 	}
 
 	public void hideParamsMGCRF() {
@@ -1143,7 +1240,7 @@ public class TrainTemporalPanel extends JPanel {
 		txtBeta.setVisible(false);
 		lblMaxIterations.setVisible(false);
 		txtIter.setVisible(false);
-		lblPredictor_1.setVisible(false);
+		lblPredictor.setVisible(false);
 		cmbPredictor.setVisible(false);
 		btnQuestionRegAlpha.setVisible(false);
 	}
@@ -1157,12 +1254,23 @@ public class TrainTemporalPanel extends JPanel {
 		txtIter.setVisible(false);
 	}
 
+	public void hideParamsRLSR() {
+		lblLag.setVisible(false);
+		txtLag.setVisible(false);
+		lblMaxIterations.setVisible(false);
+		txtIter.setVisible(false);
+		lblBeta.setVisible(false);
+		txtLFSize.setVisible(false);
+		btnQuestionLambda.setVisible(false);
+		txtLambda.setVisible(false);
+	}
+
 	private JLabel getLblMethod() {
 		if (lblMethod == null) {
 			lblMethod = new JLabel("Method:");
 			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMethod.setBounds(128, 408, 100, 30);
+			lblMethod.setBounds(134, 408, 100, 30);
 		}
 		return lblMethod;
 	}
@@ -1172,7 +1280,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfTime = new JLabel("No. of time points:");
 			lblNoOfTime.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfTime.setBounds(84, 90, 143, 30);
+			lblNoOfTime.setBounds(94, 90, 143, 30);
 		}
 		return lblNoOfTime;
 	}
@@ -1182,7 +1290,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTime = new JTextField();
 			txtNoTime.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoTime.setColumns(10);
-			txtNoTime.setBounds(237, 92, 91, 30);
+			txtNoTime.setBounds(247, 92, 91, 30);
 		}
 		return txtNoTime;
 	}
@@ -1192,7 +1300,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTimeTrain = new JTextField();
 			txtNoTimeTrain.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoTimeTrain.setColumns(10);
-			txtNoTimeTrain.setBounds(237, 130, 91, 30);
+			txtNoTimeTrain.setBounds(247, 130, 91, 30);
 		}
 		return txtNoTimeTrain;
 	}
@@ -1202,7 +1310,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfTime_1 = new JLabel("No. of time points for train:");
 			lblNoOfTime_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfTime_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfTime_1.setBounds(0, 128, 228, 30);
+			lblNoOfTime_1.setBounds(10, 128, 228, 30);
 		}
 		return lblNoOfTime_1;
 	}
@@ -1227,7 +1335,7 @@ public class TrainTemporalPanel extends JPanel {
 					}
 				}
 			});
-			chkLearn.setBounds(731, 290, 140, 23);
+			chkLearn.setBounds(741, 290, 140, 23);
 		}
 		return chkLearn;
 	}
@@ -1274,7 +1382,7 @@ public class TrainTemporalPanel extends JPanel {
 									Style.questionIcon());
 				}
 			});
-			btnQuestionS.setBounds(688, 285, 30, 30);
+			btnQuestionS.setBounds(698, 285, 30, 30);
 		}
 		return btnQuestionS;
 	}
@@ -1294,7 +1402,7 @@ public class TrainTemporalPanel extends JPanel {
 									Style.questionIcon());
 				}
 			});
-			btnQuestionRegAlpha.setBounds(345, 448, 30, 30);
+			btnQuestionRegAlpha.setBounds(348, 448, 30, 30);
 		}
 		return btnQuestionRegAlpha;
 	}
@@ -1304,7 +1412,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfAttributres = new JLabel("No. of attributres per node:");
 			lblNoOfAttributres.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfAttributres.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfAttributres.setBounds(0, 164, 228, 30);
+			lblNoOfAttributres.setBounds(10, 164, 228, 30);
 		}
 		return lblNoOfAttributres;
 	}
@@ -1314,7 +1422,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoX = new JTextField();
 			txtNoX.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoX.setColumns(10);
-			txtNoX.setBounds(237, 166, 91, 30);
+			txtNoX.setBounds(247, 166, 91, 30);
 		}
 		return txtNoX;
 	}
@@ -1339,7 +1447,7 @@ public class TrainTemporalPanel extends JPanel {
 			lblLag.setVisible(false);
 			lblLag.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLag.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLag.setBounds(104, 448, 120, 30);
+			lblLag.setBounds(4, 449, 230, 30);
 		}
 		return lblLag;
 	}
@@ -1350,7 +1458,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtLag.setVisible(false);
 			txtLag.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLag.setColumns(10);
-			txtLag.setBounds(244, 448, 91, 30);
+			txtLag.setBounds(247, 448, 91, 30);
 		}
 		return txtLag;
 	}
@@ -1359,7 +1467,7 @@ public class TrainTemporalPanel extends JPanel {
 		if (btnQuestionLag == null) {
 			btnQuestionLag = new JButton("");
 			btnQuestionLag.setVisible(false);
-			btnQuestionLag.setBounds(345, 448, 30, 30);
+			btnQuestionLag.setBounds(348, 448, 30, 30);
 			Style.questionButtonStyle(btnQuestionLag);
 			btnQuestionLag.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -1380,8 +1488,53 @@ public class TrainTemporalPanel extends JPanel {
 			chckUseX = new JCheckBox("Use attributes");
 			chckUseX.setSelected(true);
 			chckUseX.setVisible(false);
-			chckUseX.setBounds(244, 495, 140, 23);
+			chckUseX.setBounds(247, 495, 140, 23);
 		}
 		return chckUseX;
+	}
+
+	private JTextField getTxtLFSize() {
+		if (txtLFSize == null) {
+			txtLFSize = new JTextField();
+			txtLFSize.setVisible(false);
+			txtLFSize.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtLFSize.setColumns(10);
+			txtLFSize.setBounds(247, 489, 91, 30);
+		}
+		return txtLFSize;
+	}
+
+	private JTextField getTxtLambda() {
+		if (txtLambda == null) {
+			txtLambda = new JTextField();
+			txtLambda.setVisible(false);
+			txtLambda.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtLambda.setColumns(10);
+			txtLambda.setBounds(628, 449, 149, 30);
+		}
+		return txtLambda;
+	}
+
+	private JButton getBtnQuestionLambda() {
+		if (btnQuestionLambda == null) {
+			btnQuestionLambda = new JButton("");
+			btnQuestionLambda.setVisible(false);
+			btnQuestionLambda.setBounds(787, 449, 30, 30);
+			Style.questionButtonStyle(btnQuestionLambda);
+			btnQuestionLambda.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Set of hyperparameters for regularizor. It can be array of double values or single value. "
+											+ "\nValues should be comma separated."
+											+ "\nExample: 0.0001,0.001,0.01,0.01,0.1,1",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
+				}
+			});
+		}
+		return btnQuestionLambda;
 	}
 }
