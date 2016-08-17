@@ -1,8 +1,5 @@
 package app.gui.panels;
 
-import javax.imageio.ImageIO;
-import javax.jws.WebParam.Mode;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,18 +15,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
 import app.algorithms.basic.BasicCalcs;
-import app.algorithms.matlab.UmGCRF;
-import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
-import app.gui.threads.DirGCRFTrainMyModelForGUI;
-import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.gui.threads.MGCRFTrainMyModelForGUI;
 import app.gui.threads.RLSRTrainMyModelForGUI;
-import app.gui.threads.UmGCRFTrainMyModelForGUI;
 import app.gui.threads.UpGCRFTrainMyModelForGUI;
 import app.predictors.helper.Helper;
 import app.predictors.linearregression.LinearRegression;
@@ -40,13 +32,10 @@ import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
-import javax.swing.JSeparator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -128,6 +117,11 @@ public class TrainTemporalPanel extends JPanel {
 	private JTextField txtLambda;
 	private JButton btnQuestionLambda;
 	private JTextField txtNoTest;
+	private JLabel lblLfSize;
+	private JLabel lblSseIter;
+	private JTextField txtSseIter;
+	private JLabel lblLsIter;
+	private JTextField txtLsIter;
 
 	public TrainTemporalPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -204,6 +198,11 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtLambda());
 		add(getBtnQuestionLambda());
 		add(getTxtNoTest());
+		add(getLblLfSize());
+		add(getLblSseIter());
+		add(getTxtSseIter());
+		add(getLblLsIter());
+		add(getTxtLsIter());
 		// }
 		// } else {
 		// JOptionPane
@@ -473,8 +472,7 @@ public class TrainTemporalPanel extends JPanel {
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
 
-							String yMSg = checkY(noOfNodes, y, noOfX,
-									noOfTime);
+							String yMSg = checkY(noOfNodes, y, noOfX, noOfTime);
 
 							if (yMSg != null) {
 								JOptionPane.showMessageDialog(mainFrame, yMSg,
@@ -482,7 +480,8 @@ public class TrainTemporalPanel extends JPanel {
 								return;
 							}
 
-							double[][] yMatrix = Reader.readMatrix(txtYFile.getText(), noOfNodes, noOfTime);
+							double[][] yMatrix = Reader.readMatrix(
+									txtYFile.getText(), noOfNodes, noOfTime);
 
 							if (isUpGCRF()) {
 
@@ -498,9 +497,8 @@ public class TrainTemporalPanel extends JPanel {
 										return;
 									}
 
-									x1 = Reader.readMatrix(
-											txtXFile.getText(), noOfNodes,
-											noOfTime * noOfX);
+									x1 = Reader.readMatrix(txtXFile.getText(),
+											noOfNodes, noOfTime * noOfX);
 								}
 								double[][] s = null;
 								if (!chkLearn.isSelected()) {
@@ -524,7 +522,7 @@ public class TrainTemporalPanel extends JPanel {
 								int test = Integer.parseInt(txtNoTest.getText());
 								trainUpGCRF(matlabPath, path, x1, yMatrix, s,
 										noOfTime, noOfTimeTrain, maxIter,
-										noOfNodes, lag, noOfX,test);
+										noOfNodes, lag, noOfX, test);
 							}
 							if (isRLSR()) {
 								double[][] x1 = null;
@@ -539,33 +537,25 @@ public class TrainTemporalPanel extends JPanel {
 										return;
 									}
 
-									x1 = Reader.readMatrix(
-											txtXFile.getText(), noOfNodes,
-											noOfTime * noOfX);
-								}
-								double[][] s = null;
-								if (!chkLearn.isSelected()) {
-									String sMSg = checkS(noOfNodes, s);
-
-									if (sMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, sMSg, "Error",
-												JOptionPane.ERROR_MESSAGE);
-										return;
-									}
-									s = Reader.readGraph(
-											txtMatrixFile.getText(), noOfNodes);
+									x1 = Reader.readMatrix(txtXFile.getText(),
+											noOfNodes, noOfTime * noOfX);
 								}
 								int validation = Integer.parseInt(txtLag
 										.getText());
 								int lfSize = Integer.parseInt(txtLFSize
 										.getText());
+								int test = Integer.parseInt(txtNoTest.getText());
+								int iterNN = Integer.parseInt(txtIterNN.getText());
+								int hidden = Integer.parseInt(txtHidden.getText());
+								int iterSSE = Integer.parseInt(txtSseIter.getText());
+								int iterLs = Integer.parseInt(txtLsIter.getText());
 								String lambda = txtLambda.getText();
 								String path = createFolderAndSaveData();
-								trainRLSR(matlabPath, path, x1, yMatrix, s,
+								trainRLSR(matlabPath, path, x1, yMatrix,
 										noOfTime, noOfTimeTrain, maxIter,
 										noOfNodes, validation, noOfX, lfSize,
-										lambda);
+										lambda, test, iterNN, hidden, iterSSE,
+										iterLs);
 							}
 
 						}
@@ -575,7 +565,7 @@ public class TrainTemporalPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(359, 594, 112, 45);
+			btnTrain.setBounds(358, 660, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -614,15 +604,17 @@ public class TrainTemporalPanel extends JPanel {
 	}
 
 	public void trainRLSR(String matlabPath, String modelFolder, double[][] r,
-			double[][] y, double[][] s, int noTime, int training, int maxIter,
-			int noOfNodes, int validation, int noX, int lfSize, String lambda) {
+			double[][] y, int noTime, int training, int maxIter, int noOfNodes,
+			int validation, int noX, int lfSize, String lambda, int test,
+			int iterNN, int hidden, int iterSSE, int iterLs) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 		RLSRTrainMyModelForGUI t = new RLSRTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				noOfNodes, validation, noX, lfSize, lambda);
+				modelFolder, frame, frame, r, y, noTime, training, maxIter,
+				noOfNodes, validation, noX, lfSize, lambda, test, iterNN,
+				hidden, iterSSE, iterLs);
 
 		t.start();
 	}
@@ -970,8 +962,8 @@ public class TrainTemporalPanel extends JPanel {
 			if (a <= 0) {
 				return "No. of time points for test should be greater than 0.";
 			}
-			if ((train + a + lag) >= t) {
-				return "Sum of no. of time points for training, for test and Lag should be lower than total no. of time points.";
+			if ((train + a + lag) > t) {
+				return "Sum of no. of time points for training, for test and Lag should be lower than or equal to total no. of time points.";
 			}
 		} catch (NumberFormatException e) {
 			return "No. of time points for test should be integer.";
@@ -991,21 +983,41 @@ public class TrainTemporalPanel extends JPanel {
 	private String validateDataForRLSR() {
 		int t = Integer.parseInt(txtNoTime.getText());
 		int train = Integer.parseInt(txtNoTimeTrain.getText());
+		int valid = 0;
 		try {
-			int a = Integer.parseInt(txtLag.getText());
-			if (a <= 0) {
+			valid = Integer.parseInt(txtLag.getText());
+			if (valid <= 0) {
 				return "No. of time points for validation should be greater than 0.";
-			}
-			if ((train + a) >= t) {
-				return "Sum of no. of time points for training and for validation should be lower than total no. of time points.";
 			}
 		} catch (NumberFormatException e) {
 			return "No. of time points for validation should be integer.";
 		}
+
+		try {
+			int a = Integer.parseInt(txtNoTest.getText());
+			if (a <= 0) {
+				return "No. of time points for test should be greater than 0.";
+			}
+			if ((train + a + valid) > t) {
+				return "Sum of no. of time points for training, validation and test should be lower than or equal to total no. of time points.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of time points for test should be integer.";
+		}
+
+		int iter = 0;
+		try {
+			iter = Integer.parseInt(txtIter.getText());
+			if (iter <= 0) {
+				return "No. of iteration for RLSR training should be greater than 0.";
+			}
+		} catch (NumberFormatException e) {
+			return "No. of iteration for RLSR training should be integer.";
+		}
 		try {
 			int b = Integer.parseInt(txtLFSize.getText());
-			if (b <= 0) {
-				return "LFSize should be greater than 0.";
+			if (b <= 0 || b >= iter) {
+				return "LFSize should be greater than 0 and lower than max. iterations.";
 			}
 		} catch (NumberFormatException e) {
 			return "LFSize should be integer.";
@@ -1241,11 +1253,11 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JLabel getLblNoOfHidden() {
 		if (lblNoOfHidden == null) {
-			lblNoOfHidden = new JLabel("No. of hidden neurons:");
+			lblNoOfHidden = new JLabel("No. of hidden neurons for NN:");
 			lblNoOfHidden.setVisible(false);
 			lblNoOfHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfHidden.setBounds(455, 488, 164, 30);
+			lblNoOfHidden.setBounds(405, 488, 214, 30);
 		}
 		return lblNoOfHidden;
 	}
@@ -1263,11 +1275,11 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JLabel getLblNoOfIterations() {
 		if (lblNoOfIterations == null) {
-			lblNoOfIterations = new JLabel("No. of iterations:");
+			lblNoOfIterations = new JLabel("No. of iterations for NN:");
 			lblNoOfIterations.setVisible(false);
 			lblNoOfIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfIterations.setBounds(484, 529, 130, 30);
+			lblNoOfIterations.setBounds(446, 530, 172, 30);
 		}
 		return lblNoOfIterations;
 	}
@@ -1367,13 +1379,23 @@ public class TrainTemporalPanel extends JPanel {
 		txtLag.setVisible(true);
 		lblMaxIterations.setVisible(true);
 		txtIter.setVisible(true);
-		lblBeta.setText("LFSize:");
+		lblBeta.setText("No. of time points for test:");
 		lblBeta.setVisible(true);
 		txtLFSize.setVisible(true);
 		lblPredictor.setText("Lambda set:");
 		lblPredictor.setVisible(true);
 		btnQuestionLambda.setVisible(true);
 		txtLambda.setVisible(true);
+		lblLfSize.setVisible(true);
+		txtNoTest.setVisible(true);
+		lblNoOfHidden.setVisible(true);
+		txtHidden.setVisible(true);
+		lblNoOfIterations.setVisible(true);
+		txtIterNN.setVisible(true);
+		lblLsIter.setVisible(true);
+		txtLsIter.setVisible(true);
+		lblSseIter.setVisible(true);
+		txtSseIter.setVisible(true);
 	}
 
 	public void hideParamsMGCRF() {
@@ -1407,6 +1429,16 @@ public class TrainTemporalPanel extends JPanel {
 		txtLFSize.setVisible(false);
 		btnQuestionLambda.setVisible(false);
 		txtLambda.setVisible(false);
+		lblLfSize.setVisible(false);
+		txtNoTest.setVisible(false);
+		lblNoOfHidden.setVisible(false);
+		txtHidden.setVisible(false);
+		lblNoOfIterations.setVisible(false);
+		txtIterNN.setVisible(false);
+		lblLsIter.setVisible(false);
+		txtLsIter.setVisible(false);
+		lblSseIter.setVisible(false);
+		txtSseIter.setVisible(false);
 	}
 
 	private JLabel getLblMethod() {
@@ -1643,7 +1675,7 @@ public class TrainTemporalPanel extends JPanel {
 			txtLFSize.setVisible(false);
 			txtLFSize.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLFSize.setColumns(10);
-			txtLFSize.setBounds(247, 489, 91, 30);
+			txtLFSize.setBounds(247, 570, 91, 30);
 		}
 		return txtLFSize;
 	}
@@ -1691,5 +1723,60 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTest.setBounds(247, 489, 91, 30);
 		}
 		return txtNoTest;
+	}
+
+	private JLabel getLblLfSize() {
+		if (lblLfSize == null) {
+			lblLfSize = new JLabel("LF size:");
+			lblLfSize.setVisible(false);
+			lblLfSize.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblLfSize.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblLfSize.setBounds(134, 568, 100, 30);
+		}
+		return lblLfSize;
+	}
+
+	private JLabel getLblSseIter() {
+		if (lblSseIter == null) {
+			lblSseIter = new JLabel("SSE max. iterations:");
+			lblSseIter.setVisible(false);
+			lblSseIter.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblSseIter.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblSseIter.setBounds(469, 571, 149, 30);
+		}
+		return lblSseIter;
+	}
+
+	private JTextField getTxtSseIter() {
+		if (txtSseIter == null) {
+			txtSseIter = new JTextField();
+			txtSseIter.setVisible(false);
+			txtSseIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtSseIter.setColumns(10);
+			txtSseIter.setBounds(629, 572, 91, 30);
+		}
+		return txtSseIter;
+	}
+
+	private JLabel getLblLsIter() {
+		if (lblLsIter == null) {
+			lblLsIter = new JLabel("SSE LS max. iterations:");
+			lblLsIter.setVisible(false);
+			lblLsIter.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblLsIter.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblLsIter.setBounds(457, 612, 161, 30);
+		}
+		return lblLsIter;
+	}
+
+	private JTextField getTxtLsIter() {
+		if (txtLsIter == null) {
+			txtLsIter = new JTextField();
+			txtLsIter.setVisible(false);
+			txtLsIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtLsIter.setColumns(10);
+			txtLsIter.setBounds(627, 614, 91, 30);
+		}
+		return txtLsIter;
 	}
 }

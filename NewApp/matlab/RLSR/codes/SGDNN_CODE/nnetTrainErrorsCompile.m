@@ -28,13 +28,13 @@ if i > 1
 	end
 	
 	% Don't plot too often
-	if ~mod(index, 50)
-		sfigure(1);
-		subplot(1,params.nFig,1);
-		plot(1 + (2:(startIndex + 2))/nBatchesTrain, errors.train(1:(startIndex + 1)));
-		eval(['title(''Training ', params.cost, ''');']);
-		drawnow;
-	end
+% 	if ~mod(index, 50)
+% 		sfigure(1);
+% 		subplot(1,params.nFig,1);
+% 		plot(1 + (2:(startIndex + 2))/nBatchesTrain, errors.train(1:(startIndex + 1)));
+% 		eval(['title(''Training ', params.cost, ''');']);
+% 		drawnow;
+% 	end
 end
 
 % Update the total overhead time.

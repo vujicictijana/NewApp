@@ -13,7 +13,6 @@ public class RLSRTrainMyModelForGUI extends Thread {
 	private ProgressBar frame;
 	private JFrame mainFrame;
 
-	private double s[][];
 	private double x[][];
 	private double y[][];
 	private String modelFolder;
@@ -27,15 +26,20 @@ public class RLSRTrainMyModelForGUI extends Thread {
 	private int noX;
 	private int lfSize;
 	private String lambda;
+	private int test;
+	private int iterNN;
+	private int hidden;
+	private int iterSSE;
+	private int iterLs;
 
 	public RLSRTrainMyModelForGUI(String matlabPath, String modelFolder,
-			ProgressBar frame, JFrame mainFrame, double[][] s, double[][] r,
-			double[][] y, int noTime, int training, int maxIter, int noOfNodes,
-			int validation, int noX, int lfSize, String lambda) {
+			ProgressBar frame, JFrame mainFrame, double[][] r, double[][] y,
+			int noTime, int training, int maxIter, int noOfNodes,
+			int validation, int noX, int lfSize, String lambda, int test,
+			int iterNN, int hidden, int iterSSE, int iterLs) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
-		this.s = s;
 		this.x = r;
 		this.y = y;
 		this.modelFolder = modelFolder;
@@ -48,6 +52,11 @@ public class RLSRTrainMyModelForGUI extends Thread {
 		this.noX = noX;
 		this.lambda = lambda;
 		this.lfSize = lfSize;
+		this.test = test;
+		this.iterNN = iterNN;
+		this.hidden = hidden;
+		this.iterSSE = iterSSE;
+		this.iterLs = iterLs;
 		time = "* Time in milis: ";
 	}
 
@@ -65,9 +74,9 @@ public class RLSRTrainMyModelForGUI extends Thread {
 		frame.setTitle("Please wait: RLSR is in progress ");
 		long start = System.currentTimeMillis();
 
-		String message = RLSR.train(matlabPath, s, y, x, noTime, training,
-				maxIter, noOfNodes, validation, noX, lfSize, lambda, frame,
-				modelFolder);
+		String message = RLSR.train(matlabPath, y, x, noTime, training,
+				maxIter, noOfNodes, validation, noX, lfSize, test, iterNN,
+				hidden, iterSSE, iterLs, lambda, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		time += elapsedTime;

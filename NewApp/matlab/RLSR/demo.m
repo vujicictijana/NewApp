@@ -11,7 +11,6 @@ nn_params.nIter = 200; %1000
 nn_params.save = 0; 
 nn_params.func = {'sigm', 'none'};
 nn_params.early.use = 1;
-nn_params.nFig = 3;
 
 % Structure learning parameters
 sse_params = struct;
@@ -22,18 +21,18 @@ sse_params.tol = 1e-6;
 sse_params.col_tol = 1e-6;
 sse_params.alpha = 1;
 
-% Loading the data
-trainValidX = csvread('../data/trainValidX.csv');
-trainValidY = csvread('../data/trainValidY.csv');
-testX = csvread('../data/testX.csv');
-testY = csvread('../data/testY.csv');
-
 % Training parameters
 maxIter = 10; %30
 trainSize = 1000;
 validSize = 300;
 testSize = 300;
 LFSize = 5; %20
+
+% Loading and spliting the data
+x = csvread('../data/X.csv');
+y = csvread('../data/Y.csv');
+
+[trainValidX, trainValidY, testX, testY] = splitData(x, y, trainSize, validSize, testSize);
 
 % Training and validating
 lambda_set = 0.01; % lambda_set = [0.0001,0.001,0.01,0.01,0.1,1];

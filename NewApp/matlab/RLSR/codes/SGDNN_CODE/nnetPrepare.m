@@ -19,8 +19,8 @@ if length(validation) == 0
 	params.nFig = params.nFig - 1;
 end
 
-sfigure(1);
-clf;
+% sfigure(1);
+% clf;
 
 index = 0;
 nIter = params.nIter;

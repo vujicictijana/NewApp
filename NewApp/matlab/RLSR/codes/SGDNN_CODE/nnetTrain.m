@@ -69,8 +69,8 @@ for i = 1:nIter
 end
 
 % Tighten the axes on the plots.
-for nFig = 1:params.nFig
-	subplot(1,params.nFig,nFig);
-	axis('tight');
-end
+% for nFig = 1:params.nFig
+% 	subplot(1,params.nFig,nFig);
+% 	axis('tight');
+% end
 if params.verbose == 1, fprintf('\n'); end
