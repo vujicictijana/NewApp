@@ -28,6 +28,7 @@ import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
 import app.gui.threads.GCRFTrainMyModelForGUI;
 import app.gui.threads.MGCRFTrainMyModelForGUI;
+import app.gui.threads.RLSRTrainMyModelForGUI;
 import app.gui.threads.UmGCRFTrainMyModelForGUI;
 import app.gui.threads.UpGCRFTrainMyModelForGUI;
 import app.predictors.helper.Helper;
@@ -475,14 +476,19 @@ public class TrainTemporalPanel extends JPanel {
 
 							double[][] yMatrix = Reader.readMatrix(path
 									+ "/data/y.txt", noOfNodes, noOfTime);
-							int lag = Integer.parseInt(txtLag.getText());
 							if (isUpGCRF()) {
+								int lag = Integer.parseInt(txtLag.getText());
 								trainUpGCRF(matlabPath, path, x1, yMatrix, s,
 										noOfTime, noOfTimeTrain, maxIter,
 										noOfNodes, lag, noOfX);
 							}
-							if(isRLSR()){
-								
+							if (isRLSR()) {
+								int validation = Integer.parseInt(txtLag.getText());
+								int lfSize = Integer.parseInt(txtLFSize.getText());
+								String lambda  = txtLambda.getText();
+								trainRLSR(matlabPath, path, x1, yMatrix, s,
+										noOfTime, noOfTimeTrain, maxIter,
+										noOfNodes, validation, noOfX, lfSize, lambda);
 							}
 
 						}
@@ -526,6 +532,20 @@ public class TrainTemporalPanel extends JPanel {
 		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
 				noOfNodes, lag, noX, useX);
+
+		t.start();
+	}
+
+	public void trainRLSR(String matlabPath, String modelFolder, double[][] r,
+			double[][] y, double[][] s, int noTime, int training, int maxIter,
+			int noOfNodes, int validation, int noX, int lfSize, String lambda) {
+		ProgressBar frame = new ProgressBar("Training");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+		RLSRTrainMyModelForGUI t = new RLSRTrainMyModelForGUI(matlabPath,
+				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
+				noOfNodes, validation, noX, lfSize, lambda);
 
 		t.start();
 	}

@@ -21,14 +21,11 @@ import matlabcontrol.extensions.MatlabTypeConverter;
 
 public class UmGCRF {
 
-	public static String train(String matlabPath, double[][] s, double[] y, double[] r,
-			ProgressBar frame, String modelFolder) {
+	public static String train(String matlabPath, double[][] s, double[] y,
+			double[] r, ProgressBar frame, String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true)
-				.setProxyTimeout(30000L)
-				.setMatlabLocation(
-						matlabPath)
-				.build();
+				.setHidden(true).setProxyTimeout(30000L)
+				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
 		try {
@@ -120,13 +117,11 @@ public class UmGCRF {
 		return "Connection with MATLAB cannot be established.";
 	}
 
-	public static double[] test(String matlabPath, double[][] s, double[] y, double[] r,
-			double theta) {
+	public static double[] test(String matlabPath, double[][] s, double[] y,
+			double[] r, double theta) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true)
-				.setProxyTimeout(30000L)
-				.setMatlabLocation(matlabPath)
-				.build();
+				.setHidden(true).setProxyTimeout(30000L)
+				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
 		try {
@@ -178,13 +173,13 @@ public class UmGCRF {
 				rt.exec("taskkill /F /IM MATLAB.exe");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 			return null;
 		} catch (MatlabConnectionException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (MatlabInvocationException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}

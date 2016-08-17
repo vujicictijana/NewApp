@@ -106,15 +106,15 @@ public class MGCRF {
 				rt.exec("taskkill /F /IM MATLAB.exe");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printFStackTrace();
 			}
 			frame.setVisible(false);
 			return message;
 
 		} catch (MatlabConnectionException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (MatlabInvocationException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";

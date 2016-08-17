@@ -17,12 +17,12 @@ import matlabcontrol.MatlabProxyFactoryOptions;
 import matlabcontrol.extensions.MatlabNumericArray;
 import matlabcontrol.extensions.MatlabTypeConverter;
 
-public class UpGCRF {
+public class RLSR {
 
 	public static String train(String matlabPath, double[][] s, double[][] y,
 			double[][] x, int noTime, int training, int maxIter, int noOfNodes,
-			int lag, int noX, boolean useX, ProgressBar frame,
-			String modelFolder) {
+			int validation, int noX, int lfSize, String lambda,
+			ProgressBar frame, String modelFolder) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
 				.setHidden(true).setProxyTimeout(300000L)
 				.setMatlabLocation(matlabPath).build();
@@ -36,67 +36,62 @@ public class UpGCRF {
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
 			String mainPath = path.substring(0, path.lastIndexOf("/"));
-			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/upGCRF";
+			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/RLSR";
 			proxy.eval("addpath('" + path + "')");
 
-			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
-			// processor.setNumericArray("S", new MatlabNumericArray(s, null));
-			// double[][][] x3d = Helper.get3DArray(x, noTime, noOfNodes, noX);
-			// processor.setNumericArray("X", new MatlabNumericArray(x3d,
-			// null));
-			// y = Helper.putNaN(y);
-			// processor.setNumericArray("y", new MatlabNumericArray(y, null));
-			//
-			// proxy.setVariable("lag", lag);
-			// proxy.setVariable("trainTs", training);
-			// proxy.setVariable("predictTs", noTime - training - lag);
-			// proxy.setVariable("maxiter", maxIter);
-			// if (!useX) {
-			// proxy.eval("select_features = [];");
-			// }else{
-			// String features = "[";
-			// for (int i = 1; i <= noX; i++) {
-			// features+=i+ ",";
-			// }
-			// features+="];";
-			// proxy.eval("select_features = " + features);
-			// }
-			// proxy.setVariable("N", noOfNodes);
-			// proxy.eval("similarities{1} = S");
+			proxy.eval("addpath(genpath('" + path + "/codes'))");
 
-			// rain data test
-			proxy.eval("load rain_data_northwest.mat");
-			proxy.setVariable("lag", 12);
-			proxy.setVariable("trainTs", 20);
-			proxy.setVariable("predictTs", 20);
-			proxy.setVariable("maxiter", 20);
-			proxy.eval("select_features = [];");
+			// neural network parameters
+			proxy.eval("parameters;");
+			proxy.eval("nn_params = params;");
+			proxy.eval("nn_params.Nh = 20;");
+			proxy.eval("nn_params.nIter = 200;");
+			proxy.eval("nn_params.save = 0;");
+			proxy.eval("nn_params.func = {'sigm', 'none'};");
+			proxy.eval("nn_params.early.use = 1;");
+			proxy.eval("nn_params.nFig = 3;");
+
+			// Structure learning parameters
+			proxy.eval("sse_params = struct;");
+			proxy.eval("sse_params.quiet = 1;");
+			proxy.eval("sse_params.max_iters = 1000;");
+			proxy.eval("sse_params.ls_max_iters = 1000;");
+			proxy.eval("sse_params.tol = 1e-6;");
+			proxy.eval("sse_params.col_tol = 1e-6;");
+			proxy.eval("sse_params.alpha = 1;");
+
+			// csv data
+			proxy.eval("trainValidX = csvread('" + path
+					+ "/data/trainValidX.csv');");
+			proxy.eval("trainValidY = csvread('" + path
+					+ "/data/trainValidY.csv');");
+			proxy.eval("testX = csvread('" + path + "/data/testX.csv');");
+			proxy.eval("testY = csvread('" + path + "/data/testY.csv');");
+
+			// Training parameters
+			proxy.setVariable("maxIter", maxIter);
+			proxy.setVariable("trainSize", training);
+			proxy.setVariable("validSize", validation);
+			proxy.setVariable("testSize", noTime - (training + validation));
+			proxy.setVariable("LFSize", lfSize);
+			proxy.eval("lambda_set = [" + lambda + "];");
 
 			// run train
 
 			String message = null;
 			try {
-				proxy.eval("[Data,muNoisyGCRF] = upGCRF(lag,trainTs,predictTs,maxiter,select_features,N, X, y, similarities);");
+				proxy.eval("[best_layer, best_Lambda, best_Theta, best_lambda, time_spent] = "
+						+ "RLSR_train_valid(trainValidX, trainValidY, trainSize, validSize, lambda_set, maxIter, LFSize, nn_params, sse_params);");
 
 				proxy.eval("rmpath('" + path + "')");
 
-				MatlabNumericArray array = processor
-						.getNumericArray("muNoisyGCRF");
-				double[][] outputs = array.getRealArray2D();
-
-				MatlabNumericArray array1 = processor.getNumericArray("y");
-				double[][] y1 = array1.getRealArray2D();
-
-				// GraphGenerator.showMatrix(outputs);
-
 				Writer.createFolder(modelFolder + "/parameters");
 				String fileName = mainPath + "/" + modelFolder
-						+ "/parameters/upGCRF.mat";
+						+ "/parameters/RLSR.mat";
 				proxy.setVariable("fileName", fileName);
 
-				proxy.eval("save(fileName,'Data','-v7.3')");
-				String export = exportResults(y1, outputs, modelFolder);
-				message = "up-GCRF results: \n* " + export;
+				proxy.eval("save(fileName,'best_layer','-v7.3')");
+				message = "RLSR results: \n* ";
 				proxy.disconnect();
 
 			} catch (Exception e) {
