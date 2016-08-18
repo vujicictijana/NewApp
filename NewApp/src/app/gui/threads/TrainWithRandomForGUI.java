@@ -59,19 +59,19 @@ public class TrainWithRandomForGUI extends Thread {
 		this.xTable = xTable;
 		this.yTable = yTable;
 		this.timeLabel = timeLabel;
-		time = "Time in milis - ";
+		time = "Time in seconds: ";
 		// System.out.println(Writer.edges(s));
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
-		frame.setTitle("Progress Asymmetric");
+		frame.setTitle("Progress DirGCRF");
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
 		long start = System.currentTimeMillis();
 		double[] res = gda.learn(maxIter, false, frame.getCurrent());
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "Asymmetric: " + elapsedTime;
+		time += "DirGCRF: " + Math.round(elapsedTime/1000);
 
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
 				y);
@@ -81,7 +81,7 @@ public class TrainWithRandomForGUI extends Thread {
 		double r2S = -1;
 		if (both) {
 			frame.getCurrent().setValue(0);
-			frame.setTitle("Progress Symmetric");
+			frame.setTitle("Progress GCRF");
 			start = System.currentTimeMillis();
 			double[][] sS = GraphGenerator.converteGraphToUndirected(s);
 			CalculationsSymmetric cS = new CalculationsSymmetric(sS, r);
@@ -96,12 +96,12 @@ public class TrainWithRandomForGUI extends Thread {
 					sS, r, yS);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += " Symmetric: " + elapsedTime;
+			time += " GCRF: " + Math.round(elapsedTime/1000);
 		}
 		createTable(res, r2, resS, r2S);
-		createFile("Asymmetric.txt", res);
+		createFile("DirGCRF.txt", res);
 		if (resS != null) {
-			createFile("Symmetric.txt", resS);
+			createFile("GCRF.txt", resS);
 		}
 		timeLabel.setText(time);
 		timeLabel.setVisible(true);
@@ -143,17 +143,17 @@ public class TrainWithRandomForGUI extends Thread {
 		Object[][] data = null;
 		if (resS == null) {
 			data = new Object[1][4];
-			data[0][0] = "Asymmetric";
+			data[0][0] = "DirGCRF";
 			data[0][1] = res[0];
 			data[0][2] = res[1];
 			data[0][3] = r2;
 		} else {
 			data = new Object[2][4];
-			data[0][0] = "Asymmetric";
+			data[0][0] = "DirGCRF";
 			data[0][1] = res[0];
 			data[0][2] = res[1];
 			data[0][3] = r2;
-			data[1][0] = "Symmetric";
+			data[1][0] = "GCRF";
 			data[1][1] = resS[0];
 			data[1][2] = resS[1];
 			data[1][3] = r2S;

@@ -32,11 +32,12 @@ public class TestWithRandomForGUI extends Thread {
 	private int noOfNodes;
 	private int times;
 	private double probability;
-	private double alphaGen = 5;
-	private double betaGen = 1;
+	private double alphaGen;
+	private double betaGen;
 
-	public TestWithRandomForGUI(ProgressBar frame, JFrame mainFrame, JPanel panel,
-			String modelFolder, int noOfNodes, int times, double probability) {
+	public TestWithRandomForGUI(ProgressBar frame, JFrame mainFrame,
+			JPanel panel, String modelFolder, int noOfNodes, int times,
+			double probability, double alphaGen, double betaGen) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -45,6 +46,8 @@ public class TestWithRandomForGUI extends Thread {
 		this.noOfNodes = noOfNodes;
 		this.times = times;
 		this.probability = probability;
+		this.alphaGen = alphaGen;
+		this.betaGen = betaGen;
 		panel.removeAll();
 		panel.revalidate();
 		panel.repaint();
@@ -53,9 +56,9 @@ public class TestWithRandomForGUI extends Thread {
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress");
-		double[] param = read(modelFolder + "/Asymmetric.txt");
+		double[] param = read(modelFolder + "/DirGCRF.txt");
 		double[] results = resultsAsymmetric(param[0], param[1]);
-		double[] paramS = read(modelFolder + "/Symmetric.txt");
+		double[] paramS = read(modelFolder + "/GCRF.txt");
 		double[] resultsS = null;
 		if (paramS != null) {
 			resultsS = resultsSymmetric(paramS[0], paramS[1]);
@@ -86,7 +89,7 @@ public class TestWithRandomForGUI extends Thread {
 
 	public double[] resultsAsymmetric(double alpha, double beta) {
 		double[] results = new double[times];
-		frame.setTitle("Progress Asymmetric");
+		frame.setTitle("Progress DirGCRF");
 		for (int i = 0; i < results.length; i++) {
 			frame.getCurrent().setValue((i + 1));
 			double[][] s = graph(noOfNodes);
@@ -104,7 +107,7 @@ public class TestWithRandomForGUI extends Thread {
 
 	public double[] resultsSymmetric(double alpha, double beta) {
 		double[] results = new double[times];
-		frame.setTitle("Progress Symmetric");
+		frame.setTitle("Progress GCRF");
 		frame.getCurrent().setValue(0);
 		for (int i = 0; i < results.length; i++) {
 			frame.getCurrent().setValue((i + 1));
@@ -125,19 +128,19 @@ public class TestWithRandomForGUI extends Thread {
 	public JTable createTable(double[] results, double[] resultsS) {
 		JTable table = null;
 		if (resultsS != null) {
-			String[] columnNames = { "No.", "R^2 Asymmetric", "R^2 Symmetric" };
+			String[] columnNames = { "No.", "R^2 DirGCRF", "R^2 GCRF" };
 			Object[][] data = fillData(results, resultsS);
 
 			table = new JTable(data, columnNames);
 		} else {
-			String[] columnNames = { "No.", "R^2 Asymmetric" };
+			String[] columnNames = { "No.", "R^2 DirGCRF" };
 			Object[][] data = fillData(results, resultsS);
 
 			table = new JTable(data, columnNames);
 		}
 		table.setBackground(new Color(240, 240, 240));
 		JScrollPane scrollPane = new JScrollPane(table);
-		Style.resultTable(table, times+1);
+		Style.resultTable(table, times + 1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
 		JButton export = new JButton();
@@ -170,25 +173,28 @@ public class TestWithRandomForGUI extends Thread {
 		double sumS = 0;
 		int no = 0;
 		for (int i = 0; i < results.length; i++) {
-			txt[no] = (i+1) + " R^2 Asymmetric: " + results[i];
+			txt[no] = (i + 1) + " R^2 DirGCRF: " + results[i];
 			sum += results[i];
 			no++;
 			if (resultsS != null) {
-				txt[no] = (i+1) + " R^2 Symmetric: " + resultsS[i];
+				txt[no] = (i + 1) + " R^2 GCRF: " + resultsS[i];
 				sumS += resultsS[i];
 				no++;
 			}
 		}
-		DecimalFormat df  = new DecimalFormat("#.############");
-		txt[txt.length - 1] = "Average Asymmetric: " + (sum / times);
+		DecimalFormat df = new DecimalFormat("#.############");
+		txt[txt.length - 1] = "Average DirGCRF: " + (sum / times);
 		if (resultsS != null) {
-			txt[txt.length - 4] = "Average Asymmetric: " + (sum / times);
-			txt[txt.length - 3] = "Average Symmetric: " + (sumS / times);
+			txt[txt.length - 4] = "Average DirGCRF: " + (sum / times);
+			txt[txt.length - 3] = "Average GCRF: " + (sumS / times);
 		}
-		txt[txt.length - 2] = "Standard deviation Asymmetric: " + df.format(BasicCalcs.standardDeviation(results));
+		txt[txt.length - 2] = "Standard deviation DirGCRF: "
+				+ df.format(BasicCalcs.standardDeviation(results));
 		if (resultsS != null) {
-			txt[txt.length - 2] = "Standard deviation Asymmetric: " + df.format(BasicCalcs.standardDeviation(results));
-			txt[txt.length - 1] = "Standard deviation Symmetric: " + df.format(BasicCalcs.standardDeviation(resultsS));
+			txt[txt.length - 2] = "Standard deviation DirGCRF: "
+					+ df.format(BasicCalcs.standardDeviation(results));
+			txt[txt.length - 1] = "Standard deviation GCRF: "
+					+ df.format(BasicCalcs.standardDeviation(resultsS));
 		}
 		return txt;
 	}
@@ -213,12 +219,13 @@ public class TestWithRandomForGUI extends Thread {
 		}
 		data[times][0] = "Average";
 		data[times][1] = sum / times;
-		DecimalFormat df  = new DecimalFormat("#.############");
-		data[times+1][0] = "Standard deviation";
-		data[times+1][1] = df.format(BasicCalcs.standardDeviation(results));
+		DecimalFormat df = new DecimalFormat("#.############");
+		data[times + 1][0] = "Standard deviation";
+		data[times + 1][1] = df.format(BasicCalcs.standardDeviation(results));
 		if (resultsS != null) {
 			data[times][2] = sumS / times;
-			data[times+1][2] =df.format(BasicCalcs.standardDeviation(resultsS));
+			data[times + 1][2] = df.format(BasicCalcs
+					.standardDeviation(resultsS));
 		}
 		return data;
 	}

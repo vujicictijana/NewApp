@@ -1,4 +1,4 @@
-function [test_mse] = RLSR_test(x, y, best_layer, best_Lambda, best_Theta)
+function [test_mse, pred_test] = RLSR_test(x, y, best_layer, best_Lambda, best_Theta)
 %RLSR_TEST Summary of this function goes here
 %   Detailed explanation goes here
     m = size(x,1);

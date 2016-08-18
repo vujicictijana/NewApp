@@ -3,9 +3,7 @@ package app.gui.threads;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import app.algorithms.matlab.MGCRF;
 import app.algorithms.matlab.RLSR;
-import app.algorithms.matlab.UpGCRF;
 import app.file.io.Reader;
 import app.gui.frames.ProgressBar;
 
@@ -57,7 +55,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 		this.hidden = hidden;
 		this.iterSSE = iterSSE;
 		this.iterLs = iterLs;
-		time = "* Time in milis: ";
+		time = "* Time in seconds: ";
 	}
 
 	public void run() {
@@ -79,7 +77,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 				hidden, iterSSE, iterLs, lambda, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += elapsedTime;
+		time += Math.round(elapsedTime/1000);
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

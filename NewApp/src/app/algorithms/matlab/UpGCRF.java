@@ -115,8 +115,7 @@ public class UpGCRF {
 			try {
 				rt.exec("taskkill /F /IM MATLAB.exe");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 			frame.setVisible(false);
 			return message;
@@ -167,7 +166,7 @@ public class UpGCRF {
 			txt[i] = outputs[i] + "";
 		}
 
-		txt[outputs.length] = "R^2 UmGCRF: " + df.format(r2);
+		txt[outputs.length] = "R^2 up-GCRF: " + df.format(r2);
 
 		return txt;
 	}

@@ -133,7 +133,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuItem getMenuTrain() {
 		if (menuTrain == null) {
-			menuTrain = new JMenuItem("Train on your data");
+			menuTrain = new JMenuItem("Train on networks");
 			menuTrain.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTrain.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,7 +157,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuItem getMenuTrainRandom() {
 		if (menuTrainRandom == null) {
-			menuTrainRandom = new JMenuItem("Train on random data");
+			menuTrainRandom = new JMenuItem("Train on random networks");
 			menuTrainRandom.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTrainRandom
 					.addActionListener(new java.awt.event.ActionListener() {
@@ -194,7 +194,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuItem getMenuTest() {
 		if (menuTest == null) {
-			menuTest = new JMenuItem("Test on your data");
+			menuTest = new JMenuItem("Test on networks");
 			menuTest.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTest.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -217,7 +217,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuItem getMenuTestRandom() {
 		if (menuTestRandom == null) {
-			menuTestRandom = new JMenuItem("Test on random data");
+			menuTestRandom = new JMenuItem("Test on random networks");
 			menuTestRandom.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuTestRandom
 					.addActionListener(new java.awt.event.ActionListener() {
@@ -297,7 +297,7 @@ public class MainFrame extends JFrame {
 	}
 	private JMenuItem getMnPredictYour() {
 		if (mnPredictYour == null) {
-			mnPredictYour = new JMenuItem("Predict on your data");
+			mnPredictYour = new JMenuItem("Predict using existing model");
 			mnPredictYour.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			mnPredictYour.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -319,7 +319,7 @@ public class MainFrame extends JFrame {
 	}
 	private JMenuItem getMntmNewMenuItem() {
 		if (mntmNewMenuItem == null) {
-			mntmNewMenuItem = new JMenuItem("Train on temporal data");
+			mntmNewMenuItem = new JMenuItem("Train on temporal networks");
 			mntmNewMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					TrainTemporalPanel t = new TrainTemporalPanel(frame);

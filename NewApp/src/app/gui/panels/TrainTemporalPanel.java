@@ -433,7 +433,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JButton getBtnTrain() {
 		if (btnTrain == null) {
-			btnTrain = new JButton("TRAIN");
+			btnTrain = new JButton("TRAIN & TEST");
 			btnTrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
@@ -525,30 +525,32 @@ public class TrainTemporalPanel extends JPanel {
 										noOfNodes, lag, noOfX, test);
 							}
 							if (isRLSR()) {
-								double[][] x1 = null;
-								if (chckUseX.isSelected()) {
-									String xMSg = checkX(noOfNodes, x, noOfX,
-											noOfTime);
+								String xMSg = checkX(noOfNodes, x, noOfX,
+										noOfTime);
 
-									if (xMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, xMSg, "Error",
-												JOptionPane.ERROR_MESSAGE);
-										return;
-									}
-
-									x1 = Reader.readMatrix(txtXFile.getText(),
-											noOfNodes, noOfTime * noOfX);
+								if (xMSg != null) {
+									JOptionPane.showMessageDialog(mainFrame,
+											xMSg, "Error",
+											JOptionPane.ERROR_MESSAGE);
+									return;
 								}
+
+								double[][] x1 = Reader.readMatrix(txtXFile.getText(),
+										noOfNodes, noOfTime * noOfX);
+
 								int validation = Integer.parseInt(txtLag
 										.getText());
 								int lfSize = Integer.parseInt(txtLFSize
 										.getText());
 								int test = Integer.parseInt(txtNoTest.getText());
-								int iterNN = Integer.parseInt(txtIterNN.getText());
-								int hidden = Integer.parseInt(txtHidden.getText());
-								int iterSSE = Integer.parseInt(txtSseIter.getText());
-								int iterLs = Integer.parseInt(txtLsIter.getText());
+								int iterNN = Integer.parseInt(txtIterNN
+										.getText());
+								int hidden = Integer.parseInt(txtHidden
+										.getText());
+								int iterSSE = Integer.parseInt(txtSseIter
+										.getText());
+								int iterLs = Integer.parseInt(txtLsIter
+										.getText());
 								String lambda = txtLambda.getText();
 								String path = createFolderAndSaveData();
 								trainRLSR(matlabPath, path, x1, yMatrix,

@@ -42,7 +42,7 @@ public class GCRFTrainMyModelForGUI extends Thread {
 		this.lr = lr;
 		this.maxIter = maxIter;
 		this.modelFolder = modelFolder;
-		time = "Time in milis: ";
+		time = "Time in seconds: ";
 	}
 
 	public void run() {
@@ -59,7 +59,7 @@ public class GCRFTrainMyModelForGUI extends Thread {
 				r, y);
 		double r2S = algS.rSquared();
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "\n* GCRF: " + elapsedTime;
+		time += Math.round(elapsedTime/1000);
 
 		createFile("GCRF.txt", resS);
 

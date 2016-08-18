@@ -51,7 +51,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 		// this.xTable = xTable;
 		// this.yTable = yTable;
 		// this.timeLabel = timeLabel;
-		time = "Time in milis: ";
+		time = "Time in seconds: ";
 	}
 
 	public void run() {
@@ -68,7 +68,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 		// double[] res = { 0, 0 };
 		// double r2 = 0;
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "\n* DirGCRF: " + elapsedTime;
+		time += "\n* DirGCRF: " + Math.round(elapsedTime/1000);
 		double[] resS = null;
 		double r2S = -1;
 		if (both) {
@@ -84,7 +84,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 					sS, r, y);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += "\n* GCRF: " + elapsedTime;
+			time += "\n* GCRF: " + Math.round(elapsedTime/1000);
 		}
 		// createTable(res, r2, resS, r2S);
 		createFile("DirGCRF.txt", res);

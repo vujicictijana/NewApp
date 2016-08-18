@@ -138,7 +138,7 @@ public class MGCRF {
 			txt[i] = outputs[i] + "";
 		}
 
-		txt[outputs.length] = "R^2 UmGCRF: " + df.format(r2);
+		txt[outputs.length] = "R^2 m-GCRF: " + df.format(r2);
 
 		return txt;
 	}

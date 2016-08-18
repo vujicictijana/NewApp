@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import app.data.generators.GraphGenerator;
+import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
@@ -25,9 +26,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 public class TestRandomPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 4390862740626681899L;
 	private JLabel lblType;
 	private JLabel lblRArrayFile;
@@ -40,24 +42,38 @@ public class TestRandomPanel extends JPanel {
 	private JLabel lblTimes;
 	private JTextField txtTimes;
 	private JPanel panelForTable;
+	private int alphaGen;
+	private int betaGen;
 
 	/**
 	 * Create the panel.
 	 */
 	public TestRandomPanel(JFrame mainFrame) {
-		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getLblType());
-		add(getLblRArrayFile());
-		add(getTxtNoOfNodes());
-		add(getBtnTrain());
-		add(getCmbModel());
-		this.mainFrame = mainFrame;
-		add(getLabel());
-		add(getTxtProb());
-		add(getLblTimes());
-		add(getTxtTimes());
-		add(getPanelForTable());
+		if (Reader.checkFile("cfg.txt")) {
+			String result = readParametersFromCfg();
+			if (result != null) {
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configuration.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				setBackground(UIManager.getColor("Button.background"));
+				setLayout(null);
+				add(getLblType());
+				add(getLblRArrayFile());
+				add(getTxtNoOfNodes());
+				add(getBtnTrain());
+				add(getCmbModel());
+				this.mainFrame = mainFrame;
+				add(getLabel());
+				add(getTxtProb());
+				add(getLblTimes());
+				add(getTxtTimes());
+				add(getPanelForTable());
+			}
+		}
 	}
 
 	private JLabel getLblType() {
@@ -114,9 +130,9 @@ public class TestRandomPanel extends JPanel {
 						frame.pack();
 						frame.setVisible(true);
 						frame.setLocationRelativeTo(null);
-						TestWithRandomForGUI test = new TestWithRandomForGUI(frame, mainFrame,
-								panelForTable, model, noOfNodes, times,
-								probability);
+						TestWithRandomForGUI test = new TestWithRandomForGUI(
+								frame, mainFrame, panelForTable, model,
+								noOfNodes, times, probability,alphaGen,betaGen);
 						test.start();
 					}
 				}
@@ -250,5 +266,20 @@ public class TestRandomPanel extends JPanel {
 			panelForTable.setLayout(null);
 		}
 		return panelForTable;
+	}
+
+	public String readParametersFromCfg() {
+		try {
+			Map<String, String> params = Reader.readCfg();
+			try {
+				alphaGen = Integer.parseInt(params.get("AlphaGen").toString());
+				betaGen = Integer.parseInt(params.get("BetaGen").toString());
+			} catch (NumberFormatException e) {
+				return "Configuration file reading failed. File has wrong format.";
+			}
+		} catch (ConfigurationParameterseException e) {
+			return e.getMessage();
+		}
+		return null;
 	}
 }

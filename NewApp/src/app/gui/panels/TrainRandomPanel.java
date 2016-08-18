@@ -489,6 +489,8 @@ public class TrainRandomPanel extends JPanel {
 		try {
 			Map<String, String> params = Reader.readCfg();
 			try {
+				alphaGen = Integer.parseInt(params.get("AlphaGen").toString());
+				betaGen = Integer.parseInt(params.get("BetaGen").toString());
 				alpha = Integer.parseInt(params.get("Alpha").toString());
 				beta = Integer.parseInt(params.get("Beta").toString());
 				lr = Double.parseDouble(params.get("LR").toString());

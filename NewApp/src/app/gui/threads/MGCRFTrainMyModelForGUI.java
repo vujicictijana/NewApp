@@ -40,7 +40,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 		this.maxIter = maxIter;
 		this.regAlpha = regAlpha;
 		this.regBeta = regBeta;
-		time = "* Time in milis: ";
+		time = "* Time in seconds: ";
 	}
 
 	public void run() {
@@ -61,7 +61,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 				maxIter, regAlpha, regBeta, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += elapsedTime;
+		time += Math.round(elapsedTime/1000);
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

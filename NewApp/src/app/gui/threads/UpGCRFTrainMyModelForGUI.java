@@ -3,7 +3,6 @@ package app.gui.threads;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import app.algorithms.matlab.MGCRF;
 import app.algorithms.matlab.UpGCRF;
 import app.file.io.Reader;
 import app.gui.frames.ProgressBar;
@@ -47,7 +46,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 		this.noX = noX;
 		this.useX = useX;
 		this.noTest = noTest;
-		time = "* Time in milis: ";
+		time = "* Time in seconds: ";
 	}
 
 	public void run() {
@@ -68,7 +67,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 				maxIter, noOfNodes, lag, noX, useX, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += elapsedTime;
+		time += Math.round(elapsedTime/1000);;
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

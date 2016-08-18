@@ -129,7 +129,7 @@ public class Reader {
 					filePath -> {
 						if (Files.isRegularFile(filePath)) {
 							if (filePath.getFileName().toString()
-									.contains("Asymmetric")) {
+									.contains("DirGCRF")) {
 								String[] folders = filePath.getParent()
 										.toString().split("\\\\");
 								files.add(folders[1] + " - " + folders[2]);

@@ -103,15 +103,14 @@ public class UmGCRF {
 			try {
 				rt.exec("taskkill /F /IM MATLAB.exe");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 			frame.setVisible(false);
 			return message;
 		} catch (MatlabConnectionException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (MatlabInvocationException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
@@ -160,8 +159,7 @@ public class UmGCRF {
 				try {
 					rt.exec("taskkill /F /IM MATLAB.exe");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 				return output;
 			} catch (Exception e) {

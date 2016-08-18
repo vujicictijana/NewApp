@@ -1,5 +1,6 @@
 package app.algorithms.matlab;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
@@ -56,7 +57,7 @@ public class RLSR {
 			proxy.eval("sse_params = struct;");
 			proxy.eval("sse_params.quiet = 1;");
 			proxy.eval("sse_params.max_iters = " + iterSSE + ";");
-			proxy.eval("sse_params.ls_max_iters = " +  iterLs + ";");
+			proxy.eval("sse_params.ls_max_iters = " + iterLs + ";");
 			proxy.eval("sse_params.tol = 1e-6;");
 			proxy.eval("sse_params.col_tol = 1e-6;");
 			proxy.eval("sse_params.alpha = 1;");
@@ -88,40 +89,51 @@ public class RLSR {
 				proxy.eval("[best_layer, best_Lambda, best_Theta, best_lambda, time_spent] = "
 						+ "RLSR_train_valid(trainValidX, trainValidY, trainSize, validSize, lambda_set, maxIter, LFSize, nn_params, sse_params);");
 
-				proxy.eval("[test_mse] = RLSR_test(testX, testY, best_layer, best_Lambda, best_Theta);");
+				proxy.eval("[test_mse,pred_test] = RLSR_test(testX, testY, best_layer, best_Lambda, best_Theta);");
 
 				proxy.eval("rmpath('" + path + "')");
 
-				
+				proxy.eval("pred_test = transpose(pred_test);");
+				MatlabNumericArray array = processor
+						.getNumericArray("pred_test");
+				double[][] outputs = array.getRealArray2D();
+				double mse = ((double[]) proxy.getVariable("test_mse"))[0];
+
 				Writer.createFolder(modelFolder + "/parameters");
 				String fileName = mainPath + "/" + modelFolder
 						+ "/parameters/RLSR.mat";
+				
 				proxy.setVariable("fileName", fileName);
+				proxy.eval("Data = struct;");
+				proxy.eval("Data.best_layer = best_layer;");
+				proxy.eval("Data.best_Lambda = best_Lambda;");
+				proxy.eval("Data.best_Theta = best_Theta;");
+				proxy.eval("save(fileName,'Data','-v7.3')");
 
-				proxy.eval("save(fileName,'best_layer','-v7.3')");
-				message = "RLSR results: ";
+				DecimalFormat df = new DecimalFormat("#.####");
+				String export = exportResults(y, outputs, modelFolder);
+				message = "RLSR results: \n* MSE: " + df.format(mse) + export;
 				proxy.disconnect();
 
 			} catch (Exception e) {
-				// e.printStackTrace();
+				e.printStackTrace();
 				message = "An internal MATLAB exception occurred. Please check your data.";
 			}
 
 			// close matlab
-			// Runtime rt = Runtime.getRuntime();
-			// try {
-			// rt.exec("taskkill /F /IM MATLAB.exe");
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
+			Runtime rt = Runtime.getRuntime();
+			try {
+				rt.exec("taskkill /F /IM MATLAB.exe");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			frame.setVisible(false);
 			return message;
 
 		} catch (MatlabConnectionException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		} catch (MatlabInvocationException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
@@ -131,26 +143,29 @@ public class RLSR {
 			String folder) {
 		Writer.createFolder(folder + "/test");
 		String fileName = folder + "/test/results";
-		int cols = outputs[0].length;
+		int colsOutput = outputs[0].length;
+		int colsY = y[0].length;
 		double[] array = null;
 		double[] arrayY = null;
 		double sum = 0;
 		double r2 = 0;
 		DecimalFormat df = new DecimalFormat("#.####");
-		for (int i = 0; i < cols; i++) {
+		int firstY = colsY - colsOutput - 1;
+		for (int i = 0; i < colsOutput; i++) {
 			array = new double[outputs.length];
 			arrayY = new double[outputs.length];
 			for (int j = 0; j < array.length; j++) {
 				array[j] = outputs[j][i];
-				arrayY[j] = y[j][i];
+				arrayY[j] = y[j][firstY];
 			}
-
+			
 			r2 = BasicCalcs.rSquaredWitNaN(array, arrayY);
 			sum += r2;
 			String[] text = exportTxt(r2, array);
-			Writer.write(text, fileName + "T" + (i + 1) + ".txt");
+			Writer.write(text, fileName + "T" + (firstY + 1) + ".txt");
+			firstY++;
 		}
-		double avg = sum / cols;
+		double avg = sum / colsOutput;
 		return "\n* Average R^2 value: " + df.format(avg)
 				+ "\n* Results are successfully exported. \n* File location: "
 				+ folder + "/test";
@@ -164,7 +179,7 @@ public class RLSR {
 			txt[i] = outputs[i] + "";
 		}
 
-		txt[outputs.length] = "R^2 UmGCRF: " + df.format(r2);
+		txt[outputs.length] = "R^2 RLSR: " + df.format(r2);
 
 		return txt;
 	}

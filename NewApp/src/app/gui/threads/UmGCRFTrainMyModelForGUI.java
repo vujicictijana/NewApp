@@ -30,7 +30,7 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 		this.y = y;
 		this.modelFolder = modelFolder;
 		this.matlabPath = matlabPath;
-		time = "Time in milis: ";
+		time = "Time in seconds: ";
 	}
 
 	public void run() {
@@ -47,7 +47,7 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 		String message = UmGCRF.train(matlabPath, s, y, r, frame, modelFolder);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "\n* UmGCRF: " + elapsedTime;
+		time += Math.round(elapsedTime/1000);
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",
