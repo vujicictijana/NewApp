@@ -1,11 +1,8 @@
 package app.gui.threads;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,8 +61,11 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 				createTable(result, -1);
 			}
 		}
+
 		if (panel == null) {
 			exportResults(result, resultS, "predict");
+		} else {
+			exportResults(result, resultS, "test");
 		}
 		mainFrame.setEnabled(true);
 	}
@@ -113,44 +113,37 @@ public class DirGCRFTestMyModelForGUI extends Thread {
 		Style.resultTable(table, -1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
-		JButton export = new JButton();
-		panel.add(export);
-		export.setBounds(720, 10, 80, 30);
-		export.setText("Export");
-		Style.buttonStyle(export);
-		export.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				exportResults(result, resultS, "test");
-			}
-
-		});
 		return table;
 	}
 
-	public String[] exportTxt(double[] array, double result, String method) {
+	public String[] exportTxt(double[] array, double result, String method,
+			String type) {
 		String[] txt = new String[array.length + 1];
 
 		for (int i = 0; i < array.length; i++) {
 			txt[i] = array[i] + "";
 		}
-
-		txt[outputs.length] = "R^2 " + method + ": " + df.format(result);
+		if (type.equalsIgnoreCase("test")) {
+			txt[outputs.length] = "R^2 " + method + ": " + df.format(result);
+		} else {
+			txt[outputs.length] = "";
+		}
 		return txt;
 	}
 
 	private void exportResults(double result, double resultS, String folder) {
 		Writer.createFolder(modelFolder + "/" + folder);
 		String fileName = modelFolder + "/" + folder + "/resultsDirGCRF.txt";
-		String[] text = exportTxt(outputs, result, "DirGCRF");
+		String[] text = exportTxt(outputs, result, "DirGCRF", folder);
 		Writer.write(text, fileName);
 		if (resultS != -1) {
 			String fileName1 = modelFolder + "/" + folder + "/resultsGCRF.txt";
-			String[] text1 = exportTxt(outputsS, resultS, "GCRF");
+			String[] text1 = exportTxt(outputsS, resultS, "GCRF", folder);
 			Writer.write(text1, fileName1);
 		}
 		JOptionPane.showMessageDialog(mainFrame,
-				"Export successfully completed.\nFile location: "
-						+ modelFolder + "/" + folder + ".");
+				"Export successfully completed.\nFile location: " + modelFolder
+						+ "/" + folder + ".");
 	}
 
 	public Object[][] fillData(double result, double resultS) {

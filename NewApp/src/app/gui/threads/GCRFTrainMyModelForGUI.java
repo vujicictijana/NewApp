@@ -1,16 +1,11 @@
 package app.gui.threads;
 
-import java.awt.Color;
 import java.text.DecimalFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import app.algorithms.asymmetric.AlgorithmAsymmetric;
-import app.algorithms.asymmetric.GradientDescentAsymmetric;
 import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.algorithms.symmetric.GradientDescentSymmetric;
-import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 

@@ -29,12 +29,13 @@ public class RLSRTrainMyModelForGUI extends Thread {
 	private int hidden;
 	private int iterSSE;
 	private int iterLs;
+	private long proxyTime;
 
 	public RLSRTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] r, double[][] y,
 			int noTime, int training, int maxIter, int noOfNodes,
 			int validation, int noX, int lfSize, String lambda, int test,
-			int iterNN, int hidden, int iterSSE, int iterLs) {
+			int iterNN, int hidden, int iterSSE, int iterLs, long proxyTime) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -55,6 +56,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 		this.hidden = hidden;
 		this.iterSSE = iterSSE;
 		this.iterLs = iterLs;
+		this.proxyTime =proxyTime;
 		time = "* Time in seconds: ";
 	}
 
@@ -74,7 +76,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 
 		String message = RLSR.train(matlabPath, y, x, noTime, training,
 				maxIter, noOfNodes, validation, noX, lfSize, test, iterNN,
-				hidden, iterSSE, iterLs, lambda, frame, modelFolder);
+				hidden, iterSSE, iterLs, lambda, frame, modelFolder,proxyTime);
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		time += Math.round(elapsedTime/1000);

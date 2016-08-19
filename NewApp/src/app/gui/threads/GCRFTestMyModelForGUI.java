@@ -1,18 +1,13 @@
 package app.gui.threads;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import app.algorithms.asymmetric.AlgorithmAsymmetric;
 import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.file.io.Reader;
 import app.file.io.Writer;
@@ -51,6 +46,7 @@ public class GCRFTestMyModelForGUI extends Thread {
 		double resultS = resultSymmetric(paramS[0], paramS[1]);
 		if (panel != null) {
 			createTable(resultS);
+			exportResults(resultS, "test");
 		} else {
 			exportResults(resultS, "predict");
 		}
@@ -89,39 +85,31 @@ public class GCRFTestMyModelForGUI extends Thread {
 		Style.resultTable(table, -1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
-		JButton export = new JButton();
-		panel.add(export);
-		export.setBounds(720, 10, 80, 30);
-		export.setText("Export");
-		Style.buttonStyle(export);
-		export.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				exportResults(resultS, "test");
-			}
-
-		});
 		return table;
 	}
 
 	private void exportResults(double resultS, String folder) {
 		Writer.createFolder(modelFolder + "/" + folder);
 		String fileName = modelFolder + "/" + folder + "/results.txt";
-		String[] text = exportTxt(resultS);
+		String[] text = exportTxt(resultS, folder);
 		Writer.write(text, fileName);
 		JOptionPane.showMessageDialog(mainFrame,
 				"Export successfully completed. \nFile location: "
 						+ modelFolder + "/" + folder + ".");
 	}
 
-	public String[] exportTxt(double resultS) {
+	public String[] exportTxt(double resultS, String type) {
 		String[] txt = new String[outputs.length + 1];
 
 		for (int i = 0; i < outputs.length; i++) {
 			txt[i] = outputs[i] + "";
 		}
 
-		txt[outputs.length] = "R^2 GCRF: " + df.format(resultS);
-
+		if (type.equalsIgnoreCase("test")) {
+			txt[outputs.length] = "R^2 GCRF: " + df.format(resultS);
+		} else {
+			txt[outputs.length] = "";
+		}
 		return txt;
 	}
 

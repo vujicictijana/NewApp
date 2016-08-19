@@ -5,7 +5,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 
 import app.algorithms.basic.BasicCalcs;
-import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
@@ -23,9 +22,9 @@ public class UpGCRF {
 	public static String train(String matlabPath, double[][] s, double[][] y,
 			double[][] x, int noTime, int training, int test, int maxIter,
 			int noOfNodes, int lag, int noX, boolean useX, ProgressBar frame,
-			String modelFolder) {
+			String modelFolder, long proxyTime) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true).setProxyTimeout(300000L)
+				.setHidden(true).setProxyTimeout(proxyTime)
 				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
@@ -121,7 +120,10 @@ public class UpGCRF {
 			return message;
 
 		} catch (MatlabConnectionException e) {
-			// e.printStackTrace();
+			if (e.getMessage().contains("milliseconds")) {
+				return e.getMessage()
+						+ ". Increase proxy timeout in Settings->Configuration.";
+			}
 		} catch (MatlabInvocationException e) {
 			// e.printStackTrace();
 		}

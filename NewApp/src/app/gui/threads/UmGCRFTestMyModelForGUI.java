@@ -1,11 +1,8 @@
 package app.gui.threads;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,10 +27,11 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	public double[] outputs;
 	private String matlabPath;
 	DecimalFormat df = new DecimalFormat("#.######");
+	private long proxyTime;
 
 	public UmGCRFTestMyModelForGUI(String matlabPath, JFrame mainFrame,
 			JPanel panel, String modelFolder, double[][] s, double[] r,
-			double[] y, ProgressBar frame) {
+			double[] y, ProgressBar frame, long proxyTime) {
 		super();
 		this.mainFrame = mainFrame;
 		this.panel = panel;
@@ -43,6 +41,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		this.y = y;
 		this.frame = frame;
 		this.matlabPath = matlabPath;
+		this.proxyTime = proxyTime;
 		if (panel != null) {
 			panel.removeAll();
 			panel.revalidate();
@@ -64,7 +63,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		frame.setTitle("Please wait - UmGCRF is in progress ");
 		double theta = read(modelFolder + "/parameters/UmGCRF.txt");
 
-		outputs = UmGCRF.test(matlabPath, s, y, r, theta);
+		outputs = UmGCRF.test(matlabPath, s, y, r, theta, proxyTime);
 
 		double r2 = BasicCalcs.rSquared(outputs, y);
 		if (outputs == null) {
@@ -75,6 +74,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		}
 		if (panel != null) {
 			createTable(r2);
+			exportResults(r2, "test");
 		} else {
 			exportResults(r2, "predict");
 		}
@@ -100,39 +100,31 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 		Style.resultTable(table, -1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
-		JButton export = new JButton();
-		panel.add(export);
-		export.setBounds(720, 10, 80, 30);
-		export.setText("Export");
-		Style.buttonStyle(export);
-		export.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				exportResults(resultS,"test");
-			}
-
-		});
 		return table;
 	}
 
 	private void exportResults(double result, String folder) {
 		Writer.createFolder(modelFolder + "/" + folder);
 		String fileName = modelFolder + "/" + folder + "/results.txt";
-		String[] text = exportTxt(result);
+		String[] text = exportTxt(result,folder);
 		Writer.write(text, fileName);
 		JOptionPane.showMessageDialog(mainFrame,
 				"Export successfully completed. \nFile location: "
 						+ modelFolder + "/" + folder + ".");
 	}
 
-	public String[] exportTxt(double resultS) {
+	public String[] exportTxt(double resultS, String type) {
 		String[] txt = new String[outputs.length + 1];
 
 		for (int i = 0; i < outputs.length; i++) {
 			txt[i] = outputs[i] + "";
 		}
 
-		txt[outputs.length] = "R^2 UmGCRF: " + df.format(resultS);
-
+		if (type.equalsIgnoreCase("test")) {
+			txt[outputs.length] = "R^2 UmGCRF: " + df.format(resultS);
+		} else {
+			txt[outputs.length] = "";
+		}
 		return txt;
 	}
 

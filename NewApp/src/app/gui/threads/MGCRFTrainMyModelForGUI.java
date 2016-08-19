@@ -22,11 +22,12 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 	private int maxIter;
 	private int regAlpha;
 	private int regBeta;
+	private long proxyTime;
 
 	public MGCRFTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] s, double[][] r,
 			double[][] y, int noTime, int training, int maxIter, int regAlpha,
-			int regBeta) {
+			int regBeta, long proxyTime) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -40,6 +41,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 		this.maxIter = maxIter;
 		this.regAlpha = regAlpha;
 		this.regBeta = regBeta;
+		this.proxyTime = proxyTime;
 		time = "* Time in seconds: ";
 	}
 
@@ -58,7 +60,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 		long start = System.currentTimeMillis();
 
 		String message = MGCRF.train(matlabPath, s, y, r, noTime, training,
-				maxIter, regAlpha, regBeta, frame, modelFolder);
+				maxIter, regAlpha, regBeta, frame, modelFolder,proxyTime);
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		time += Math.round(elapsedTime/1000);

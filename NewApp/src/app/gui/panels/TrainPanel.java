@@ -1,7 +1,5 @@
 package app.gui.panels;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -95,6 +93,7 @@ public class TrainPanel extends JPanel {
 	private int iterNN;
 	private String matlabPath;
 	private boolean useMatlab;
+	private long proxy;
 
 	private JSeparator separator;
 	private JLabel lblData;
@@ -663,7 +662,7 @@ public class TrainPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 
 		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, mainFrame, s, r, y);
+				modelFolder, frame, mainFrame, s, r, y,proxy);
 
 		t.start();
 	}
@@ -877,6 +876,8 @@ public class TrainPanel extends JPanel {
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
 				iterNN = Integer.parseInt(params.get("Iterations NN")
 						.toString());
+				proxy = Integer.parseInt(params.get("Proxy")
+						.toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
 			}
@@ -930,7 +931,7 @@ public class TrainPanel extends JPanel {
 			separator_1.setOrientation(SwingConstants.VERTICAL);
 			separator_1.setForeground(Color.GRAY);
 			separator_1.setBackground(Color.GRAY);
-			separator_1.setBounds(450, 251, 2, 429);
+			separator_1.setBounds(450, 251, 2, 555);
 		}
 		return separator_1;
 	}

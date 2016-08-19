@@ -163,7 +163,7 @@ public class Reader {
 			throws ConfigurationParameterseException {
 		Map<String, String> params = new HashMap<>();
 		String[] text = read("cfg.txt");
-		if (text.length != 13) {
+		if (text.length != 19) {
 			throw new ConfigurationParameterseException(
 					"Configuration file reading failed. File has wrong format.");
 		}

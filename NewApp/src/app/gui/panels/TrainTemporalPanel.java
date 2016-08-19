@@ -83,11 +83,17 @@ public class TrainTemporalPanel extends JPanel {
 
 	private int alphaReg;
 	private int betaReg;
-	private int iterMGCRF;
+	private int iterTemp;
 	private int hidden;
 	private int iterNN;
 	private String matlabPath;
 	private boolean useMatlab;
+	private String lambda;
+	private int rlsrHidden;
+	private int rlsrIterNN;
+	private int sseIter;
+	private int lsIter;
+	private long proxy;
 
 	private JLabel lblData;
 	private JLabel lblModel;
@@ -176,7 +182,6 @@ public class TrainTemporalPanel extends JPanel {
 
 		add(getLblNoOfIterations());
 		add(getTxtIterNN());
-		setTxtValues();
 		add(getCmbPredictor());
 		add(getCmbMethod());
 		add(getLblMethod());
@@ -203,6 +208,8 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtSseIter());
 		add(getLblLsIter());
 		add(getTxtLsIter());
+
+		setTxtValues();
 		// }
 		// } else {
 		// JOptionPane
@@ -567,7 +574,7 @@ public class TrainTemporalPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(358, 660, 112, 45);
+			btnTrain.setBounds(348, 660, 188, 45);
 		}
 		return btnTrain;
 	}
@@ -582,7 +589,7 @@ public class TrainTemporalPanel extends JPanel {
 
 		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				regAlpha, regBeta);
+				regAlpha, regBeta,proxy);
 
 		t.start();
 	}
@@ -600,7 +607,7 @@ public class TrainTemporalPanel extends JPanel {
 		}
 		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				noOfNodes, lag, noX, useX, test);
+				noOfNodes, lag, noX, useX, test,proxy);
 
 		t.start();
 	}
@@ -616,7 +623,7 @@ public class TrainTemporalPanel extends JPanel {
 		RLSRTrainMyModelForGUI t = new RLSRTrainMyModelForGUI(matlabPath,
 				modelFolder, frame, frame, r, y, noTime, training, maxIter,
 				noOfNodes, validation, noX, lfSize, lambda, test, iterNN,
-				hidden, iterSSE, iterLs);
+				hidden, iterSSE, iterLs,proxy);
 
 		t.start();
 	}
@@ -1160,10 +1167,21 @@ public class TrainTemporalPanel extends JPanel {
 			try {
 				alphaReg = Integer.parseInt(params.get("AlphaReg").toString());
 				betaReg = Integer.parseInt(params.get("BetaReg").toString());
-				iterMGCRF = Integer.parseInt(params.get("Iterations m-GCRF")
-						.toString());
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
 				iterNN = Integer.parseInt(params.get("Iterations NN")
+						.toString());
+				iterTemp = Integer.parseInt(params.get("Iterations temporal")
+						.toString());
+				lambda = params.get("Lambda").toString();
+				rlsrHidden = Integer.parseInt(params.get("RLSR hidden NN")
+						.toString());
+				rlsrIterNN = Integer.parseInt(params.get("RLSR iterations NN")
+						.toString());
+				sseIter = Integer.parseInt(params.get("RLSR SSE iterations")
+						.toString());
+				lsIter = Integer.parseInt(params.get("RLSR SSE LS iterations")
+						.toString());
+				proxy = Integer.parseInt(params.get("Proxy")
 						.toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
@@ -1183,9 +1201,10 @@ public class TrainTemporalPanel extends JPanel {
 	public void setTxtValues() {
 		txtAlpha.setText(alphaReg + "");
 		txtBeta.setText(betaReg + "");
-		txtIter.setText(iterMGCRF + "");
-		txtIterNN.setText(iterNN + "");
-		txtHidden.setText(hidden + "");
+		txtIter.setText(iterTemp + "");
+		txtLambda.setText(lambda);
+		txtSseIter.setText(sseIter + "");
+		txtLsIter.setText(lsIter + "");
 	}
 
 	private JLabel getLblData() {
@@ -1195,8 +1214,8 @@ public class TrainTemporalPanel extends JPanel {
 			lblData.setBackground(Color.GRAY);
 			lblData.setHorizontalAlignment(SwingConstants.CENTER);
 			lblData.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblData.setBounds(0, 0, 901, 23);
 			lblData.setOpaque(true);
+			lblData.setBounds(0, 0, 901, 23);
 		}
 		return lblData;
 	}
@@ -1358,6 +1377,9 @@ public class TrainTemporalPanel extends JPanel {
 		lblPredictor.setVisible(true);
 		cmbPredictor.setVisible(true);
 		btnQuestionRegAlpha.setVisible(true);
+		txtIterNN.setText(iterNN + "");
+		txtHidden.setText(hidden + "");
+		cmbPredictor.setSelectedIndex(0);
 	}
 
 	public void showParamsUpGCRF() {
@@ -1398,6 +1420,8 @@ public class TrainTemporalPanel extends JPanel {
 		txtLsIter.setVisible(true);
 		lblSseIter.setVisible(true);
 		txtSseIter.setVisible(true);
+		txtHidden.setText(rlsrHidden + "");
+		txtIterNN.setText(rlsrIterNN + "");
 	}
 
 	public void hideParamsMGCRF() {
@@ -1587,7 +1611,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JLabel getLblNoOfAttributres() {
 		if (lblNoOfAttributres == null) {
-			lblNoOfAttributres = new JLabel("No. of attributres per node:");
+			lblNoOfAttributres = new JLabel("No. of attributes per node:");
 			lblNoOfAttributres.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfAttributres.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblNoOfAttributres.setBounds(10, 164, 228, 30);

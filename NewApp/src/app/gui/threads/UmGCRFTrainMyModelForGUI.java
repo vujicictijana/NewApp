@@ -5,7 +5,6 @@ import javax.swing.JOptionPane;
 
 import app.algorithms.matlab.UmGCRF;
 import app.file.io.Reader;
-import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 
 public class UmGCRFTrainMyModelForGUI extends Thread {
@@ -18,10 +17,11 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 	private String modelFolder;
 	private String time;
 	private String matlabPath;
+	private long proxyTime;
 
 	public UmGCRFTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] s, double[] r,
-			double[] y) {
+			double[] y, long proxyTime) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -30,13 +30,17 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 		this.y = y;
 		this.modelFolder = modelFolder;
 		this.matlabPath = matlabPath;
+		this.proxyTime = proxyTime;
 		time = "Time in seconds: ";
 	}
 
 	public void run() {
-		if(Reader.checkFile(matlabPath)==false){
-			JOptionPane.showMessageDialog(mainFrame, "Path to MATLAB.exe is not good. Please change path in Settings->Configuration", "Results",
-					JOptionPane.ERROR_MESSAGE);
+		if (Reader.checkFile(matlabPath) == false) {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Path to MATLAB.exe is not good. Please change path in Settings->Configuration",
+							"Results", JOptionPane.ERROR_MESSAGE);
 			frame.setVisible(false);
 			return;
 		}
@@ -44,10 +48,11 @@ public class UmGCRFTrainMyModelForGUI extends Thread {
 		frame.setTitle("Please wait - UmGCRF is in progress ");
 		long start = System.currentTimeMillis();
 
-		String message = UmGCRF.train(matlabPath, s, y, r, frame, modelFolder);
+		String message = UmGCRF.train(matlabPath, s, y, r, frame, modelFolder,
+				proxyTime);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += Math.round(elapsedTime/1000);
+		time += Math.round(elapsedTime / 1000);
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

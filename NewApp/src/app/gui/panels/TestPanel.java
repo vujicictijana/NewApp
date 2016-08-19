@@ -25,7 +25,6 @@ import app.gui.threads.UmGCRFTestMyModelForGUI;
 import app.predictors.helper.Helper;
 import app.predictors.linearregression.LinearRegression;
 import app.predictors.linearregression.MultivariateLinearRegression;
-import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -68,6 +67,7 @@ public class TestPanel extends JPanel {
 	// params
 	private String matlabPath;
 	private boolean useMatlab;
+	private long proxy;
 
 	/**
 	 * Create the panel.
@@ -224,7 +224,7 @@ public class TestPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 
 		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,mainFrame,
-				panelForTable, modelFolder, s, r, y, frame);
+				panelForTable, modelFolder, s, r, y, frame,proxy);
 		test.start();
 	}
 
@@ -568,6 +568,8 @@ public class TestPanel extends JPanel {
 				useMatlab = false;
 			}
 			matlabPath = params.get("Path").toString();
+			proxy = Integer.parseInt(params.get("Proxy")
+					.toString());
 		} catch (ConfigurationParameterseException e) {
 			return e.getMessage();
 		}

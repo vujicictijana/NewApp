@@ -246,9 +246,9 @@ public class MainFrame extends JFrame {
 			mnSettings.setFont(new Font("Segoe UI", Font.BOLD, 17));
 			mnSettings.setIcon(new ImageIcon("images/settings.png"));
 			mnSettings.add(getMenuParameters());
-			mnSettings.add(new JSeparator());
-			mnSettings.add(getMenuFile());
-			mnSettings.add(new JSeparator());
+			// mnSettings.add(new JSeparator());
+			// mnSettings.add(getMenuFile());
+			// mnSettings.add(new JSeparator());
 
 		}
 		return mnSettings;
@@ -286,6 +286,7 @@ public class MainFrame extends JFrame {
 		}
 		return menuParameters;
 	}
+
 	private JMenu getMnPredict() {
 		if (mnPredict == null) {
 			mnPredict = new JMenu("Predict");
@@ -295,6 +296,7 @@ public class MainFrame extends JFrame {
 		}
 		return mnPredict;
 	}
+
 	private JMenuItem getMnPredictYour() {
 		if (mnPredictYour == null) {
 			mnPredictYour = new JMenuItem("Predict using existing model");
@@ -317,6 +319,7 @@ public class MainFrame extends JFrame {
 		}
 		return mnPredictYour;
 	}
+
 	private JMenuItem getMntmNewMenuItem() {
 		if (mntmNewMenuItem == null) {
 			mntmNewMenuItem = new JMenuItem("Train on temporal networks");

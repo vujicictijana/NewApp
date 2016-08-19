@@ -6,7 +6,9 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -59,6 +61,13 @@ public class Style {
 		});
 	}
 
+	public static void greyLabel(JLabel label){
+		label.setForeground(Color.WHITE);
+		label.setBackground(Color.GRAY);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		label.setOpaque(true);
+	}
 	public static ImageIcon questionIcon() {
 		return new ImageIcon("images/question-icon.png");
 	}

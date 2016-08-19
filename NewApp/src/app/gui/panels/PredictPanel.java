@@ -25,7 +25,6 @@ import app.gui.threads.UmGCRFTestMyModelForGUI;
 import app.predictors.helper.Helper;
 import app.predictors.linearregression.LinearRegression;
 import app.predictors.linearregression.MultivariateLinearRegression;
-import app.predictors.linearregression.MyLR;
 import app.predictors.neuralnetwork.MyNN;
 
 import java.awt.event.ActionListener;
@@ -61,6 +60,7 @@ public class PredictPanel extends JPanel {
 	// params
 	private String matlabPath;
 	private boolean useMatlab;
+	private long proxy;
 
 	/**
 	 * Create the panel.
@@ -95,7 +95,7 @@ public class PredictPanel extends JPanel {
 
 	private JButton getBtnTrain() {
 		if (btnTrain == null) {
-			btnTrain = new JButton("TEST");
+			btnTrain = new JButton("Predict");
 			btnTrain.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String message = validateData();
@@ -153,7 +153,7 @@ public class PredictPanel extends JPanel {
 											"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 							double[] r = Reader.readArray(dataPath
-									+ "/data/rTest.txt", noOfNodes);
+									+ "/data/rPredict.txt", noOfNodes);
 							double[][] s = Reader.readGraph(
 									txtMatrixFile.getText(), noOfNodes);
 
@@ -203,7 +203,7 @@ public class PredictPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 		double[] y = new double[r.length];
 		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,
-				mainFrame, null, modelFolder, s, r, y, frame);
+				mainFrame, null, modelFolder, s, r, y, frame,proxy);
 		test.start();
 	}
 
@@ -480,6 +480,8 @@ public class PredictPanel extends JPanel {
 				useMatlab = false;
 			}
 			matlabPath = params.get("Path").toString();
+			proxy = Integer.parseInt(params.get("Proxy")
+					.toString());
 		} catch (ConfigurationParameterseException e) {
 			return e.getMessage();
 		}

@@ -25,11 +25,12 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 	private int lag;
 	private int noX;
 	private boolean useX;
+	private long proxyTime;
 
 	public UpGCRFTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] s, double[][] r,
 			double[][] y, int noTime, int training, int maxIter, int noOfNodes,
-			int lag, int noX, boolean useX,int noTest) {
+			int lag, int noX, boolean useX, int noTest, long proxyTime) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -46,6 +47,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 		this.noX = noX;
 		this.useX = useX;
 		this.noTest = noTest;
+		this.proxyTime = proxyTime;
 		time = "* Time in seconds: ";
 	}
 
@@ -63,11 +65,12 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 		frame.setTitle("Please wait: up-GCRF is in progress ");
 		long start = System.currentTimeMillis();
 
-		String message = UpGCRF.train(matlabPath, s, y, x, noTime, training,noTest,
-				maxIter, noOfNodes, lag, noX, useX, frame, modelFolder);
+		String message = UpGCRF.train(matlabPath, s, y, x, noTime, training,
+				noTest, maxIter, noOfNodes, lag, noX, useX, frame, modelFolder,proxyTime);
 
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += Math.round(elapsedTime/1000);;
+		time += Math.round(elapsedTime / 1000);
+		;
 		if (message.contains("R^2")) {
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

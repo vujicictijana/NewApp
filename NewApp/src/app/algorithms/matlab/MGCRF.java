@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
-import javax.swing.JOptionPane;
-
-import app.algorithms.asymmetric.CalculationsAsymmetric;
 import app.algorithms.basic.BasicCalcs;
-import app.data.generators.ArrayGenerator;
-import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
@@ -26,10 +21,10 @@ public class MGCRF {
 
 	public static String train(String matlabPath, double[][] s, double[][] y,
 			double[][] r, int noTime, int training, int maxIter, int regAlpha,
-			int regBeta, ProgressBar frame, String modelFolder) {
+			int regBeta, ProgressBar frame, String modelFolder, long proxyTime) {
 
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true).setProxyTimeout(30000L)
+				.setHidden(true).setProxyTimeout(proxyTime)
 				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
@@ -113,6 +108,10 @@ public class MGCRF {
 
 		} catch (MatlabConnectionException e) {
 			// e.printStackTrace();
+			if (e.getMessage().contains("milliseconds")) {
+				return e.getMessage()
+						+ ". Increase proxy timeout in Settings->Configuration.";
+			}
 		} catch (MatlabInvocationException e) {
 			// e.printStackTrace();
 		}

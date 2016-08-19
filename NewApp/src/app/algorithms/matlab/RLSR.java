@@ -5,11 +5,9 @@ import java.net.URL;
 import java.text.DecimalFormat;
 
 import app.algorithms.basic.BasicCalcs;
-import app.data.generators.GraphGenerator;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
-import app.predictors.helper.Helper;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
 import matlabcontrol.MatlabProxy;
@@ -24,9 +22,9 @@ public class RLSR {
 			int noTime, int training, int maxIter, int noOfNodes,
 			int validation, int noX, int lfSize, int test, int iterNN,
 			int hidden, int iterSSE, int iterLs, String lambda,
-			ProgressBar frame, String modelFolder) {
+			ProgressBar frame, String modelFolder, long proxyTime) {
 		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true).setProxyTimeout(300000L)
+				.setHidden(true).setProxyTimeout(proxyTime)
 				.setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
@@ -102,7 +100,7 @@ public class RLSR {
 				Writer.createFolder(modelFolder + "/parameters");
 				String fileName = mainPath + "/" + modelFolder
 						+ "/parameters/RLSR.mat";
-				
+
 				proxy.setVariable("fileName", fileName);
 				proxy.eval("Data = struct;");
 				proxy.eval("Data.best_layer = best_layer;");
@@ -125,15 +123,18 @@ public class RLSR {
 			try {
 				rt.exec("taskkill /F /IM MATLAB.exe");
 			} catch (IOException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 			frame.setVisible(false);
 			return message;
 
 		} catch (MatlabConnectionException e) {
-			e.printStackTrace();
+			if (e.getMessage().contains("milliseconds")) {
+				return e.getMessage()
+						+ ". Increase proxy timeout in Settings->Configuration.";
+			}
 		} catch (MatlabInvocationException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		frame.setVisible(false);
 		return "Connection with MATLAB cannot be established.";
@@ -158,7 +159,7 @@ public class RLSR {
 				array[j] = outputs[j][i];
 				arrayY[j] = y[j][firstY];
 			}
-			
+
 			r2 = BasicCalcs.rSquaredWitNaN(array, arrayY);
 			sum += r2;
 			String[] text = exportTxt(r2, array);
