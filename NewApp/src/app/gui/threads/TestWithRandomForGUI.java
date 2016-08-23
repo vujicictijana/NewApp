@@ -1,11 +1,8 @@
 package app.gui.threads;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -66,8 +63,20 @@ public class TestWithRandomForGUI extends Thread {
 		} else {
 			createTable(results, null);
 		}
+		exportResults(results, resultsS);
 		mainFrame.setEnabled(true);
 		frame.setVisible(false);
+	}
+
+	private void exportResults(double[] results, double[] resultsS) {
+		Writer.createFolder(modelFolder + "/Test");
+		String fileName = modelFolder + "/Test/TestWith" + noOfNodes + "Nodes"
+				+ times + "times.txt";
+		String[] a = exportTxt(results, resultsS);
+		Writer.write(a, fileName);
+		JOptionPane.showMessageDialog(mainFrame,
+				"Export successfully completed. \nFile location: "
+						+ modelFolder + "/" + modelFolder + "/Test.");
 	}
 
 	public double[] read(String file) {
@@ -143,22 +152,6 @@ public class TestWithRandomForGUI extends Thread {
 		Style.resultTable(table, times + 1);
 		panel.add(scrollPane);
 		scrollPane.setBounds(10, 10, 700, 200);
-		JButton export = new JButton();
-		panel.add(export);
-		export.setBounds(720, 10, 80, 30);
-		export.setText("Export");
-		Style.buttonStyle(export);
-		export.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Writer.createFolder(modelFolder + "/Test");
-				String fileName = modelFolder + "/Test/TestWith" + noOfNodes
-						+ "Nodes" + times + "times.txt";
-				String[] a = exportTxt(results, resultsS);
-				Writer.write(a, fileName);
-				JOptionPane.showMessageDialog(mainFrame,
-						"Export successfully completed.");
-			}
-		});
 		return table;
 	}
 

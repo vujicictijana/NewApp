@@ -203,7 +203,7 @@ public class ConfigurePanel extends JPanel {
 		rlsrIterNN = 200;
 		sseIter = 1000;
 		lsIter = 1000;
-		proxy = 300000L;
+		proxy = 300;
 	}
 
 	private JTextField getTxtAlphaGen() {
@@ -399,7 +399,7 @@ public class ConfigurePanel extends JPanel {
 		lsIter = Integer.parseInt(txtLsIter.getText());
 		useMatlab = chckMatlab.isSelected();
 		if (useMatlab) {
-			proxy = Integer.parseInt(txtProxy.getText());
+			proxy = Integer.parseInt(txtProxy.getText())*1000L;
 		}
 		matlabPath = txtPath.getText();
 		text[0] = "AlphaGen=" + alphaGen;
@@ -553,7 +553,7 @@ public class ConfigurePanel extends JPanel {
 				lsIter = Integer.parseInt(params.get("RLSR SSE LS iterations")
 						.toString());
 				proxy = Integer.parseInt(params.get("Proxy")
-						.toString());
+						.toString())/1000;
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
 			}
@@ -959,7 +959,7 @@ public class ConfigurePanel extends JPanel {
 
 	private JLabel getLblProxytimeout() {
 		if (lblProxytimeout == null) {
-			lblProxytimeout = new JLabel("Proxy timeout (miliseconds):");
+			lblProxytimeout = new JLabel("Proxy timeout (seconds):");
 			lblProxytimeout.setHorizontalAlignment(SwingConstants.LEFT);
 			lblProxytimeout.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblProxytimeout.setBounds(455, 595, 223, 30);
@@ -972,7 +972,7 @@ public class ConfigurePanel extends JPanel {
 			txtProxy = new JTextField();
 			txtProxy.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtProxy.setColumns(10);
-			txtProxy.setBounds(671, 597, 169, 30);
+			txtProxy.setBounds(640, 595, 169, 30);
 		}
 		return txtProxy;
 	}
