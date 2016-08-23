@@ -1,11 +1,18 @@
 package app.gui.threads;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import app.algorithms.matlab.RLSR;
 import app.file.io.Reader;
 import app.gui.frames.ProgressBar;
+import app.gui.style.Style;
 
 public class RLSRTrainMyModelForGUI extends Thread {
 	private ProgressBar frame;
@@ -30,6 +37,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 	private int iterSSE;
 	private int iterLs;
 	private long proxyTime;
+	private boolean cancelTrain;
 
 	public RLSRTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] r, double[][] y,
@@ -56,7 +64,7 @@ public class RLSRTrainMyModelForGUI extends Thread {
 		this.hidden = hidden;
 		this.iterSSE = iterSSE;
 		this.iterLs = iterLs;
-		this.proxyTime =proxyTime;
+		this.proxyTime = proxyTime;
 		time = "* Time in seconds: ";
 	}
 
@@ -70,25 +78,49 @@ public class RLSRTrainMyModelForGUI extends Thread {
 			frame.setVisible(false);
 			return;
 		}
+		cancelTrain = false;
 		mainFrame.setEnabled(false);
 		frame.setTitle("Please wait: RLSR is in progress ");
+		JButton cancel = new JButton();
+		frame.add(cancel);
+		frame.setEnabled(true);
+		cancel.setBounds(0, 0, 80, 30);
+		cancel.setText("Cancel");
+		Style.buttonStyle(cancel);
+		cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainFrame.setEnabled(true);
+				frame.setVisible(false);
+				Reader.deleteDir(new File(modelFolder));
+				Runtime rt = Runtime.getRuntime();
+				try {
+					rt.exec("taskkill /F /IM MATLAB.exe");
+				} catch (IOException e1) {
+				}
+				cancelTrain = true;
+				JOptionPane.showMessageDialog(frame,
+						"Training process is canceled.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
 		long start = System.currentTimeMillis();
 
 		String message = RLSR.train(matlabPath, y, x, noTime, training,
 				maxIter, noOfNodes, validation, noX, lfSize, test, iterNN,
-				hidden, iterSSE, iterLs, lambda, frame, modelFolder,proxyTime);
-
-		long elapsedTime = System.currentTimeMillis() - start;
-		time += Math.round(elapsedTime/1000);
-		if (message.contains("R^2")) {
-			message += "\n" + time;
-			JOptionPane.showMessageDialog(mainFrame, message, "Results",
-					JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			JOptionPane.showMessageDialog(mainFrame, message, "Results",
-					JOptionPane.ERROR_MESSAGE);
+				hidden, iterSSE, iterLs, lambda, frame, modelFolder, proxyTime);
+		if (!cancelTrain) {
+			long elapsedTime = System.currentTimeMillis() - start;
+			time += Math.round(elapsedTime / 1000);
+			if (message.contains("R^2")) {
+				message += "\n" + time;
+				JOptionPane.showMessageDialog(mainFrame, message, "Results",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(mainFrame, message, "Results",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			mainFrame.setEnabled(true);
+			frame.setVisible(false);
 		}
-		mainFrame.setEnabled(true);
-		frame.setVisible(false);
 	}
 }

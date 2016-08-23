@@ -16,6 +16,9 @@ public class ProgressBar extends JFrame {
 	private JProgressBar current;
 	private JFrame frame;
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public ProgressBar(int max) {
 		setResizable(false);
 		JPanel pane = new JPanel();
@@ -27,14 +30,14 @@ public class ProgressBar extends JFrame {
 		prefSize.width = 350;
 		current.setPreferredSize(prefSize);
 		pane.add(current);
-		pane.setPreferredSize(new Dimension(400, 50));
+		pane.setPreferredSize(new Dimension(400, 70));
 		setContentPane(pane);
 		frame = this;
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				JOptionPane.showMessageDialog(frame,
-						"Training process cannot be canceled.", "Error",
+						"To cancel training process press Cancel button.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		});
@@ -52,14 +55,14 @@ public class ProgressBar extends JFrame {
 		prefSize.width = 350;
 		current.setPreferredSize(prefSize);
 		pane.add(current);
-		pane.setPreferredSize(new Dimension(400, 50));
+		pane.setPreferredSize(new Dimension(400, 70));
 		setContentPane(pane);
 		frame = this;
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				JOptionPane.showMessageDialog(frame,
-						process + " process cannot be canceled.", "Error",
+						"To cancel " + process + " process press Cancel button.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		});

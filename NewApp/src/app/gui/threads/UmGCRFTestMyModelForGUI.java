@@ -1,8 +1,13 @@
 package app.gui.threads;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +33,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	private String matlabPath;
 	DecimalFormat df = new DecimalFormat("#.######");
 	private long proxyTime;
+	private boolean cancelTrain;
 
 	public UmGCRFTestMyModelForGUI(String matlabPath, JFrame mainFrame,
 			JPanel panel, String modelFolder, double[][] s, double[] r,
@@ -59,28 +65,50 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 			frame.setVisible(false);
 			return;
 		}
+		cancelTrain = false;
 		mainFrame.setEnabled(false);
 		frame.setTitle("Please wait - UmGCRF is in progress ");
+		JButton cancel = new JButton();
+		frame.add(cancel);
+		cancel.setBounds(0, 0, 80, 30);
+		cancel.setText("Cancel");
+		Style.buttonStyle(cancel);
+		cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainFrame.setEnabled(true);
+				frame.setVisible(false);
+				Runtime rt = Runtime.getRuntime();
+				try {
+					rt.exec("taskkill /F /IM MATLAB.exe");
+				} catch (IOException e1) {
+				}
+				cancelTrain = true;
+				JOptionPane.showMessageDialog(frame,
+						"Testing process is canceled.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
 		double theta = read(modelFolder + "/parameters/UmGCRF.txt");
 
 		outputs = UmGCRF.test(matlabPath, s, y, r, theta, proxyTime);
+		if (!cancelTrain) {
+			double r2 = BasicCalcs.rSquared(outputs, y);
+			if (outputs == null) {
+				JOptionPane.showMessageDialog(mainFrame,
+						"An internal MATLAB exception occurred.", "Results",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+			if (panel != null) {
+				createTable(r2);
+				exportResults(r2, "test");
+			} else {
+				exportResults(r2, "predict");
+			}
 
-		double r2 = BasicCalcs.rSquared(outputs, y);
-		if (outputs == null) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"An internal MATLAB exception occurred.", "Results",
-					JOptionPane.INFORMATION_MESSAGE);
-			return;
+			mainFrame.setEnabled(true);
+			frame.setVisible(false);
 		}
-		if (panel != null) {
-			createTable(r2);
-			exportResults(r2, "test");
-		} else {
-			exportResults(r2, "predict");
-		}
-
-		mainFrame.setEnabled(true);
-		frame.setVisible(false);
 	}
 
 	public double read(String file) {
@@ -106,7 +134,7 @@ public class UmGCRFTestMyModelForGUI extends Thread {
 	private void exportResults(double result, String folder) {
 		Writer.createFolder(modelFolder + "/" + folder);
 		String fileName = modelFolder + "/" + folder + "/results.txt";
-		String[] text = exportTxt(result,folder);
+		String[] text = exportTxt(result, folder);
 		Writer.write(text, fileName);
 		JOptionPane.showMessageDialog(mainFrame,
 				"Export successfully completed. \nFile location: "

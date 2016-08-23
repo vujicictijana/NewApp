@@ -91,7 +91,7 @@ public class Reader {
 		if (text.length != noOfRows) {
 			return null;
 		}
-	
+
 		String[] line = null;
 		for (int i = 0; i < noOfRows; i++) {
 			line = text[i].split(",");
@@ -180,6 +180,17 @@ public class Reader {
 			}
 		}
 		return params;
+	}
+
+	public static void deleteDir(File file) {
+		File[] contents = file.listFiles();
+		if (contents != null) {
+			for (File f : contents) {
+				deleteDir(f);
+			}
+		}
+		file.delete();
+
 	}
 
 }

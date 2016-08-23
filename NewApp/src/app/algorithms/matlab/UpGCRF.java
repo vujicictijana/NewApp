@@ -2,9 +2,6 @@ package app.algorithms.matlab;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
-
-import app.algorithms.basic.BasicCalcs;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
@@ -138,9 +135,9 @@ public class UpGCRF {
 		int cols = outputs[0].length;
 		double[] array = null;
 		double[] arrayY = null;
-		double sum = 0;
-		double r2 = 0;
-		DecimalFormat df = new DecimalFormat("#.####");
+		// double sum = 0;
+		// double r2 = 0;
+		// DecimalFormat df = new DecimalFormat("#.####");
 		for (int i = 0; i < cols; i++) {
 			array = new double[outputs.length];
 			arrayY = new double[outputs.length];
@@ -149,26 +146,26 @@ public class UpGCRF {
 				arrayY[j] = y[j][i];
 			}
 
-			r2 = BasicCalcs.rSquaredWitNaN(array, arrayY);
-			sum += r2;
-			String[] text = exportTxt(r2, array);
+			// r2 = BasicCalcs.rSquaredWitNaN(array, arrayY);
+			// sum += r2;
+			String[] text = exportTxt(0, array);
 			Writer.write(text, fileName + "T" + (i + 1) + ".txt");
 		}
-		double avg = sum / cols;
-		return "\n* Average R^2 value: " + df.format(avg)
-				+ "\n* Results are successfully exported. \n* File location: "
+		// double avg = sum / cols;
+		// "\n* Average R^2 value: " + df.format(avg)
+		return "\n* Results are successfully exported. \n* File location: "
 				+ folder + "/test";
 	}
 
 	private static String[] exportTxt(double r2, double[] outputs) {
-		DecimalFormat df = new DecimalFormat("#.######");
+		// DecimalFormat df = new DecimalFormat("#.######");
 		String[] txt = new String[outputs.length + 1];
 
 		for (int i = 0; i < outputs.length; i++) {
 			txt[i] = outputs[i] + "";
 		}
-
-		txt[outputs.length] = "R^2 up-GCRF: " + df.format(r2);
+		txt[outputs.length] = "";
+		// txt[outputs.length] = "R^2 up-GCRF: " + df.format(r2);
 
 		return txt;
 	}
