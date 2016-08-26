@@ -16,6 +16,7 @@ import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
+import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.TestWithRandomForGUI;
@@ -23,6 +24,7 @@ import app.gui.threads.TestWithRandomForGUI;
 import javax.swing.JComboBox;
 
 import java.awt.event.ItemListener;
+import java.net.URL;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -52,12 +54,9 @@ public class TestRandomPanel extends JPanel {
 		if (Reader.checkFile("cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
-				JOptionPane
-						.showMessageDialog(
-								mainFrame,
-								result
-										+ " Please configure parameters values in Settings->Configuration.",
-								"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(mainFrame,
+						result + " Please configure parameters values in Settings->Configuration.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
@@ -113,26 +112,27 @@ public class TestRandomPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					String message = validateData();
 					if (message != null) {
-						JOptionPane.showMessageDialog(mainFrame, message,
-								"Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						String model = "RandomModels/"
-								+ cmbModel.getSelectedItem().toString()
-										.replaceAll(" - ", "/");
+						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+
+						String path1 = location.getFile();
+						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+						String model = mainPath + "/RandomModels/"
+								+ cmbModel.getSelectedItem().toString().replaceAll(" - ", "/");
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						int times = Integer.parseInt(txtTimes.getText());
 						double probability = 0;
-						if (cmbModel.getSelectedItem().toString()
-								.contains("probability")) {
+						if (cmbModel.getSelectedItem().toString().contains("probability")) {
 							probability = Double.parseDouble(txtProb.getText());
 						}
 						ProgressBar frame = new ProgressBar(times);
 						frame.pack();
 						frame.setVisible(true);
 						frame.setLocationRelativeTo(null);
-						TestWithRandomForGUI test = new TestWithRandomForGUI(
-								frame, mainFrame, panelForTable, model,
-								noOfNodes, times, probability,alphaGen,betaGen);
+						TestWithRandomForGUI test = new TestWithRandomForGUI(frame, mainFrame, panelForTable, model,
+								noOfNodes, times, probability, alphaGen, betaGen);
 						test.start();
 					}
 				}
@@ -149,15 +149,16 @@ public class TestRandomPanel extends JPanel {
 			cmbModel = new JComboBox<String>();
 			cmbModel.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					if (cmbModel.getSelectedItem().toString()
-							.contains("probability")) {
-						String model = "RandomModels/"
-								+ cmbModel.getSelectedItem().toString()
-										.replaceAll(" - ", "/");
+					if (cmbModel.getSelectedItem().toString().contains("probability")) {
+						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+
+						String path1 = location.getFile();
+						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+						String model = mainPath + "/RandomModels/"
+								+ cmbModel.getSelectedItem().toString().replaceAll(" - ", "/");
 						String probModel = model.split("/")[model.split("/").length - 1];
-						probModel = probModel.substring(
-								probModel.indexOf("s") + 1,
-								probModel.indexOf("p"));
+						probModel = probModel.substring(probModel.indexOf("s") + 1, probModel.indexOf("p"));
 						txtProb.setEnabled(true);
 						txtProb.setText(probModel);
 					}
@@ -165,7 +166,12 @@ public class TestRandomPanel extends JPanel {
 			});
 			cmbModel.setBounds(181, 39, 417, 30);
 			cmbModel.addItem("choose model");
-			String[] files = Reader.getAllFiles("RandomModels");
+			URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+
+			String path1 = location.getFile();
+			path1 = path1.substring(1, path1.lastIndexOf("/"));
+			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+			String[] files = Reader.getAllFiles(mainPath + "/RandomModels");
 			for (int i = 0; i < files.length; i++) {
 				cmbModel.addItem(files[i]);
 			}
@@ -197,8 +203,7 @@ public class TestRandomPanel extends JPanel {
 			return GraphGenerator.generateDirectedGraph(noOfNodes);
 		} else if (cmbModel.getSelectedIndex() == 2) {
 			double prob = Double.parseDouble(txtProb.getText());
-			return GraphGenerator.generateDirectedGraphWithEdgeProbability(
-					noOfNodes, prob);
+			return GraphGenerator.generateDirectedGraphWithEdgeProbability(noOfNodes, prob);
 		} else if (cmbModel.getSelectedIndex() == 3) {
 			return GraphGenerator.generateDirectedAcyclicGraph(noOfNodes);
 		}

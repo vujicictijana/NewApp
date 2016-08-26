@@ -132,7 +132,7 @@ public class Reader {
 									.contains("DirGCRF")) {
 								String[] folders = filePath.getParent()
 										.toString().split("\\\\");
-								files.add(folders[1] + " - " + folders[2]);
+								files.add(folders[folders.length-2] + " - " + folders[folders.length-1]);
 							}
 						}
 					});

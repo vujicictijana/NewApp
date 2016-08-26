@@ -32,7 +32,6 @@ public class UpGCRF {
 					.getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
-			String mainPath = path.substring(0, path.lastIndexOf("/"));
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/upGCRF";
 			proxy.eval("addpath('" + path + "')");
 
@@ -92,7 +91,7 @@ public class UpGCRF {
 				// GraphGenerator.showMatrix(outputs);
 
 				Writer.createFolder(modelFolder + "/parameters");
-				String fileName = mainPath + "/" + modelFolder
+				String fileName =  modelFolder
 						+ "/parameters/upGCRF.mat";
 				proxy.setVariable("fileName", fileName);
 

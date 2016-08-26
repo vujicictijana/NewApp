@@ -103,7 +103,7 @@ public class UpGCRFTrainMyModelForGUI extends Thread {
 			long elapsedTime = System.currentTimeMillis() - start;
 			time += Math.round(elapsedTime / 1000);
 			;
-			if (message.contains("R^2")) {
+			if (message.contains("successfully")) {
 				message += "\n" + time;
 				JOptionPane.showMessageDialog(mainFrame, message, "Results",
 						JOptionPane.INFORMATION_MESSAGE);

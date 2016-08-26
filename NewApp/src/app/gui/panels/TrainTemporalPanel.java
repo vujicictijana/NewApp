@@ -18,6 +18,7 @@ import app.algorithms.basic.BasicCalcs;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
+import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.MGCRFTrainMyModelForGUI;
@@ -33,6 +34,7 @@ import app.predictors.neuralnetwork.MyNN;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
@@ -167,8 +169,7 @@ public class TrainTemporalPanel extends JPanel {
 		add(getTxtMaxIter());
 		fc = new JFileChooser();
 		panel = this;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"TEXT FILES", "txt", "text");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
 		this.mainFrame = mainFrame;
 		// add(getLblTime());
@@ -360,21 +361,19 @@ public class TrainTemporalPanel extends JPanel {
 			Style.questionButtonStyle(btnQuestionX);
 			btnQuestionX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					// "Text file (.txt) that contains output predicted by unstructured predictor for each node."
+					// "Text file (.txt) that contains output predicted by
+					// unstructured predictor for each node."
 					// + "\nEach output should be in a separate line. "
 					// +
-					// "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S)."
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains value of each atribute for each node for each time point."
-											+ "\nEach line should contain attributes for one node for all time points (comma separated). "
-											+ "\nProvide all attributes for first time point, then for second time point, and so on. "
-											+ "\nFor example if there are 3 attributes and 2 time points, one line should look like:"
-											+ " a1.1, a2.1, a3.1, a2.1, a2.2, a2.3"
-											+ "\nAll atributes should be numbers. ",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					// "\nOrder of outputs should be consistent with ordinal
+					// numbers of nodes in the file with edges (S)."
+					JOptionPane.showMessageDialog(mainFrame,
+							"Text file (.txt) that contains value of each atribute for each node for each time point."
+									+ "\nEach line should contain attributes for one node for all time points (comma separated). "
+									+ "\nProvide all attributes for first time point, then for second time point, and so on. "
+									+ "\nFor example if there are 3 attributes and 2 time points, one line should look like:"
+									+ " a1.1, a2.1, a3.1, a2.1, a2.2, a2.3" + "\nAll atributes should be numbers. ",
+							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 		}
@@ -423,15 +422,12 @@ public class TrainTemporalPanel extends JPanel {
 			btnQuestionY.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains actual output for each node for each time point."
-											+ "\nEach line should contain outputs for one node for all time points (comma separated). "
-											+ "\nOrder of arrays of outputs should be consistent with ordinal numbers of nodes in the file with attributes."
-											+ "\nFor missing values put -9999.",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					JOptionPane.showMessageDialog(mainFrame,
+							"Text file (.txt) that contains actual output for each node for each time point."
+									+ "\nEach line should contain outputs for one node for all time points (comma separated). "
+									+ "\nOrder of arrays of outputs should be consistent with ordinal numbers of nodes in the file with attributes."
+									+ "\nFor missing values put -9999.",
+							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 		}
@@ -446,79 +442,65 @@ public class TrainTemporalPanel extends JPanel {
 
 					String message = validateData();
 					if (message != null) {
-						JOptionPane.showMessageDialog(mainFrame, message,
-								"Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						int noOfTime = Integer.parseInt(txtNoTime.getText());
-						int noOfTimeTrain = Integer.parseInt(txtNoTimeTrain
-								.getText());
+						int noOfTimeTrain = Integer.parseInt(txtNoTimeTrain.getText());
 						int noOfX = Integer.parseInt(txtNoX.getText());
 
 						String[] x = Reader.read(txtXFile.getText());
 						String[] y = Reader.read(txtYFile.getText());
 
 						if (isMGCRF()) {
-							double[][] s = Reader.readGraph(
-									txtMatrixFile.getText(), noOfNodes);
+							double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
 
-							String message1 = checkAllFiles(noOfNodes,
-									noOfTime, noOfX, x, y, s);
+							String message1 = checkAllFiles(noOfNodes, noOfTime, noOfX, x, y, s);
 
 							if (message1 != null) {
-								JOptionPane.showMessageDialog(mainFrame,
-										message1, "Error",
-										JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(mainFrame, message1, "Error", JOptionPane.ERROR_MESSAGE);
 								return;
 							}
 
 							String path = createFolderAndSaveData();
-							runMGCRF(noOfNodes, noOfTime, noOfTimeTrain, noOfX,
-									x, y, s, path);
+							runMGCRF(noOfNodes, noOfTime, noOfTimeTrain, noOfX, x, y, s, path);
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
 
 							String yMSg = checkY(noOfNodes, y, noOfX, noOfTime);
 
 							if (yMSg != null) {
-								JOptionPane.showMessageDialog(mainFrame, yMSg,
-										"Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(mainFrame, yMSg, "Error", JOptionPane.ERROR_MESSAGE);
 								return;
 							}
 
-							double[][] yMatrix = Reader.readMatrix(
-									txtYFile.getText(), noOfNodes, noOfTime);
+							double[][] yMatrix = Reader.readMatrix(txtYFile.getText(), noOfNodes, noOfTime);
 
 							if (isUpGCRF()) {
 
 								double[][] x1 = null;
 								if (chckUseX.isSelected()) {
-									String xMSg = checkX(noOfNodes, x, noOfX,
-											noOfTime);
+									String xMSg = checkX(noOfNodes, x, noOfX, noOfTime);
 
 									if (xMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, xMSg, "Error",
+										JOptionPane.showMessageDialog(mainFrame, xMSg, "Error",
 												JOptionPane.ERROR_MESSAGE);
 										return;
 									}
 
-									x1 = Reader.readMatrix(txtXFile.getText(),
-											noOfNodes, noOfTime * noOfX);
+									x1 = Reader.readMatrix(txtXFile.getText(), noOfNodes, noOfTime * noOfX);
 								}
 								double[][] s = null;
 								if (!chkLearn.isSelected()) {
 									String sMSg = checkS(noOfNodes, s);
 
 									if (sMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, sMSg, "Error",
+										JOptionPane.showMessageDialog(mainFrame, sMSg, "Error",
 												JOptionPane.ERROR_MESSAGE);
 										return;
 									}
-									s = Reader.readGraph(
-											txtMatrixFile.getText(), noOfNodes);
+									s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
 								}
 
 								String path = createFolderAndSaveData();
@@ -527,44 +509,30 @@ public class TrainTemporalPanel extends JPanel {
 								}
 								int lag = Integer.parseInt(txtLag.getText());
 								int test = Integer.parseInt(txtNoTest.getText());
-								trainUpGCRF(matlabPath, path, x1, yMatrix, s,
-										noOfTime, noOfTimeTrain, maxIter,
+								trainUpGCRF(matlabPath, path, x1, yMatrix, s, noOfTime, noOfTimeTrain, maxIter,
 										noOfNodes, lag, noOfX, test);
 							}
 							if (isRLSR()) {
-								String xMSg = checkX(noOfNodes, x, noOfX,
-										noOfTime);
+								String xMSg = checkX(noOfNodes, x, noOfX, noOfTime);
 
 								if (xMSg != null) {
-									JOptionPane.showMessageDialog(mainFrame,
-											xMSg, "Error",
-											JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(mainFrame, xMSg, "Error", JOptionPane.ERROR_MESSAGE);
 									return;
 								}
 
-								double[][] x1 = Reader.readMatrix(txtXFile.getText(),
-										noOfNodes, noOfTime * noOfX);
+								double[][] x1 = Reader.readMatrix(txtXFile.getText(), noOfNodes, noOfTime * noOfX);
 
-								int validation = Integer.parseInt(txtLag
-										.getText());
-								int lfSize = Integer.parseInt(txtLFSize
-										.getText());
+								int validation = Integer.parseInt(txtLag.getText());
+								int lfSize = Integer.parseInt(txtLFSize.getText());
 								int test = Integer.parseInt(txtNoTest.getText());
-								int iterNN = Integer.parseInt(txtIterNN
-										.getText());
-								int hidden = Integer.parseInt(txtHidden
-										.getText());
-								int iterSSE = Integer.parseInt(txtSseIter
-										.getText());
-								int iterLs = Integer.parseInt(txtLsIter
-										.getText());
+								int iterNN = Integer.parseInt(txtIterNN.getText());
+								int hidden = Integer.parseInt(txtHidden.getText());
+								int iterSSE = Integer.parseInt(txtSseIter.getText());
+								int iterLs = Integer.parseInt(txtLsIter.getText());
 								String lambda = txtLambda.getText();
 								String path = createFolderAndSaveData();
-								trainRLSR(matlabPath, path, x1, yMatrix,
-										noOfTime, noOfTimeTrain, maxIter,
-										noOfNodes, validation, noOfX, lfSize,
-										lambda, test, iterNN, hidden, iterSSE,
-										iterLs);
+								trainRLSR(matlabPath, path, x1, yMatrix, noOfTime, noOfTimeTrain, maxIter, noOfNodes,
+										validation, noOfX, lfSize, lambda, test, iterNN, hidden, iterSSE, iterLs);
 							}
 
 						}
@@ -579,24 +547,21 @@ public class TrainTemporalPanel extends JPanel {
 		return btnTrain;
 	}
 
-	public void trainMGCRF(String matlabPath, String modelFolder, double[][] r,
-			double[][] y, double[][] s, int noTime, int training, int maxIter,
-			int regAlpha, int regBeta) {
+	public void trainMGCRF(String matlabPath, String modelFolder, double[][] r, double[][] y, double[][] s, int noTime,
+			int training, int maxIter, int regAlpha, int regBeta) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 
-		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				regAlpha, regBeta,proxy);
+		MGCRFTrainMyModelForGUI t = new MGCRFTrainMyModelForGUI(matlabPath, modelFolder, frame, frame, s, r, y, noTime,
+				training, maxIter, regAlpha, regBeta, proxy);
 
 		t.start();
 	}
 
-	public void trainUpGCRF(String matlabPath, String modelFolder,
-			double[][] r, double[][] y, double[][] s, int noTime, int training,
-			int maxIter, int noOfNodes, int lag, int noX, int test) {
+	public void trainUpGCRF(String matlabPath, String modelFolder, double[][] r, double[][] y, double[][] s, int noTime,
+			int training, int maxIter, int noOfNodes, int lag, int noX, int test) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
@@ -605,33 +570,29 @@ public class TrainTemporalPanel extends JPanel {
 		if (!chckUseX.isSelected()) {
 			useX = false;
 		}
-		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, frame, s, r, y, noTime, training, maxIter,
-				noOfNodes, lag, noX, useX, test,proxy);
+		UpGCRFTrainMyModelForGUI t = new UpGCRFTrainMyModelForGUI(matlabPath, modelFolder, frame, frame, s, r, y,
+				noTime, training, maxIter, noOfNodes, lag, noX, useX, test, proxy);
 
 		t.start();
 	}
 
-	public void trainRLSR(String matlabPath, String modelFolder, double[][] r,
-			double[][] y, int noTime, int training, int maxIter, int noOfNodes,
-			int validation, int noX, int lfSize, String lambda, int test,
-			int iterNN, int hidden, int iterSSE, int iterLs) {
+	public void trainRLSR(String matlabPath, String modelFolder, double[][] r, double[][] y, int noTime, int training,
+			int maxIter, int noOfNodes, int validation, int noX, int lfSize, String lambda, int test, int iterNN,
+			int hidden, int iterSSE, int iterLs) {
 		ProgressBar frame = new ProgressBar("Training");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-		RLSRTrainMyModelForGUI t = new RLSRTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, frame, r, y, noTime, training, maxIter,
-				noOfNodes, validation, noX, lfSize, lambda, test, iterNN,
-				hidden, iterSSE, iterLs,proxy);
+		RLSRTrainMyModelForGUI t = new RLSRTrainMyModelForGUI(matlabPath, modelFolder, frame, frame, r, y, noTime,
+				training, maxIter, noOfNodes, validation, noX, lfSize, lambda, test, iterNN, hidden, iterSSE, iterLs,
+				proxy);
 
 		t.start();
 	}
 
 	private String checkS(int noOfNodes, double[][] s) {
 		if (s == null) {
-			return "Ordinal number of node can be between 1 and " + noOfNodes
-					+ ".";
+			return "Ordinal number of node can be between 1 and " + noOfNodes + ".";
 		}
 		return null;
 	}
@@ -643,8 +604,7 @@ public class TrainTemporalPanel extends JPanel {
 		}
 
 		if (x.length != noOfNodes) {
-			return "Number of lines in the file with attributes should be "
-					+ noOfNodes + ".";
+			return "Number of lines in the file with attributes should be " + noOfNodes + ".";
 		}
 		for (int i = 0; i < x.length; i++) {
 			if (x[i].split(",").length != totalX) {
@@ -660,8 +620,7 @@ public class TrainTemporalPanel extends JPanel {
 			return "Error while reading file with attributes.";
 		}
 		if (y.length != noOfNodes) {
-			return "Number of lines in the file with outputs should be "
-					+ noOfNodes + ".";
+			return "Number of lines in the file with outputs should be " + noOfNodes + ".";
 		}
 		for (int i = 0; i < y.length; i++) {
 			if (y[i].split(",").length != noOfTime) {
@@ -672,8 +631,7 @@ public class TrainTemporalPanel extends JPanel {
 		return null;
 	}
 
-	private String checkAllFiles(int noOfNodes, int noOfTime, int noOfX,
-			String[] x, String[] y, double[][] s) {
+	private String checkAllFiles(int noOfNodes, int noOfTime, int noOfX, String[] x, String[] y, double[][] s) {
 
 		String xMsg = checkX(noOfNodes, x, noOfX, noOfTime);
 		if (xMsg != null) {
@@ -692,51 +650,41 @@ public class TrainTemporalPanel extends JPanel {
 		return null;
 	}
 
-	private void runMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain,
-			int noOfX, String[] x, String[] y, double[][] s, String path) {
-		double result = callPredictor(path, x, y, noOfX, noOfTime,
-				noOfTimeTrain, noOfNodes);
+	private void runMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain, int noOfX, String[] x, String[] y,
+			double[][] s, String path) {
+		double result = callPredictor(path, x, y, noOfX, noOfTime, noOfTimeTrain, noOfNodes);
 
 		if (result == -7000) {
-			JOptionPane.showMessageDialog(mainFrame, "Unknown predictor.",
-					"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mainFrame, "Unknown predictor.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (result == -3000) {
-			JOptionPane
-					.showMessageDialog(
-							mainFrame,
-							cmbPredictor.getSelectedItem().toString()
-									+ " cannot be applied to your data. Choose different predictor.",
-							"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mainFrame,
+					cmbPredictor.getSelectedItem().toString()
+							+ " cannot be applied to your data. Choose different predictor.",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (result == -5000) {
-			JOptionPane.showMessageDialog(mainFrame,
-					"Files are not in correct format.", "Error",
+			JOptionPane.showMessageDialog(mainFrame, "Files are not in correct format.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 		if (result == -10000) {
-			JOptionPane
-					.showMessageDialog(
-							mainFrame,
-							"Values should be normalized (range from 0 to 1) for neural network.",
-							"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mainFrame,
+					"Values should be normalized (range from 0 to 1) for neural network.", "Error",
+					JOptionPane.ERROR_MESSAGE);
 		} else {
-			double[][] r = Reader.readMatrixTwoFiles(path + "/data/r.txt", path
-					+ "/data/rTest.txt", noOfNodes, noOfTime, noOfTimeTrain);
-			double[][] yMatrix = Reader.readMatrix(path + "/data/y.txt",
-					noOfNodes, noOfTime);
+			double[][] r = Reader.readMatrixTwoFiles(path + "/data/r.txt", path + "/data/rTest.txt", noOfNodes,
+					noOfTime, noOfTimeTrain);
+			double[][] yMatrix = Reader.readMatrix(path + "/data/y.txt", noOfNodes, noOfTime);
 			if (BasicCalcs.isSymmetric(s)) {
 				int maxIter = Integer.parseInt(txtIter.getText());
 				int regAlpha = Integer.parseInt(txtAlpha.getText());
 				int regBeta = Integer.parseInt(txtBeta.getText());
-				trainMGCRF(matlabPath, path, r, yMatrix, s, noOfTime,
-						noOfTimeTrain, maxIter, regAlpha, regBeta);
+				trainMGCRF(matlabPath, path, r, yMatrix, s, noOfTime, noOfTimeTrain, maxIter, regAlpha, regBeta);
 			} else {
-				JOptionPane.showMessageDialog(mainFrame,
-						"For m-GCRF method matrix should be symmetric.",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(mainFrame, "For m-GCRF method matrix should be symmetric.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -749,11 +697,15 @@ public class TrainTemporalPanel extends JPanel {
 		File xFile = new File(txtXFile.getText());
 		File yFile = new File(txtYFile.getText());
 		String method = cmbMethod.getSelectedItem().toString();
-		Writer.createFolder("MyModels" + method);
-		String path = "MyModels" + method + "/" + txtModelName.getText();
+
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		String path1 = location.getFile();
+		path1 = path1.substring(1, path1.lastIndexOf("/"));
+		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+		Writer.createFolder(mainPath + "/MyModels" + method);
+		String path = mainPath + "/MyModels" + method + "/" + txtModelName.getText();
 		Writer.createFolder(path);
-		String dataPath = "MyModels" + method + "/" + txtModelName.getText()
-				+ "/data";
+		String dataPath =  mainPath + "/MyModels" + method + "/" + txtModelName.getText() + "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(xFile, dataPath + "/x.txt");
 		Writer.copyFile(yFile, dataPath + "/y.txt");
@@ -763,22 +715,18 @@ public class TrainTemporalPanel extends JPanel {
 		return path;
 	}
 
-	private double callPredictor(String path, String[] x, String[] y, int noX,
-			int noT, int noTrain, int nodes) {
+	private double callPredictor(String path, String[] x, String[] y, int noX, int noT, int noTrain, int nodes) {
 		if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 			int noOfHidden = Integer.parseInt(txtHidden.getText());
 			int noOfIter = Integer.parseInt(txtIterNN.getText());
-			DataSet trainingSet = Helper.prepareTemporalDataForNN(x, y, noX,
-					noT, true);
+			DataSet trainingSet = Helper.prepareTemporalDataForNN(x, y, noX, noT, true);
 			if (trainingSet == null) {
 				return -10000;
 			}
-			return MyNN.learnAndTest(noOfHidden, trainingSet, 0.003, noOfIter,
-					path, noT, noTrain);
+			return MyNN.learnAndTest(noOfHidden, trainingSet, 0.003, noOfIter, path, noT, noTrain);
 		}
 		if (cmbPredictor.getSelectedItem().toString().contains("linear")) {
-			TemporalData t = Helper.prepareTemporalDataForLR(x, y, noX, noT,
-					nodes, noTrain);
+			TemporalData t = Helper.prepareTemporalDataForLR(x, y, noX, noT, nodes, noTrain);
 			MyLR.learn(t.getxTrain(), t.getyTrain(), path);
 			if (Writer.checkFolder(path + "/mlr")) {
 				MultivariateLinearRegression m = (MultivariateLinearRegression) Helper
@@ -791,10 +739,8 @@ public class TrainTemporalPanel extends JPanel {
 				for (int i = 0; i < xOne.length; i++) {
 					xOne[i] = xMlr[i][0];
 				}
-				LinearRegression lr = (LinearRegression) Helper
-						.deserilazie(path + "/lr/lr.txt");
-				return LinearRegression
-						.test(t.getyTest(), xOne, path, lr, true);
+				LinearRegression lr = (LinearRegression) Helper.deserilazie(path + "/lr/lr.txt");
+				return LinearRegression.test(t.getyTest(), xOne, path, lr, true);
 			}
 		}
 		return -7000;
@@ -895,12 +841,13 @@ public class TrainTemporalPanel extends JPanel {
 				return validate;
 			}
 		}
-
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		String path1 = location.getFile();
+		path1 = path1.substring(1, path1.lastIndexOf("/"));
+		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
 		String method = cmbMethod.getSelectedItem().toString();
-		if (Writer.checkFolder("MyModels" + method + "/"
-				+ txtModelName.getText())) {
-			return "Model with name " + txtModelName.getText()
-					+ " already exists.";
+		if (Writer.checkFolder(mainPath + "/MyModels" + method + "/" + txtModelName.getText())) {
+			return "Model with name " + txtModelName.getText() + " already exists.";
 		}
 
 		return null;
@@ -1168,21 +1115,14 @@ public class TrainTemporalPanel extends JPanel {
 				alphaReg = Integer.parseInt(params.get("AlphaReg").toString());
 				betaReg = Integer.parseInt(params.get("BetaReg").toString());
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
-				iterNN = Integer.parseInt(params.get("Iterations NN")
-						.toString());
-				iterTemp = Integer.parseInt(params.get("Iterations temporal")
-						.toString());
+				iterNN = Integer.parseInt(params.get("Iterations NN").toString());
+				iterTemp = Integer.parseInt(params.get("Iterations temporal").toString());
 				lambda = params.get("Lambda").toString();
-				rlsrHidden = Integer.parseInt(params.get("RLSR hidden NN")
-						.toString());
-				rlsrIterNN = Integer.parseInt(params.get("RLSR iterations NN")
-						.toString());
-				sseIter = Integer.parseInt(params.get("RLSR SSE iterations")
-						.toString());
-				lsIter = Integer.parseInt(params.get("RLSR SSE LS iterations")
-						.toString());
-				proxy = Integer.parseInt(params.get("Proxy")
-						.toString());
+				rlsrHidden = Integer.parseInt(params.get("RLSR hidden NN").toString());
+				rlsrIterNN = Integer.parseInt(params.get("RLSR iterations NN").toString());
+				sseIter = Integer.parseInt(params.get("RLSR SSE iterations").toString());
+				lsIter = Integer.parseInt(params.get("RLSR SSE LS iterations").toString());
+				proxy = Integer.parseInt(params.get("Proxy").toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
 			}
@@ -1250,8 +1190,7 @@ public class TrainTemporalPanel extends JPanel {
 			cmbPredictor.setVisible(false);
 			cmbPredictor.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					if (cmbPredictor.getSelectedItem().toString()
-							.contains("neural")) {
+					if (cmbPredictor.getSelectedItem().toString().contains("neural")) {
 						lblNoOfHidden.setVisible(true);
 						txtHidden.setVisible(true);
 						lblNoOfIterations.setVisible(true);
@@ -1570,18 +1509,14 @@ public class TrainTemporalPanel extends JPanel {
 			btnQuestionS.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains data about connections between nodes."
-											+ "\nThis file contains data about all edges in following format: "
-											+ "from node, to node, weight\n"
-											+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
-											+ "1,2,10"
-											+ "\nEach edge should be in a separate line."
-											+ "\nNodes are represented by ordinal numbers.",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					JOptionPane.showMessageDialog(mainFrame,
+							"Text file (.txt) that contains data about connections between nodes."
+									+ "\nThis file contains data about all edges in following format: "
+									+ "from node, to node, weight\n"
+									+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
+									+ "1,2,10" + "\nEach edge should be in a separate line."
+									+ "\nNodes are represented by ordinal numbers.",
+							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 			btnQuestionS.setBounds(698, 285, 30, 30);
@@ -1596,12 +1531,9 @@ public class TrainTemporalPanel extends JPanel {
 			Style.questionButtonStyle(btnQuestionRegAlpha);
 			btnQuestionRegAlpha.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"For higher percentage of missing values put higher value regularization parameter.",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					JOptionPane.showMessageDialog(mainFrame,
+							"For higher percentage of missing values put higher value regularization parameter.",
+							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 			btnQuestionRegAlpha.setBounds(348, 448, 30, 30);
@@ -1631,8 +1563,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	private JLabel getLblProvideTrainAn() {
 		if (lblProvideTrainAn == null) {
-			lblProvideTrainAn = new JLabel(
-					"Provide train and test data together");
+			lblProvideTrainAn = new JLabel("Provide train and test data together");
 			lblProvideTrainAn.setOpaque(true);
 			lblProvideTrainAn.setHorizontalAlignment(SwingConstants.CENTER);
 			lblProvideTrainAn.setForeground(Color.WHITE);
@@ -1673,12 +1604,9 @@ public class TrainTemporalPanel extends JPanel {
 			Style.questionButtonStyle(btnQuestionLag);
 			btnQuestionLag.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Number of previous time step values that will be used as inputs",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					JOptionPane.showMessageDialog(mainFrame,
+							"Number of previous time step values that will be used as inputs", "Help",
+							JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 		}
@@ -1726,14 +1654,10 @@ public class TrainTemporalPanel extends JPanel {
 			btnQuestionLambda.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Set of hyperparameters for regularizor. It can be array of double values or single value. "
-											+ "\nValues should be comma separated."
-											+ "\nExample: 0.0001,0.001,0.01,0.01,0.1,1",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
+					JOptionPane.showMessageDialog(mainFrame,
+							"Set of hyperparameters for regularizor. It can be array of double values or single value. "
+									+ "\nValues should be comma separated." + "\nExample: 0.0001,0.001,0.01,0.01,0.1,1",
+							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
 				}
 			});
 		}

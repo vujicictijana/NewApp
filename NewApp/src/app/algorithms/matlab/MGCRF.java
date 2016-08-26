@@ -35,7 +35,6 @@ public class MGCRF {
 					.getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
-			String mainPath = path.substring(0, path.lastIndexOf("/"));
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/mGCRF";
 			proxy.eval("addpath('" + path + "')");
 
@@ -70,7 +69,7 @@ public class MGCRF {
 				double ubeta = ((double[]) proxy.getVariable("ubeta"))[0];
 
 				Writer.createFolder(modelFolder + "/parameters");
-				String fileName = mainPath + "/" + modelFolder
+				String fileName = modelFolder
 						+ "/parameters/mGCRF.mat";
 				proxy.setVariable("fileName", fileName);
 

@@ -18,24 +18,19 @@ import matlabcontrol.extensions.MatlabTypeConverter;
 
 public class RLSR {
 
-	public static String train(String matlabPath, double[][] y, double[][] x,
-			int noTime, int training, int maxIter, int noOfNodes,
-			int validation, int noX, int lfSize, int test, int iterNN,
-			int hidden, int iterSSE, int iterLs, String lambda,
-			ProgressBar frame, String modelFolder, long proxyTime) {
-		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
-				.setHidden(true).setProxyTimeout(proxyTime)
-				.setMatlabLocation(matlabPath).build();
+	public static String train(String matlabPath, double[][] y, double[][] x, int noTime, int training, int maxIter,
+			int noOfNodes, int validation, int noX, int lfSize, int test, int iterNN, int hidden, int iterSSE,
+			int iterLs, String lambda, ProgressBar frame, String modelFolder, long proxyTime) {
+		MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder().setHidden(true)
+				.setProxyTimeout(proxyTime).setMatlabLocation(matlabPath).build();
 		MatlabProxyFactory factory = new MatlabProxyFactory(options);
 		MatlabProxy proxy;
 		try {
 			proxy = factory.getProxy();
 
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
+			URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
 			String path = location.getFile();
 			path = path.substring(1, path.lastIndexOf("/"));
-			String mainPath = path.substring(0, path.lastIndexOf("/"));
 			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/RLSR";
 			proxy.eval("addpath('" + path + "')");
 
@@ -92,14 +87,12 @@ public class RLSR {
 				proxy.eval("rmpath('" + path + "')");
 
 				proxy.eval("pred_test = transpose(pred_test);");
-				MatlabNumericArray array = processor
-						.getNumericArray("pred_test");
+				MatlabNumericArray array = processor.getNumericArray("pred_test");
 				double[][] outputs = array.getRealArray2D();
 				double mse = ((double[]) proxy.getVariable("test_mse"))[0];
 
 				Writer.createFolder(modelFolder + "/parameters");
-				String fileName = mainPath + "/" + modelFolder
-						+ "/parameters/RLSR.mat";
+				String fileName = modelFolder + "/parameters/RLSR.mat";
 
 				proxy.setVariable("fileName", fileName);
 				proxy.eval("Data = struct;");
@@ -130,8 +123,7 @@ public class RLSR {
 
 		} catch (MatlabConnectionException e) {
 			if (e.getMessage().contains("milliseconds")) {
-				return e.getMessage()
-						+ ". Increase proxy timeout in Settings->Configuration.";
+				return e.getMessage() + ". Increase proxy timeout in Settings->Configuration.";
 			}
 		} catch (MatlabInvocationException e) {
 			// e.printStackTrace();
@@ -140,8 +132,7 @@ public class RLSR {
 		return "Connection with MATLAB cannot be established.";
 	}
 
-	private static String exportResults(double[][] y, double[][] outputs,
-			String folder) {
+	private static String exportResults(double[][] y, double[][] outputs, String folder) {
 		Writer.createFolder(folder + "/test");
 		String fileName = folder + "/test/results";
 		int colsOutput = outputs[0].length;
@@ -167,8 +158,7 @@ public class RLSR {
 			firstY++;
 		}
 		double avg = sum / colsOutput;
-		return "\n* Average R^2 value: " + df.format(avg)
-				+ "\n* Results are successfully exported. \n* File location: "
+		return "\n* Average R^2 value: " + df.format(avg) + "\n* Results are successfully exported. \n* File location: "
 				+ folder + "/test";
 	}
 

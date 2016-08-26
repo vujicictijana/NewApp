@@ -18,6 +18,7 @@ import app.algorithms.basic.BasicCalcs;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
+import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.DirGCRFTrainMyModelForGUI;
@@ -30,6 +31,7 @@ import app.predictors.neuralnetwork.MyNN;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
 
@@ -571,10 +573,16 @@ public class TrainPanel extends JPanel {
 		File matrixFile = new File(txtMatrixFile.getText());
 		File xFile = new File(txtXFile.getText());
 		File yFile = new File(txtYFile.getText());
-		Writer.createFolder("MyModels" + method);
-		String path = "MyModels" + method + "/" + txtModelName.getText();
+		
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		String path1 = location.getFile();
+		path1 = path1.substring(1, path1.lastIndexOf("/"));
+		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+		Writer.createFolder(mainPath + "/MyModels" + method);
+		String path = mainPath + "/MyModels" + method + "/" + txtModelName.getText();
 		Writer.createFolder(path);
-		String dataPath = "MyModels" + method + "/" + txtModelName.getText()
+		
+		String dataPath = mainPath + "/MyModels" + method + "/" + txtModelName.getText()
 				+ "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
@@ -704,7 +712,11 @@ public class TrainPanel extends JPanel {
 			return "Choose method.";
 		}
 		String method = cmbMethod.getSelectedItem().toString();
-		if (Writer.checkFolder("MyModels" + method + "/"
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		String path1 = location.getFile();
+		path1 = path1.substring(1, path1.lastIndexOf("/"));
+		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+		if (Writer.checkFolder(mainPath + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";

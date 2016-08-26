@@ -17,6 +17,7 @@ import app.algorithms.basic.BasicCalcs;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
+import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.GCRFTestMyModelForGUI;
@@ -30,6 +31,7 @@ import app.predictors.neuralnetwork.MyNN;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -105,7 +107,11 @@ public class PredictPanel extends JPanel {
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						String method = cmbMethod.getSelectedItem().toString();
-						String dataPath = "MyModels" + method + "/"
+						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+						String path1 = location.getFile();
+						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+						String dataPath = mainPath + "/MyModels" + method + "/"
 								+ txtModelName.getText();
 						File matrixFile = new File(txtMatrixFile.getText());
 						Writer.copyFile(matrixFile, dataPath
@@ -264,8 +270,12 @@ public class PredictPanel extends JPanel {
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
 		String method = cmbMethod.getSelectedItem().toString();
-		if (!Writer.checkFolder("MyModels" + method + "/"
+		String path1 = location.getFile();
+		path1 = path1.substring(1, path1.lastIndexOf("/"));
+		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+		if (!Writer.checkFolder(mainPath + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " does not exist.";

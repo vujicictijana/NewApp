@@ -76,7 +76,7 @@ public class TestWithRandomForGUI extends Thread {
 		Writer.write(a, fileName);
 		JOptionPane.showMessageDialog(mainFrame,
 				"Export successfully completed. \nFile location: "
-						+ modelFolder + "/" + modelFolder + "/Test.");
+						+ modelFolder + "/Test.");
 	}
 
 	public double[] read(String file) {
@@ -92,7 +92,8 @@ public class TestWithRandomForGUI extends Thread {
 	}
 
 	public double[][] graph(int noOfNodes) {
-		String type = modelFolder.split("/")[1];
+		String[] folders =  modelFolder.split("/");
+		String type = folders[folders.length-2];
 		return GraphGenerator.generateGraphByType(noOfNodes, type, probability);
 	}
 
