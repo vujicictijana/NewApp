@@ -75,9 +75,12 @@ public class TrainRandomPanel extends JPanel {
 		if (Reader.checkFile("cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
-				JOptionPane.showMessageDialog(mainFrame,
-						result + " Please configure parameters values in Settings->Configuration.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configuration.",
+								"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
@@ -106,8 +109,11 @@ public class TrainRandomPanel extends JPanel {
 				setTxtValues();
 			}
 		} else {
-			JOptionPane.showMessageDialog(mainFrame, "Please configure parameters values in Settings->Configuration.",
-					"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Please configure parameters values in Settings->Configuration.",
+							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -128,14 +134,20 @@ public class TrainRandomPanel extends JPanel {
 			btnQuestionType.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					JOptionPane.showMessageDialog(mainFrame,
-							"Graph types:\n" + "* Directed graph - fully connected directed graph\n"
-									+ "* Directed graph with edge probability - edge probability represents the "
-									+ "probability that edge between two random nodes exists\n"
-									+ "* Directed acyclic graph - directed graph without cycles\n"
-									+ "* Directed directed graph without direct feedback- "
-									+ "if there is direct connection from A to B, there is no direct connection from B to A",
-							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
+					JOptionPane
+							.showMessageDialog(
+									mainFrame,
+									"Graph types:\n"
+											+ "* Directed graph - fully connected directed graph\n"
+											+ "* Directed graph with edge probability - edge probability represents the "
+											+ "probability that edge between two random nodes exists\n"
+											+ "* Directed acyclic graph - directed graph without cycles\n"
+											+ "* Directed directed graph without direct feedback- "
+											+ "if there is direct connection from A to B, there is no direct connection from B to A\n"
+											+ "* Chain -  all nodes are connected in a single sequence, from one node to another\n"
+											+ "* Binary tree - graph with a tree structure in which each node could have at most two children\n",
+									"Help", JOptionPane.QUESTION_MESSAGE,
+									Style.questionIcon());
 				}
 			});
 
@@ -254,28 +266,42 @@ public class TrainRandomPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					String message = validateData();
 					if (message != null) {
-						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(mainFrame, message,
+								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						String model = Writer.folderName(cmbGraphType.getSelectedItem().toString());
-						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+						String model = Writer.folderName(cmbGraphType
+								.getSelectedItem().toString());
+						URL location = MainFrame.class.getProtectionDomain()
+								.getCodeSource().getLocation();
 
 						String path1 = location.getFile();
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-						String modelFolder = mainPath + "/RandomModels/" + model + "/" + noOfNodes + "nodes";
+						String mainPath = path1.substring(0,
+								path1.lastIndexOf("/"));
+						String modelFolder = mainPath + "/RandomModels/"
+								+ model + "/" + noOfNodes + "nodes";
 						if (model.contains("Probability")) {
-							double probability = Double.parseDouble(txtProb.getText());
+							double probability = Double.parseDouble(txtProb
+									.getText());
 							modelFolder += probability + "probability";
 						}
 
 						if (checkModel(modelFolder)) {
 
-							int selectedOption = JOptionPane.showConfirmDialog(mainFrame,
+							int selectedOption = JOptionPane
+									.showConfirmDialog(
+											mainFrame,
 
-									"Model for " + cmbGraphType.getSelectedItem().toString() + " with " + noOfNodes
-											+ " nodes already exists. Do you want to replace it?",
-									"Question", JOptionPane.YES_NO_OPTION);
+											"Model for "
+													+ cmbGraphType
+															.getSelectedItem()
+															.toString()
+													+ " with "
+													+ noOfNodes
+													+ " nodes already exists. Do you want to replace it?",
+											"Question",
+											JOptionPane.YES_NO_OPTION);
 							if (selectedOption == JOptionPane.YES_OPTION) {
 								Reader.deleteFiles(modelFolder);
 								train(noOfNodes, modelFolder);
@@ -318,7 +344,8 @@ public class TrainRandomPanel extends JPanel {
 			cmbGraphType = new JComboBox<String>();
 			cmbGraphType.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					if (cmbGraphType.getSelectedItem().toString().contains("probability")) {
+					if (cmbGraphType.getSelectedItem().toString()
+							.contains("probability")) {
 						txtProb.setEnabled(true);
 						txtProb.setEditable(true);
 					} else {
@@ -359,8 +386,9 @@ public class TrainRandomPanel extends JPanel {
 		if (chckbxSymmetric.isSelected()) {
 			both = true;
 		}
-		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame, mainFrame, s, r, y, alpha, beta, lr,
-				maxIter, panelForTable, both, 10, 10, lblTime);
+		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame,
+				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
+				both, 10, 10, lblTime);
 		t.start();
 
 	}
@@ -407,7 +435,8 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	public double[][] generateGraph(int noOfNodes) {
-		String type = Writer.folderName(cmbGraphType.getSelectedItem().toString());
+		String type = Writer.folderName(cmbGraphType.getSelectedItem()
+				.toString());
 		double probability = 0;
 		if (cmbGraphType.getSelectedItem().toString().contains("probability")) {
 			probability = Double.parseDouble(txtProb.getText());
@@ -435,14 +464,16 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	public void createMainFolders() {
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
 		String path1 = location.getFile();
 		path1 = path1.substring(1, path1.lastIndexOf("/"));
 		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
 		String path = mainPath + "/RandomModels";
 		Writer.createFolder(path);
 		for (int i = 1; i < cmbGraphType.getItemCount(); i++) {
-			String folder = Writer.folderName(cmbGraphType.getItemAt(i).toString());
+			String folder = Writer.folderName(cmbGraphType.getItemAt(i)
+					.toString());
 			Writer.createFolder(mainPath + "/RandomModels/" + folder);
 		}
 	}
@@ -480,7 +511,8 @@ public class TrainRandomPanel extends JPanel {
 				alpha = Integer.parseInt(params.get("Alpha").toString());
 				beta = Integer.parseInt(params.get("Beta").toString());
 				lr = Double.parseDouble(params.get("LR").toString());
-				iterations = Integer.parseInt(params.get("Iterations").toString());
+				iterations = Integer.parseInt(params.get("Iterations")
+						.toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
 			}

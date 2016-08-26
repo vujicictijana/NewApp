@@ -192,7 +192,7 @@ public class TestRandomPanel extends JPanel {
 		try {
 			Integer.parseInt(txtTimes.getText());
 		} catch (NumberFormatException e) {
-			return "Repeat n times should be integer.";
+			return "No. of graphs should be integer.";
 		}
 
 		return null;
@@ -246,7 +246,7 @@ public class TestRandomPanel extends JPanel {
 
 	private JLabel getLblTimes() {
 		if (lblTimes == null) {
-			lblTimes = new JLabel("Repeat n times:");
+			lblTimes = new JLabel("No. of graphs:");
 			lblTimes.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblTimes.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblTimes.setBounds(10, 158, 155, 30);
