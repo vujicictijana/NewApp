@@ -155,6 +155,12 @@ public class TrainPanel extends JPanel {
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
 						"TEXT FILES", "txt", "text");
 				fc.setFileFilter(filter);
+				URL location = MainFrame.class.getProtectionDomain()
+						.getCodeSource().getLocation();
+				String path = location.getFile();
+				path = path.substring(1, path.lastIndexOf("/"));
+				path = path.substring(0, path.lastIndexOf("/"));
+				fc.setCurrentDirectory(new File(path));
 				this.mainFrame = mainFrame;
 				// add(getLblTime());
 				add(getLabel());

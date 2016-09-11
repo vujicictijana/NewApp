@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
 import app.file.io.Reader;
+import app.gui.panels.AddDatasetPanel;
 import app.gui.panels.ConfigurePanel;
 import app.gui.panels.PredictPanel;
 import app.gui.panels.TestPanel;
@@ -43,6 +44,9 @@ public class MainFrame extends JFrame {
 	private JMenu mnPredict;
 	private JMenuItem mnPredictYour;
 	private JMenuItem mntmNewMenuItem;
+	private JMenu mnDatasets;
+	private JMenuItem menuAddDataset;
+	private JMenuItem menuManageDatasets;
 
 	/**
 	 * Launch the application.
@@ -112,6 +116,7 @@ public class MainFrame extends JFrame {
 			menuBar.add(getMnTrain());
 			menuBar.add(getMnTest());
 			menuBar.add(getMnPredict());
+			menuBar.add(getMnDatasets());
 			menuBar.add(getMnSettings());
 		}
 		return menuBar;
@@ -341,5 +346,46 @@ public class MainFrame extends JFrame {
 			mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		}
 		return mntmNewMenuItem;
+	}
+	private JMenu getMnDatasets() {
+		if (mnDatasets == null) {
+			mnDatasets = new JMenu("Datasets");
+			mnDatasets.setFont(new Font("Segoe UI", Font.BOLD, 17));
+			mnDatasets.setIcon(new ImageIcon("images/data.png"));
+			mnDatasets.add(getMenuAddDataset());
+			mnDatasets.add(new JSeparator());
+			mnDatasets.add(getMenuManageDatasets());
+		}
+		return mnDatasets;
+	}
+	private JMenuItem getMenuAddDataset() {
+		if (menuAddDataset == null) {
+			menuAddDataset = new JMenuItem("Add dataset");
+			menuAddDataset.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuAddDataset.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					AddDatasetPanel t = new AddDatasetPanel(frame);
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+
+				}
+			});
+		}
+		return menuAddDataset;
+	}
+	private JMenuItem getMenuManageDatasets() {
+		if (menuManageDatasets == null) {
+			menuManageDatasets = new JMenuItem("Manage datasets");
+			menuManageDatasets.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		}
+		return menuManageDatasets;
 	}
 }
