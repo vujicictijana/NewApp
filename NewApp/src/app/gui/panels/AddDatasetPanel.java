@@ -94,6 +94,7 @@ public class AddDatasetPanel extends JPanel {
 	private JTextField txtAttributes;
 	private JLabel lblTimePoints;
 	private JTextField txtTimePoints;
+	private JCheckBox chkLearn;
 
 	public AddDatasetPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -152,6 +153,7 @@ public class AddDatasetPanel extends JPanel {
 		add(getTxtAttributes());
 		add(getLblTimePoints());
 		add(getTxtTimePoints());
+		add(getChkLearn());
 
 	}
 
@@ -363,9 +365,59 @@ public class AddDatasetPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-
+						URL location = MainFrame.class.getProtectionDomain()
+								.getCodeSource().getLocation();
+						String path1 = location.getFile();
+						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPath = path1.substring(0,
+								path1.lastIndexOf("/"))
+								+ "/Datasets";
+						String name = txtName.getText();
+						String dataPath = mainPath + "/" + name;
+						Writer.createFolder(dataPath);
+						
+						String xTrain = txtXFile.getText();
+						String yTrain = txtYFile.getText();
+						String sTrain = txtSFile.getText();
+						
+						if (!chkTogether.isSelected()) {						
+							String xTest = txtXTestFile.getText();
+							String yTest = txtYTestFile.getText();
+							String sTest = txtSTestFile.getText();
+							
+							Writer.copyFile(new File(xTrain), dataPath + "/xTrain.txt");
+							Writer.copyFile(new File(yTrain), dataPath + "/yTrain.txt");
+							Writer.copyFile(new File(sTrain), dataPath + "/sTrain.txt");
+							
+							Writer.copyFile(new File(xTest), dataPath + "/xTest.txt");
+							Writer.copyFile(new File(yTest), dataPath + "/yTest.txt");
+							Writer.copyFile(new File(sTest), dataPath + "/sTest.txt");
+							
+							String[] text = new String[2];
+							text[0] = "Train nodes: " + txtNodes.getText();
+							text[1] = "Test nodes: " + txtNodesTest.getText();
+							
+							Writer.write(text, dataPath + "/readme.txt");
+						}else{
+							Writer.copyFile(new File(xTrain), dataPath + "/x.txt");
+							Writer.copyFile(new File(yTrain), dataPath + "/y.txt");
+							if(!chkLearn.isSelected()){
+							Writer.copyFile(new File(sTrain), dataPath + "/s.txt");
+							}
+							
+							String[] text = new String[3];
+							text[0] = "Nodes: " + txtNodes.getText();
+							text[1] = "Time points: " + txtTimePoints.getText();
+							text[2] = "Attributes per node: " + txtAttributes.getText();
+							Writer.write(text, dataPath + "/readme.txt");
+						}
+						
+						JOptionPane.showMessageDialog(mainFrame, "Dataset is created successfully.",
+								"Error", JOptionPane.INFORMATION_MESSAGE);
+						resetValues();
 					}
 				}
+
 
 			});
 			Style.buttonStyle(btnTrain);
@@ -374,6 +426,22 @@ public class AddDatasetPanel extends JPanel {
 		return btnTrain;
 	}
 
+
+	private void resetValues() {
+		txtName.setText("");
+		txtXTestFile.setText("");
+		txtYTestFile.setText("");
+		txtSTestFile.setText("");
+		txtXFile.setText("");
+		txtYFile.setText("");
+		txtSFile.setText("");
+		txtNodes.setText("");
+		txtNodesTest.setText("");
+		chkTogether.setSelected(false);
+		txtTimePoints.setText("");
+		txtAttributes.setText("");
+	}
+	
 	private String checkFiles(int noOfNodes, String[] x, double[] y,
 			double[][] s) {
 		if (x == null) {
@@ -426,13 +494,13 @@ public class AddDatasetPanel extends JPanel {
 		if (txtName.getText().equals("")) {
 			return "Insert dataset name.";
 		}
-		if (txtSFile.getText().equals("")) {
+		if (txtSFile.getText().equals("") && !chkLearn.isSelected()) {
 			return "Choose matrix file for training.";
 		}
 		if (txtXFile.getText().equals("")) {
 			return "Choose file with attributes values for training.";
 		}
-		if (txtYFile.getText().equals("")) {
+		if (txtYFile.getText().equals("") ) {
 			return "Choose file with output values for training.";
 		}
 		try {
@@ -765,6 +833,7 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return chkTogether;
 	}
+
 	private JLabel getLblAttributes() {
 		if (lblAttributes == null) {
 			lblAttributes = new JLabel("No. of attributes per node:");
@@ -775,6 +844,7 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return lblAttributes;
 	}
+
 	private JTextField getTxtAttributes() {
 		if (txtAttributes == null) {
 			txtAttributes = new JTextField();
@@ -785,6 +855,7 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return txtAttributes;
 	}
+
 	private JLabel getLblTimePoints() {
 		if (lblTimePoints == null) {
 			lblTimePoints = new JLabel("No. of time points:");
@@ -795,6 +866,7 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return lblTimePoints;
 	}
+
 	private JTextField getTxtTimePoints() {
 		if (txtTimePoints == null) {
 			txtTimePoints = new JTextField();
@@ -804,5 +876,12 @@ public class AddDatasetPanel extends JPanel {
 			txtTimePoints.setBounds(214, 516, 91, 30);
 		}
 		return txtTimePoints;
+	}
+	private JCheckBox getChkLearn() {
+		if (chkLearn == null) {
+			chkLearn = new JCheckBox("Learn similarity");
+			chkLearn.setBounds(711, 99, 140, 23);
+		}
+		return chkLearn;
 	}
 }

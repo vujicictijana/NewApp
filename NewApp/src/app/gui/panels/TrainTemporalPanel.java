@@ -1305,6 +1305,7 @@ public class TrainTemporalPanel extends JPanel {
 	private JLabel getLblNoOfTime() {
 		if (lblNoOfTime == null) {
 			lblNoOfTime = new JLabel("No. of time points:");
+			lblNoOfTime.setEnabled(false);
 			lblNoOfTime.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblNoOfTime.setBounds(94, 126, 143, 30);
@@ -1347,6 +1348,7 @@ public class TrainTemporalPanel extends JPanel {
 	private JCheckBox getChkLearn() {
 		if (chkLearn == null) {
 			chkLearn = new JCheckBox("Learn similarity");
+			chkLearn.setEnabled(false);
 			chkLearn.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					if (chkLearn.isSelected()) {
@@ -1377,6 +1379,11 @@ public class TrainTemporalPanel extends JPanel {
 	}
 
 	public void addMethod(String name) {
+		for (int i = 0; i < cmbMethod.getItemCount(); i++) {
+			if(cmbMethod.getItemAt(i).toString().equalsIgnoreCase(name)){
+				return;
+			}
+		}
 		cmbMethod.addItem(name);
 		panel.repaint();
 		panel.revalidate();
@@ -1602,6 +1609,18 @@ public class TrainTemporalPanel extends JPanel {
 						String mainPathDatasets = path1.substring(0,
 								path1.lastIndexOf("/"))
 								+ "/Datasets";
+						
+						String sPath = mainPathDatasets + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/s.txt";
+						
+						if(Reader.checkFile(sPath)){
+							addMethod("m-GCRF");
+							chkLearn.setSelected(false);
+						}else{
+							removeMethod("m-GCRF");
+							chkLearn.setSelected(true);
+						} 
 
 						String readMePath = mainPathDatasets + "/"
 								+ cmbDataset.getSelectedItem().toString()
