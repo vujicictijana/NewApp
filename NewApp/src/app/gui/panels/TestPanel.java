@@ -46,22 +46,8 @@ public class TestPanel extends JPanel {
 	private JPanel panel;
 	private JFrame mainFrame;
 	private JPanel panelForTable;
-	private JTextField txtMatrixFile;
-	private JLabel lblFileWithEdges;
-	private JButton button;
-	private JButton btnQuestionS;
 	private JLabel label_1;
 	private JTextField txtModelName;
-	private JLabel lblFileWithAttributes;
-	private JTextField txtXFile;
-	private JButton button_2;
-	private JButton btnQuestionR;
-	private JLabel lblFileWithOutputs;
-	private JTextField txtYFile;
-	private JButton button_4;
-	private JButton btnQuestionY;
-	private JLabel label_4;
-	private JTextField txtNoOfNodes;
 	private JFileChooser fc;
 	private JLabel lblMethod;
 	private JComboBox<String> cmbMethod;
@@ -70,6 +56,13 @@ public class TestPanel extends JPanel {
 	private String matlabPath;
 	private boolean useMatlab;
 	private long proxy;
+	private JLabel label;
+	private JComboBox<String> cmbDataset;
+	
+
+	private String xPath = "";
+	private String yPath = "";
+	private String sPath = "";
 
 	/**
 	 * Create the panel.
@@ -82,25 +75,13 @@ public class TestPanel extends JPanel {
 		panel = this;
 		this.mainFrame = mainFrame;
 		add(getPanelForTable());
-		add(getTxtMatrixFile());
-		add(getLabel_1());
-		add(getButton());
-		add(getBtnQuestionS());
 		add(getLabel_1_1());
 		add(getTxtModelName());
-		add(getLblFileWithAttributes());
-		add(getTxtXFile());
-		add(getButton_2());
-		add(getBtnQuestionR());
-		add(getLblFileWithOutputs());
-		add(getTxtYFile());
-		add(getButton_4());
-		add(getBtnQuestionY());
-		add(getLabel_4());
-		add(getTxtNoOfNodes());
 		panel = this;
 		add(getLblMethod());
 		add(getCmbMethod());
+		add(getLabel());
+		add(getCmbDataset());
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
@@ -115,22 +96,61 @@ public class TestPanel extends JPanel {
 					if (message != null) {
 						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
-						String method = cmbMethod.getSelectedItem().toString();
-						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+						URL location = MainFrame.class.getProtectionDomain()
+								.getCodeSource().getLocation();
 						String path1 = location.getFile();
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPathDatasets = path1.substring(0,
+								path1.lastIndexOf("/"))
+								+ "/Datasets";
+
+						xPath = mainPathDatasets + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/xTest.txt";
+						yPath = mainPathDatasets + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/yTest.txt";
+						sPath = mainPathDatasets + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/sTest.txt";
+
+						String readme = mainPathDatasets + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/readme.txt";
+						int noOfNodes = 0;
+						try {
+							String nodesTrain = Reader.read(readme)[1];
+							noOfNodes = Integer.parseInt(nodesTrain
+									.substring(nodesTrain.indexOf(":") + 2));
+							if (noOfNodes <= 0) {
+								JOptionPane
+										.showMessageDialog(
+												mainFrame,
+												"No. of nodes should be greater than 0.",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Reading dataset error.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						String method = cmbMethod.getSelectedItem().toString();
+						
 						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
 						Writer.createFolder(mainPath + "/MyModels" + method);
 						String dataPath = mainPath + "/MyModels" + method + "/" + txtModelName.getText();
-						File matrixFile = new File(txtMatrixFile.getText());
+						File matrixFile = new File(sPath);
 						Writer.copyFile(matrixFile, dataPath + "/data/matrixTest.txt");
-						File xFile = new File(txtXFile.getText());
+						File xFile = new File(xPath);
 						Writer.copyFile(xFile, dataPath + "/data/xTest.txt");
-						File yFile = new File(txtYFile.getText());
+						File yFile = new File(yPath);
 						Writer.copyFile(yFile, dataPath + "/data/yTest.txt");
 
-						String[] x = Reader.read(txtXFile.getText());
+						String[] x = Reader.read(xPath);
 						if (x == null) {
 							JOptionPane.showMessageDialog(mainFrame, "Reading file error.", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -143,7 +163,7 @@ public class TestPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						double[] y = Reader.readArray(txtYFile.getText(), noOfNodes);
+						double[] y = Reader.readArray(yPath, noOfNodes);
 						if (y == null) {
 							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in in the file with outputs should be " + noOfNodes + ".", "Error",
@@ -168,7 +188,7 @@ public class TestPanel extends JPanel {
 									"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 							double[] r = Reader.readArray(dataPath + "/data/rTest.txt", noOfNodes);
-							double[][] s = Reader.readGraph(txtMatrixFile.getText(), noOfNodes);
+							double[][] s = Reader.readGraph(sPath, noOfNodes);
 
 							if (s == null) {
 								JOptionPane.showMessageDialog(mainFrame,
@@ -187,7 +207,7 @@ public class TestPanel extends JPanel {
 			});
 
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(330, 277, 112, 45);
+			btnTrain.setBounds(328, 175, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -211,13 +231,6 @@ public class TestPanel extends JPanel {
 		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath, mainFrame, panelForTable, modelFolder, s,
 				r, y, frame, proxy);
 		test.start();
-	}
-
-	public void chooseFile(JTextField txt) {
-		int returnVal = fc.showOpenDialog(panel);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			txt.setText(fc.getSelectedFile().getPath());
-		}
 	}
 
 	private void callMethod(int noOfNodes, String method, String dataPath, double[] y, double[] r, double[][] s) {
@@ -249,22 +262,8 @@ public class TestPanel extends JPanel {
 	}
 
 	public String validateData() {
-		if (cmbMethod.getSelectedIndex() == 0) {
-			return "Choose method.";
-		}
-		if (txtMatrixFile.getText().equals("")) {
-			return "Choose matrix file.";
-		}
-		if (txtXFile.getText().equals("")) {
-			return "Choose file with attributes.";
-		}
-		if (txtYFile.getText().equals("")) {
-			return "Choose file with outputs.";
-		}
-		try {
-			Integer.parseInt(txtNoOfNodes.getText());
-		} catch (NumberFormatException e) {
-			return "No. of nodes should be integer.";
+		if (cmbDataset.getSelectedIndex() == 0) {
+			return "Choose dataset.";
 		}
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
@@ -293,67 +292,12 @@ public class TestPanel extends JPanel {
 		return panelForTable;
 	}
 
-	private JTextField getTxtMatrixFile() {
-		if (txtMatrixFile == null) {
-			txtMatrixFile = new JTextField();
-			txtMatrixFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtMatrixFile.setColumns(10);
-			txtMatrixFile.setBounds(178, 68, 315, 30);
-		}
-		return txtMatrixFile;
-	}
-
-	private JLabel getLabel_1() {
-		if (lblFileWithEdges == null) {
-			lblFileWithEdges = new JLabel("File with edges:");
-			lblFileWithEdges.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFileWithEdges.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFileWithEdges.setBounds(34, 66, 129, 30);
-		}
-		return lblFileWithEdges;
-	}
-
-	private JButton getButton() {
-		if (button == null) {
-			button = new JButton("Browse");
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtMatrixFile);
-				}
-			});
-			button.setBounds(510, 68, 100, 30);
-		}
-		return button;
-	}
-
-	private JButton getBtnQuestionS() {
-		if (btnQuestionS == null) {
-			btnQuestionS = new JButton("");
-			Style.questionButtonStyle(btnQuestionS);
-			btnQuestionS.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane.showMessageDialog(mainFrame,
-							"Text file (.txt) that contains data about connections between nodes."
-									+ "\nThis file contains data about all edges in following format: "
-									+ "from node, to node, weight\n"
-									+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
-									+ "1,2,10" + "\nEach edge should be in a separate line."
-									+ "\nNodes are represented by ordinal numbers.",
-							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
-				}
-			});
-			btnQuestionS.setBounds(629, 68, 30, 30);
-		}
-		return btnQuestionS;
-	}
-
 	private JLabel getLabel_1_1() {
 		if (label_1 == null) {
 			label_1 = new JLabel("Model name:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(62, 190, 100, 30);
+			label_1.setBounds(61, 109, 100, 30);
 		}
 		return label_1;
 	}
@@ -363,72 +307,9 @@ public class TestPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(178, 190, 315, 30);
+			txtModelName.setBounds(177, 109, 315, 30);
 		}
 		return txtModelName;
-	}
-
-	private JLabel getLblFileWithAttributes() {
-		if (lblFileWithAttributes == null) {
-			lblFileWithAttributes = new JLabel("File with attributes:");
-			lblFileWithAttributes.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFileWithAttributes.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFileWithAttributes.setBounds(25, 107, 138, 30);
-		}
-		return lblFileWithAttributes;
-	}
-
-	private JTextField getTxtXFile() {
-		if (txtXFile == null) {
-			txtXFile = new JTextField();
-			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtXFile.setColumns(10);
-			txtXFile.setBounds(178, 109, 315, 30);
-		}
-		return txtXFile;
-	}
-
-	private JButton getButton_2() {
-		if (button_2 == null) {
-			button_2 = new JButton("Browse");
-			button_2.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtXFile);
-				}
-			});
-			button_2.setBounds(510, 109, 100, 30);
-		}
-		return button_2;
-	}
-
-	private JButton getBtnQuestionR() {
-		if (btnQuestionR == null) {
-			btnQuestionR = new JButton("");
-			btnQuestionR.setBounds(629, 109, 30, 30);
-			Style.questionButtonStyle(btnQuestionR);
-			btnQuestionR.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane.showMessageDialog(mainFrame,
-							"Text file (.txt) that contains value of each atribute for each node."
-									+ "\nAtributes for each node should be in a separate line. "
-									+ "\nAtributes should be comma separated." + "\nAll atributes should be numbers. "
-									+ "\nOrder should be consistent with ordinal numbers of nodes in the file with edges.",
-							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
-				}
-			});
-		}
-		return btnQuestionR;
-	}
-
-	private JLabel getLblFileWithOutputs() {
-		if (lblFileWithOutputs == null) {
-			lblFileWithOutputs = new JLabel("File with outputs:");
-			lblFileWithOutputs.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFileWithOutputs.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFileWithOutputs.setBounds(34, 149, 128, 30);
-		}
-		return lblFileWithOutputs;
 	}
 
 	private double callPredictor(String path, String[] x, double[] y) {
@@ -454,68 +335,6 @@ public class TestPanel extends JPanel {
 		}
 		return -7000;
 
-	}
-
-	private JTextField getTxtYFile() {
-		if (txtYFile == null) {
-			txtYFile = new JTextField();
-			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtYFile.setColumns(10);
-			txtYFile.setBounds(178, 149, 315, 30);
-		}
-		return txtYFile;
-	}
-
-	private JButton getButton_4() {
-		if (button_4 == null) {
-			button_4 = new JButton("Browse");
-			button_4.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtYFile);
-				}
-			});
-			button_4.setBounds(510, 149, 100, 30);
-		}
-		return button_4;
-	}
-
-	private JButton getBtnQuestionY() {
-		if (btnQuestionY == null) {
-			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(629, 149, 30, 30);
-			Style.questionButtonStyle(btnQuestionY);
-			btnQuestionY.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane.showMessageDialog(mainFrame,
-							"Text file (.txt) that contains actual output for each node."
-									+ "\nEach output should be in a separate line. "
-									+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
-							"Help", JOptionPane.QUESTION_MESSAGE, Style.questionIcon());
-				}
-			});
-		}
-		return btnQuestionY;
-	}
-
-	private JLabel getLabel_4() {
-		if (label_4 == null) {
-			label_4 = new JLabel("No. of nodes:");
-			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
-			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_4.setBounds(62, 232, 100, 30);
-		}
-		return label_4;
-	}
-
-	private JTextField getTxtNoOfNodes() {
-		if (txtNoOfNodes == null) {
-			txtNoOfNodes = new JTextField();
-			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtNoOfNodes.setColumns(10);
-			txtNoOfNodes.setBounds(178, 231, 91, 30);
-		}
-		return txtNoOfNodes;
 	}
 
 	private JLabel getLblMethod() {
@@ -548,7 +367,7 @@ public class TestPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(178, 27, 227, 30);
+			cmbMethod.setBounds(178, 27, 314, 30);
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
@@ -557,5 +376,31 @@ public class TestPanel extends JPanel {
 			}
 		}
 		return cmbMethod;
+	}
+	private JLabel getLabel() {
+		if (label == null) {
+			label = new JLabel("Dataset:");
+			label.setHorizontalAlignment(SwingConstants.RIGHT);
+			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label.setBounds(41, 68, 120, 30);
+		}
+		return label;
+	}
+	private JComboBox<String> getCmbDataset() {
+		if (cmbDataset == null) {
+			cmbDataset = new JComboBox();
+			cmbDataset.setBounds(177, 71, 315, 30);
+			cmbDataset.addItem("choose dataset");
+			URL location = MainFrame.class.getProtectionDomain()
+					.getCodeSource().getLocation();
+			String path1 = location.getFile();
+			path1 = path1.substring(1, path1.lastIndexOf("/"));
+			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+			String[] files = Reader.getAllFolders(mainPath + "/Datasets");
+			for (int i = 0; i < files.length; i++) {
+				cmbDataset.addItem(files[i]);
+			}
+		}
+		return cmbDataset;
 	}
 }

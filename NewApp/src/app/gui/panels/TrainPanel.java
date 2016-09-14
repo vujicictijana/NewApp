@@ -52,34 +52,22 @@ import java.awt.event.ItemEvent;
 public class TrainPanel extends JPanel {
 
 	private static final long serialVersionUID = 7542338256284881226L;
-	private JTextField txtMatrixFile;
-	private JLabel lblFile;
-	private JButton btnBrowseS;
-	private JButton btnQuestionS;
+	private JLabel lblDataset;
+	private JButton btnQuestionDataset;
 	private JLabel lblModelName;
 	private JTextField txtModelName;
-	private JLabel lblRArrayFile;
-	private JTextField txtXFile;
-	private JButton btnBrowseX;
 	private JLabel lblAlpha;
 	private JLabel lblBeta;
 	private JTextField txtAlpha;
 	private JTextField txtBeta;
 	private JLabel lblLearningRate;
 	private JTextField txtLR;
-	private JButton btnQuestionX;
-	private JLabel lblYArrayFile;
-	private JTextField txtYFile;
-	private JButton btnBrowseY;
-	private JButton btnQuestionY;
 	private JButton btnTrain;
 	private JLabel lblMaxIterations;
 	private JTextField txtIter;
 	private JFileChooser fc;
 	private JPanel panel;
 	private JFrame mainFrame;
-	private JLabel label;
-	private JTextField txtNoOfNodes;
 	private JCheckBox chckbxStandard;
 	private JLabel lblStandard;
 	// private JPanel panelForTable;
@@ -96,8 +84,6 @@ public class TrainPanel extends JPanel {
 	private String matlabPath;
 	private boolean useMatlab;
 	private long proxy;
-
-	private JSeparator separator;
 	private JLabel lblData;
 	private JSeparator separator_1;
 	private JLabel lblPredictor;
@@ -111,6 +97,11 @@ public class TrainPanel extends JPanel {
 	private JTextField txtIterNN;
 	private JComboBox<String> cmbMethod;
 	private JLabel lblMethod;
+	private JComboBox<String> cmbDataset;
+
+	private String xPath = "";
+	private String yPath = "";
+	private String sPath = "";
 
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -127,26 +118,16 @@ public class TrainPanel extends JPanel {
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
-				add(getTxtMatrixFile());
-				add(getLblFile());
-				add(getBtnBrowseS());
-				add(getBtnQuestionS());
+				add(getLblDataset());
+				add(getBtnQuestionDataset());
 				add(getLblModelName());
 				add(getTxtModelName());
-				add(getLblRArrayFile());
-				add(getTxtXFile());
-				add(getBtnBrowseX());
 				add(getLblAlpha());
 				add(getLblBeta());
 				add(getTxtAlpha());
 				add(getTxtBeta());
 				add(getLblLearningRate());
 				add(getTxtLr());
-				add(getBtnQuestionX());
-				add(getLblYArrayFile());
-				add(getTxtYFile());
-				add(getBtnBrowseY());
-				add(getBtnQuestionY());
 				add(getBtnTrain());
 				add(getLblMaxIterations());
 				add(getTxtMaxIter());
@@ -162,13 +143,8 @@ public class TrainPanel extends JPanel {
 				path = path.substring(0, path.lastIndexOf("/"));
 				fc.setCurrentDirectory(new File(path));
 				this.mainFrame = mainFrame;
-				// add(getLblTime());
-				add(getLabel());
-				add(getTxtNoOfNodes());
 				add(getChckbxStandard());
 				add(getLblStandard());
-				// add(getPanelForTable());
-				add(getSeparator());
 				add(getLblData());
 				add(getSeparator_1());
 				add(getLblPredictor());
@@ -184,6 +160,7 @@ public class TrainPanel extends JPanel {
 				add(getCmbPredictor());
 				add(getCmbMethod());
 				add(getLblMethod());
+				add(getCmbDataset());
 			}
 		} else {
 			JOptionPane
@@ -194,65 +171,36 @@ public class TrainPanel extends JPanel {
 		}
 	}
 
-	private JTextField getTxtMatrixFile() {
-		if (txtMatrixFile == null) {
-			txtMatrixFile = new JTextField();
-			txtMatrixFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtMatrixFile.setBounds(180, 46, 315, 30);
-			txtMatrixFile.setColumns(10);
+	private JLabel getLblDataset() {
+		if (lblDataset == null) {
+			lblDataset = new JLabel("Dataset:");
+			lblDataset.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblDataset.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblDataset.setBounds(49, 71, 120, 30);
 		}
-		return txtMatrixFile;
+		return lblDataset;
 	}
 
-	private JLabel getLblFile() {
-		if (lblFile == null) {
-			lblFile = new JLabel("File with edges:");
-			lblFile.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFile.setBounds(44, 46, 120, 30);
-		}
-		return lblFile;
-	}
-
-	private JButton getBtnBrowseS() {
-		if (btnBrowseS == null) {
-			btnBrowseS = new JButton("Browse");
-			btnBrowseS.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					chooseFile(txtMatrixFile);
-				}
-			});
-			Style.buttonStyle(btnBrowseS);
-			btnBrowseS.setBounds(512, 46, 100, 30);
-
-		}
-		return btnBrowseS;
-	}
-
-	private JButton getBtnQuestionS() {
-		if (btnQuestionS == null) {
-			btnQuestionS = new JButton("");
-			btnQuestionS.setBounds(631, 46, 30, 30);
-			Style.questionButtonStyle(btnQuestionS);
-			btnQuestionS.addActionListener(new ActionListener() {
+	private JButton getBtnQuestionDataset() {
+		if (btnQuestionDataset == null) {
+			btnQuestionDataset = new JButton("");
+			btnQuestionDataset.setBounds(520, 71, 30, 30);
+			Style.questionButtonStyle(btnQuestionDataset);
+			btnQuestionDataset.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
 					JOptionPane
 							.showMessageDialog(
 									mainFrame,
-									"Text file (.txt) that contains data about connections between nodes."
-											+ "\nThis file contains data about all edges in following format: "
-											+ "from node, to node, weight\n"
-											+ "For example an edge from node 1 to node 2 with weight 10 will be presented as: "
-											+ "1,2,10"
-											+ "\nEach edge should be in a separate line."
-											+ "\nNodes are represented by ordinal numbers.",
-									"Help", JOptionPane.QUESTION_MESSAGE,
+									"Dataset samples are provided by default."
+											+ "\nUse samples or add your own dataset in Datasets -> Add dataset menu item."
+											+ "\nInformation for datasets samples can be found in Help menu item.", "Help",
+									JOptionPane.QUESTION_MESSAGE,
 									Style.questionIcon());
 				}
 			});
 		}
-		return btnQuestionS;
+		return btnQuestionDataset;
 	}
 
 	private JLabel getLblModelName() {
@@ -260,7 +208,7 @@ public class TrainPanel extends JPanel {
 			lblModelName = new JLabel("Model name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(64, 167, 100, 30);
+			lblModelName.setBounds(69, 112, 100, 30);
 		}
 		return lblModelName;
 	}
@@ -270,43 +218,9 @@ public class TrainPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(180, 167, 315, 30);
+			txtModelName.setBounds(185, 112, 315, 30);
 		}
 		return txtModelName;
-	}
-
-	private JLabel getLblRArrayFile() {
-		if (lblRArrayFile == null) {
-			lblRArrayFile = new JLabel("File with attributes:");
-			lblRArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblRArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblRArrayFile.setBounds(24, 86, 140, 30);
-		}
-		return lblRArrayFile;
-	}
-
-	private JTextField getTxtXFile() {
-		if (txtXFile == null) {
-			txtXFile = new JTextField();
-			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtXFile.setColumns(10);
-			txtXFile.setBounds(180, 86, 315, 30);
-		}
-		return txtXFile;
-	}
-
-	private JButton getBtnBrowseX() {
-		if (btnBrowseX == null) {
-			btnBrowseX = new JButton("Browse");
-			btnBrowseX.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtXFile);
-				}
-			});
-			Style.buttonStyle(btnBrowseX);
-			btnBrowseX.setBounds(512, 86, 100, 30);
-		}
-		return btnBrowseX;
 	}
 
 	private JLabel getLblAlpha() {
@@ -315,7 +229,7 @@ public class TrainPanel extends JPanel {
 			lblAlpha.setVisible(false);
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(515, 349, 100, 30);
+			lblAlpha.setBounds(522, 281, 100, 30);
 		}
 		return lblAlpha;
 	}
@@ -326,7 +240,7 @@ public class TrainPanel extends JPanel {
 			lblBeta.setVisible(false);
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(515, 389, 100, 30);
+			lblBeta.setBounds(522, 321, 100, 30);
 		}
 		return lblBeta;
 	}
@@ -337,7 +251,7 @@ public class TrainPanel extends JPanel {
 			txtAlpha.setVisible(false);
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(631, 350, 91, 30);
+			txtAlpha.setBounds(638, 282, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -348,7 +262,7 @@ public class TrainPanel extends JPanel {
 			txtBeta.setVisible(false);
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(631, 391, 91, 30);
+			txtBeta.setBounds(638, 323, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -359,7 +273,7 @@ public class TrainPanel extends JPanel {
 			lblLearningRate.setVisible(false);
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLearningRate.setBounds(515, 429, 100, 30);
+			lblLearningRate.setBounds(522, 361, 100, 30);
 		}
 		return lblLearningRate;
 	}
@@ -370,92 +284,9 @@ public class TrainPanel extends JPanel {
 			txtLR.setVisible(false);
 			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLR.setColumns(10);
-			txtLR.setBounds(631, 429, 91, 30);
+			txtLR.setBounds(638, 361, 91, 30);
 		}
 		return txtLR;
-	}
-
-	private JButton getBtnQuestionX() {
-		if (btnQuestionX == null) {
-			btnQuestionX = new JButton("");
-			btnQuestionX.setBounds(631, 86, 30, 30);
-			Style.questionButtonStyle(btnQuestionX);
-			btnQuestionX.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					// "Text file (.txt) that contains output predicted by unstructured predictor for each node."
-					// + "\nEach output should be in a separate line. "
-					// +
-					// "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S)."
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains value of each atribute for each node."
-											+ "\nAtributes for each node should be in a separate line. "
-											+ "\nAtributes should be comma separated. "
-											+ "\nAll atributes should be numbers. "
-											+ "\nOrder should be consistent with ordinal numbers of nodes in the file with edges.",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
-				}
-			});
-		}
-		return btnQuestionX;
-	}
-
-	private JLabel getLblYArrayFile() {
-		if (lblYArrayFile == null) {
-			lblYArrayFile = new JLabel("File with outputs:");
-			lblYArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblYArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblYArrayFile.setBounds(34, 126, 130, 30);
-		}
-		return lblYArrayFile;
-	}
-
-	private JTextField getTxtYFile() {
-		if (txtYFile == null) {
-			txtYFile = new JTextField();
-			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtYFile.setColumns(10);
-			txtYFile.setBounds(180, 126, 315, 30);
-		}
-		return txtYFile;
-	}
-
-	private JButton getBtnBrowseY() {
-		if (btnBrowseY == null) {
-			btnBrowseY = new JButton("Browse");
-			btnBrowseY.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					chooseFile(txtYFile);
-				}
-			});
-			Style.buttonStyle(btnBrowseY);
-			btnBrowseY.setBounds(512, 126, 100, 30);
-		}
-		return btnBrowseY;
-	}
-
-	private JButton getBtnQuestionY() {
-		if (btnQuestionY == null) {
-			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(631, 126, 30, 30);
-			Style.questionButtonStyle(btnQuestionY);
-			btnQuestionY.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-
-					JOptionPane
-							.showMessageDialog(
-									mainFrame,
-									"Text file (.txt) that contains actual output for each node."
-											+ "\nEach output should be in a separate line. "
-											+ "\nOrder of outputs should be consistent with ordinal numbers of nodes in the file with edges (S).",
-									"Help", JOptionPane.QUESTION_MESSAGE,
-									Style.questionIcon());
-				}
-			});
-		}
-		return btnQuestionY;
 	}
 
 	private JButton getBtnTrain() {
@@ -470,7 +301,52 @@ public class TrainPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
-						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
+						URL location = MainFrame.class.getProtectionDomain()
+								.getCodeSource().getLocation();
+						String path1 = location.getFile();
+						path1 = path1.substring(1, path1.lastIndexOf("/"));
+						String mainPath = path1.substring(0,
+								path1.lastIndexOf("/"))
+								+ "/Datasets";
+
+						xPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/xTrain.txt";
+						yPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/yTrain.txt";
+						sPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/sTrain.txt";
+
+						String readme = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/readme.txt";
+						int noOfNodes = 0;
+						try {
+							String nodesTrain = Reader.read(readme)[0];
+							noOfNodes = Integer.parseInt(nodesTrain
+									.substring(nodesTrain.indexOf(":") + 2));
+							if (noOfNodes <= 0) {
+								JOptionPane
+										.showMessageDialog(
+												mainFrame,
+												"No. of nodes should be greater than 0.",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"Reading dataset error.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						// System.out.println(xPath);
+						// System.out.println(yPath);
+						// System.out.println(sPath);
+						// System.out.println(noOfNodes);
 
 						String method = cmbMethod.getSelectedItem().toString();
 
@@ -479,11 +355,9 @@ public class TrainPanel extends JPanel {
 						double lr = Double.parseDouble(txtLR.getText());
 						int maxIter = Integer.parseInt(txtIter.getText());
 
-						String[] x = Reader.read(txtXFile.getText());
-						double[] y = Reader.readArray(txtYFile.getText(),
-								noOfNodes);
-						double[][] s = Reader.readGraph(
-								txtMatrixFile.getText(), noOfNodes);
+						String[] x = Reader.read(xPath);
+						double[] y = Reader.readArray(yPath, noOfNodes);
+						double[][] s = Reader.readGraph(sPath, noOfNodes);
 
 						String message1 = checkFiles(noOfNodes, x, y, s);
 
@@ -532,7 +406,7 @@ public class TrainPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(628, 547, 112, 45);
+			btnTrain.setBounds(635, 479, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -576,20 +450,22 @@ public class TrainPanel extends JPanel {
 	}
 
 	private String createFolderAndSaveData(String method) {
-		File matrixFile = new File(txtMatrixFile.getText());
-		File xFile = new File(txtXFile.getText());
-		File yFile = new File(txtYFile.getText());
-		
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		File matrixFile = new File(xPath);
+		File xFile = new File(yPath);
+		File yFile = new File(sPath);
+
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
 		String path1 = location.getFile();
 		path1 = path1.substring(1, path1.lastIndexOf("/"));
 		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
 		Writer.createFolder(mainPath + "/MyModels" + method);
-		String path = mainPath + "/MyModels" + method + "/" + txtModelName.getText();
+		String path = mainPath + "/MyModels" + method + "/"
+				+ txtModelName.getText();
 		Writer.createFolder(path);
-		
-		String dataPath = mainPath + "/MyModels" + method + "/" + txtModelName.getText()
-				+ "/data";
+
+		String dataPath = mainPath + "/MyModels" + method + "/"
+				+ txtModelName.getText() + "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
 		Writer.copyFile(xFile, dataPath + "/x.txt");
@@ -676,7 +552,7 @@ public class TrainPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 
 		UmGCRFTrainMyModelForGUI t = new UmGCRFTrainMyModelForGUI(matlabPath,
-				modelFolder, frame, mainFrame, s, r, y,proxy);
+				modelFolder, frame, mainFrame, s, r, y, proxy);
 
 		t.start();
 	}
@@ -687,25 +563,15 @@ public class TrainPanel extends JPanel {
 			lblMaxIterations.setVisible(false);
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(483, 469, 132, 30);
+			lblMaxIterations.setBounds(490, 401, 132, 30);
 		}
 		return lblMaxIterations;
 	}
 
 	public String validateData() {
-		if (txtMatrixFile.getText().equals("")) {
-			return "Choose matrix file.";
-		}
-		if (txtXFile.getText().equals("")) {
-			return "Choose file with attributes values.";
-		}
-		if (txtYFile.getText().equals("")) {
-			return "Choose file with output values.";
-		}
-		try {
-			Integer.parseInt(txtNoOfNodes.getText());
-		} catch (NumberFormatException e) {
-			return "No. of nodes should be integer.";
+
+		if (cmbDataset.getSelectedIndex() == 0) {
+			return "Choose dataset.";
 		}
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
@@ -718,7 +584,8 @@ public class TrainPanel extends JPanel {
 			return "Choose method.";
 		}
 		String method = cmbMethod.getSelectedItem().toString();
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
 		String path1 = location.getFile();
 		path1 = path1.substring(1, path1.lastIndexOf("/"));
 		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
@@ -767,21 +634,6 @@ public class TrainPanel extends JPanel {
 
 	public String validateDataForTestPredictor() {
 
-		if (txtMatrixFile.getText().equals("")) {
-			return "Choose file with edges.";
-		}
-		if (txtXFile.getText().equals("")) {
-			return "Choose file with attributes values.";
-		}
-		if (txtYFile.getText().equals("")) {
-			return "Choose file with output values.";
-		}
-		try {
-			Integer.parseInt(txtNoOfNodes.getText());
-		} catch (NumberFormatException e) {
-			return "No. of nodes should be integer.";
-		}
-
 		if (cmbPredictor.getSelectedIndex() == 0) {
 			return "Choose predictor.";
 		}
@@ -809,36 +661,9 @@ public class TrainPanel extends JPanel {
 			txtIter.setVisible(false);
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(631, 469, 91, 30);
+			txtIter.setBounds(638, 401, 91, 30);
 		}
 		return txtIter;
-	}
-
-	public void chooseFile(JTextField txt) {
-		int returnVal = fc.showOpenDialog(panel);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			txt.setText(fc.getSelectedFile().getPath());
-		}
-	}
-
-	private JLabel getLabel() {
-		if (label == null) {
-			label = new JLabel("No. of nodes:");
-			label.setHorizontalAlignment(SwingConstants.RIGHT);
-			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(64, 209, 100, 30);
-		}
-		return label;
-	}
-
-	private JTextField getTxtNoOfNodes() {
-		if (txtNoOfNodes == null) {
-			txtNoOfNodes = new JTextField();
-			txtNoOfNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtNoOfNodes.setColumns(10);
-			txtNoOfNodes.setBounds(180, 208, 91, 30);
-		}
-		return txtNoOfNodes;
 	}
 
 	private JCheckBox getChckbxStandard() {
@@ -846,7 +671,7 @@ public class TrainPanel extends JPanel {
 			chckbxStandard = new JCheckBox("");
 			chckbxStandard.setVisible(false);
 			chckbxStandard.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-			chckbxStandard.setBounds(629, 517, 91, 23);
+			chckbxStandard.setBounds(636, 449, 91, 23);
 		}
 		return chckbxStandard;
 	}
@@ -857,7 +682,7 @@ public class TrainPanel extends JPanel {
 			lblStandard.setVisible(false);
 			lblStandard.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblStandard.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblStandard.setBounds(450, 510, 165, 30);
+			lblStandard.setBounds(457, 442, 165, 30);
 		}
 		return lblStandard;
 	}
@@ -894,8 +719,7 @@ public class TrainPanel extends JPanel {
 				hidden = Integer.parseInt(params.get("NN hidden").toString());
 				iterNN = Integer.parseInt(params.get("Iterations NN")
 						.toString());
-				proxy = Integer.parseInt(params.get("Proxy")
-						.toString());
+				proxy = Integer.parseInt(params.get("Proxy").toString());
 			} catch (NumberFormatException e) {
 				return "Configuration file reading failed. File has wrong format.";
 			}
@@ -920,16 +744,6 @@ public class TrainPanel extends JPanel {
 		txtHidden.setText(hidden + "");
 	}
 
-	private JSeparator getSeparator() {
-		if (separator == null) {
-			separator = new JSeparator();
-			separator.setBackground(Color.GRAY);
-			separator.setForeground(Color.GRAY);
-			separator.setBounds(0, 250, 1027, 2);
-		}
-		return separator;
-	}
-
 	private JLabel getLblData() {
 		if (lblData == null) {
 			lblData = new JLabel("DATA:");
@@ -949,7 +763,7 @@ public class TrainPanel extends JPanel {
 			separator_1.setOrientation(SwingConstants.VERTICAL);
 			separator_1.setForeground(Color.GRAY);
 			separator_1.setBackground(Color.GRAY);
-			separator_1.setBounds(450, 251, 2, 555);
+			separator_1.setBounds(450, 185, 2, 631);
 		}
 		return separator_1;
 	}
@@ -962,7 +776,7 @@ public class TrainPanel extends JPanel {
 			lblPredictor.setForeground(Color.WHITE);
 			lblPredictor.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblPredictor.setBackground(Color.GRAY);
-			lblPredictor.setBounds(0, 250, 452, 30);
+			lblPredictor.setBounds(0, 184, 452, 30);
 		}
 		return lblPredictor;
 	}
@@ -975,7 +789,7 @@ public class TrainPanel extends JPanel {
 			lblModel.setForeground(Color.WHITE);
 			lblModel.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblModel.setBackground(Color.GRAY);
-			lblModel.setBounds(450, 250, 451, 30);
+			lblModel.setBounds(450, 184, 451, 30);
 		}
 		return lblModel;
 	}
@@ -985,7 +799,7 @@ public class TrainPanel extends JPanel {
 			lblPredictor_1 = new JLabel("Unstructured predictor:");
 			lblPredictor_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblPredictor_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPredictor_1.setBounds(0, 309, 188, 30);
+			lblPredictor_1.setBounds(0, 241, 188, 30);
 		}
 		return lblPredictor_1;
 	}
@@ -1009,7 +823,7 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			cmbPredictor.setBounds(204, 309, 227, 30);
+			cmbPredictor.setBounds(204, 241, 227, 30);
 			cmbPredictor.addItem("choose predictor");
 			cmbPredictor.addItem("neural network");
 			cmbPredictor.addItem("linear regression");
@@ -1028,9 +842,17 @@ public class TrainPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 
-						String[] x = Reader.read(txtXFile.getText());
+						int noOfNodes = -5;
+
+						if (noOfNodes <= 0) {
+							JOptionPane.showMessageDialog(mainFrame,
+									"No. of nodes should be greater than 0.",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						String[] x = Reader.read(xPath);
 						if (x == null) {
 							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in the file with attributes should be "
@@ -1039,8 +861,7 @@ public class TrainPanel extends JPanel {
 							return;
 						}
 
-						double[] y = Reader.readArray(txtYFile.getText(),
-								noOfNodes);
+						double[] y = Reader.readArray(yPath, noOfNodes);
 						if (y == null) {
 							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in in the file with outputs should be "
@@ -1085,7 +906,7 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			btnTestPredictr.setBounds(204, 547, 140, 45);
+			btnTestPredictr.setBounds(204, 479, 140, 45);
 		}
 		return btnTestPredictr;
 	}
@@ -1096,7 +917,7 @@ public class TrainPanel extends JPanel {
 			lblNoOfHidden.setVisible(false);
 			lblNoOfHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfHidden.setBounds(24, 349, 164, 30);
+			lblNoOfHidden.setBounds(24, 281, 164, 30);
 		}
 		return lblNoOfHidden;
 	}
@@ -1107,7 +928,7 @@ public class TrainPanel extends JPanel {
 			txtHidden.setVisible(false);
 			txtHidden.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtHidden.setColumns(10);
-			txtHidden.setBounds(204, 349, 91, 30);
+			txtHidden.setBounds(204, 281, 91, 30);
 		}
 		return txtHidden;
 	}
@@ -1118,7 +939,7 @@ public class TrainPanel extends JPanel {
 			lblNoOfIterations.setVisible(false);
 			lblNoOfIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfIterations.setBounds(58, 389, 130, 30);
+			lblNoOfIterations.setBounds(58, 321, 130, 30);
 		}
 		return lblNoOfIterations;
 	}
@@ -1129,7 +950,7 @@ public class TrainPanel extends JPanel {
 			txtIterNN.setVisible(false);
 			txtIterNN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIterNN.setColumns(10);
-			txtIterNN.setBounds(204, 397, 91, 30);
+			txtIterNN.setBounds(204, 329, 91, 30);
 		}
 		return txtIterNN;
 	}
@@ -1137,7 +958,7 @@ public class TrainPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(631, 309, 227, 30);
+			cmbMethod.setBounds(638, 241, 227, 30);
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
@@ -1193,8 +1014,26 @@ public class TrainPanel extends JPanel {
 			lblMethod = new JLabel("Method:");
 			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMethod.setBounds(515, 309, 100, 30);
+			lblMethod.setBounds(522, 241, 100, 30);
 		}
 		return lblMethod;
+	}
+
+	private JComboBox<String> getCmbDataset() {
+		if (cmbDataset == null) {
+			cmbDataset = new JComboBox();
+			cmbDataset.setBounds(185, 74, 315, 30);
+			cmbDataset.addItem("choose dataset");
+			URL location = MainFrame.class.getProtectionDomain()
+					.getCodeSource().getLocation();
+			String path1 = location.getFile();
+			path1 = path1.substring(1, path1.lastIndexOf("/"));
+			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+			String[] files = Reader.getAllFolders(mainPath + "/Datasets");
+			for (int i = 0; i < files.length; i++) {
+				cmbDataset.addItem(files[i]);
+			}
+		}
+		return cmbDataset;
 	}
 }
