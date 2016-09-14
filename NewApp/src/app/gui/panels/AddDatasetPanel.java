@@ -90,6 +90,10 @@ public class AddDatasetPanel extends JPanel {
 	private JLabel label_5;
 	private JTextField txtNodesTest;
 	private JCheckBox chkTogether;
+	private JLabel lblAttributes;
+	private JTextField txtAttributes;
+	private JLabel lblTimePoints;
+	private JTextField txtTimePoints;
 
 	public AddDatasetPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
@@ -144,6 +148,10 @@ public class AddDatasetPanel extends JPanel {
 		add(getLabel_5());
 		add(getTxtNodesTest());
 		add(getChkTogether());
+		add(getLblAttributes());
+		add(getTxtAttributes());
+		add(getLblTimePoints());
+		add(getTxtTimePoints());
 
 	}
 
@@ -151,7 +159,7 @@ public class AddDatasetPanel extends JPanel {
 		if (txtSFile == null) {
 			txtSFile = new JTextField();
 			txtSFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtSFile.setBounds(180, 90, 315, 30);
+			txtSFile.setBounds(214, 94, 315, 30);
 			txtSFile.setColumns(10);
 		}
 		return txtSFile;
@@ -162,7 +170,7 @@ public class AddDatasetPanel extends JPanel {
 			lblFile = new JLabel("File with edges:");
 			lblFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFile.setBounds(44, 88, 120, 30);
+			lblFile.setBounds(78, 92, 120, 30);
 		}
 		return lblFile;
 	}
@@ -176,7 +184,7 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseS);
-			btnBrowseS.setBounds(512, 88, 100, 30);
+			btnBrowseS.setBounds(546, 92, 100, 30);
 
 		}
 		return btnBrowseS;
@@ -185,7 +193,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionS() {
 		if (btnQuestionS == null) {
 			btnQuestionS = new JButton("");
-			btnQuestionS.setBounds(631, 88, 30, 30);
+			btnQuestionS.setBounds(665, 92, 30, 30);
 			Style.questionButtonStyle(btnQuestionS);
 			btnQuestionS.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -213,7 +221,7 @@ public class AddDatasetPanel extends JPanel {
 			lblModelName = new JLabel("Dataset name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(10, 47, 154, 30);
+			lblModelName.setBounds(44, 51, 154, 30);
 		}
 		return lblModelName;
 	}
@@ -223,7 +231,7 @@ public class AddDatasetPanel extends JPanel {
 			txtName = new JTextField();
 			txtName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtName.setColumns(10);
-			txtName.setBounds(180, 49, 315, 30);
+			txtName.setBounds(214, 53, 315, 30);
 		}
 		return txtName;
 	}
@@ -233,7 +241,7 @@ public class AddDatasetPanel extends JPanel {
 			lblRArrayFile = new JLabel("File with attributes:");
 			lblRArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblRArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblRArrayFile.setBounds(24, 128, 140, 30);
+			lblRArrayFile.setBounds(58, 132, 140, 30);
 		}
 		return lblRArrayFile;
 	}
@@ -243,7 +251,7 @@ public class AddDatasetPanel extends JPanel {
 			txtXFile = new JTextField();
 			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtXFile.setColumns(10);
-			txtXFile.setBounds(180, 128, 315, 30);
+			txtXFile.setBounds(214, 132, 315, 30);
 		}
 		return txtXFile;
 	}
@@ -257,7 +265,7 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseX);
-			btnBrowseX.setBounds(512, 128, 100, 30);
+			btnBrowseX.setBounds(546, 132, 100, 30);
 		}
 		return btnBrowseX;
 	}
@@ -265,7 +273,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionX() {
 		if (btnQuestionX == null) {
 			btnQuestionX = new JButton("");
-			btnQuestionX.setBounds(631, 128, 30, 30);
+			btnQuestionX.setBounds(665, 132, 30, 30);
 			Style.questionButtonStyle(btnQuestionX);
 			btnQuestionX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -294,7 +302,7 @@ public class AddDatasetPanel extends JPanel {
 			lblYArrayFile = new JLabel("File with outputs:");
 			lblYArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblYArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblYArrayFile.setBounds(34, 168, 130, 30);
+			lblYArrayFile.setBounds(68, 172, 130, 30);
 		}
 		return lblYArrayFile;
 	}
@@ -304,7 +312,7 @@ public class AddDatasetPanel extends JPanel {
 			txtYFile = new JTextField();
 			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYFile.setColumns(10);
-			txtYFile.setBounds(180, 168, 315, 30);
+			txtYFile.setBounds(214, 172, 315, 30);
 		}
 		return txtYFile;
 	}
@@ -318,7 +326,7 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseY);
-			btnBrowseY.setBounds(512, 168, 100, 30);
+			btnBrowseY.setBounds(546, 172, 100, 30);
 		}
 		return btnBrowseY;
 	}
@@ -326,7 +334,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionY() {
 		if (btnQuestionY == null) {
 			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(631, 168, 30, 30);
+			btnQuestionY.setBounds(665, 172, 30, 30);
 			Style.questionButtonStyle(btnQuestionY);
 			btnQuestionY.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -361,7 +369,7 @@ public class AddDatasetPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(322, 537, 112, 45);
+			btnTrain.setBounds(317, 603, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -484,7 +492,7 @@ public class AddDatasetPanel extends JPanel {
 			label = new JLabel("No. of nodes:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(64, 209, 100, 30);
+			label.setBounds(98, 213, 100, 30);
 		}
 		return label;
 	}
@@ -494,7 +502,7 @@ public class AddDatasetPanel extends JPanel {
 			txtNodes = new JTextField();
 			txtNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNodes.setColumns(10);
-			txtNodes.setBounds(180, 208, 91, 30);
+			txtNodes.setBounds(214, 212, 91, 30);
 		}
 		return txtNodes;
 	}
@@ -530,7 +538,7 @@ public class AddDatasetPanel extends JPanel {
 			txtSTestFile = new JTextField();
 			txtSTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtSTestFile.setColumns(10);
-			txtSTestFile.setBounds(180, 317, 315, 30);
+			txtSTestFile.setBounds(214, 318, 315, 30);
 		}
 		return txtSTestFile;
 	}
@@ -540,7 +548,7 @@ public class AddDatasetPanel extends JPanel {
 			label_1 = new JLabel("File with edges:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(44, 317, 120, 30);
+			label_1.setBounds(78, 318, 120, 30);
 		}
 		return label_1;
 	}
@@ -548,7 +556,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseSTest() {
 		if (btnBrowseSTest == null) {
 			btnBrowseSTest = new JButton("Browse");
-			btnBrowseSTest.setBounds(512, 317, 100, 30);
+			btnBrowseSTest.setBounds(546, 318, 100, 30);
 			btnBrowseSTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtSTestFile);
@@ -561,7 +569,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionSTest() {
 		if (btnQuestionSTest == null) {
 			btnQuestionSTest = new JButton("");
-			btnQuestionSTest.setBounds(631, 317, 30, 30);
+			btnQuestionSTest.setBounds(665, 318, 30, 30);
 			Style.questionButtonStyle(btnQuestionSTest);
 			btnQuestionSTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -589,7 +597,7 @@ public class AddDatasetPanel extends JPanel {
 			label_3 = new JLabel("File with attributes:");
 			label_3.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_3.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_3.setBounds(24, 357, 140, 30);
+			label_3.setBounds(58, 358, 140, 30);
 		}
 		return label_3;
 	}
@@ -599,7 +607,7 @@ public class AddDatasetPanel extends JPanel {
 			txtXTestFile = new JTextField();
 			txtXTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtXTestFile.setColumns(10);
-			txtXTestFile.setBounds(180, 357, 315, 30);
+			txtXTestFile.setBounds(214, 358, 315, 30);
 		}
 		return txtXTestFile;
 	}
@@ -607,7 +615,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseXTest() {
 		if (btnBrowseXTest == null) {
 			btnBrowseXTest = new JButton("Browse");
-			btnBrowseXTest.setBounds(512, 357, 100, 30);
+			btnBrowseXTest.setBounds(546, 358, 100, 30);
 			btnBrowseXTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtXTestFile);
@@ -620,7 +628,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionXTest() {
 		if (btnQuestionXTest == null) {
 			btnQuestionXTest = new JButton("");
-			btnQuestionXTest.setBounds(631, 357, 30, 30);
+			btnQuestionXTest.setBounds(665, 358, 30, 30);
 			Style.questionButtonStyle(btnQuestionXTest);
 			btnQuestionXTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -649,7 +657,7 @@ public class AddDatasetPanel extends JPanel {
 			label_4 = new JLabel("File with outputs:");
 			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_4.setBounds(34, 397, 130, 30);
+			label_4.setBounds(68, 398, 130, 30);
 		}
 		return label_4;
 	}
@@ -659,7 +667,7 @@ public class AddDatasetPanel extends JPanel {
 			txtYTestFile = new JTextField();
 			txtYTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYTestFile.setColumns(10);
-			txtYTestFile.setBounds(180, 397, 315, 30);
+			txtYTestFile.setBounds(214, 398, 315, 30);
 		}
 		return txtYTestFile;
 	}
@@ -667,7 +675,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseYTest() {
 		if (btnBrowseYTest == null) {
 			btnBrowseYTest = new JButton("Browse");
-			btnBrowseYTest.setBounds(512, 397, 100, 30);
+			btnBrowseYTest.setBounds(546, 398, 100, 30);
 			btnBrowseYTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtYTestFile);
@@ -681,7 +689,7 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionYTest() {
 		if (btnQuestionYTest == null) {
 			btnQuestionYTest = new JButton("");
-			btnQuestionYTest.setBounds(631, 397, 30, 30);
+			btnQuestionYTest.setBounds(665, 398, 30, 30);
 			Style.questionButtonStyle(btnQuestionYTest);
 			btnQuestionYTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -705,7 +713,7 @@ public class AddDatasetPanel extends JPanel {
 			label_5 = new JLabel("No. of nodes:");
 			label_5.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_5.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_5.setBounds(64, 439, 100, 30);
+			label_5.setBounds(98, 440, 100, 30);
 		}
 		return label_5;
 	}
@@ -715,7 +723,7 @@ public class AddDatasetPanel extends JPanel {
 			txtNodesTest = new JTextField();
 			txtNodesTest.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNodesTest.setColumns(10);
-			txtNodesTest.setBounds(180, 438, 91, 30);
+			txtNodesTest.setBounds(214, 439, 91, 30);
 		}
 		return txtNodesTest;
 	}
@@ -734,6 +742,10 @@ public class AddDatasetPanel extends JPanel {
 						btnBrowseSTest.setEnabled(false);
 						btnBrowseXTest.setEnabled(false);
 						btnBrowseYTest.setEnabled(false);
+						lblAttributes.setVisible(true);
+						lblTimePoints.setVisible(true);
+						txtAttributes.setVisible(true);
+						txtTimePoints.setVisible(true);
 					} else {
 						txtSTestFile.setEnabled(true);
 						txtXTestFile.setEnabled(true);
@@ -742,11 +754,55 @@ public class AddDatasetPanel extends JPanel {
 						btnBrowseSTest.setEnabled(true);
 						btnBrowseXTest.setEnabled(true);
 						btnBrowseYTest.setEnabled(true);
+						lblAttributes.setVisible(false);
+						lblTimePoints.setVisible(false);
+						txtAttributes.setVisible(false);
+						txtTimePoints.setVisible(false);
 					}
 				}
 			});
-			chkTogether.setBounds(180, 485, 260, 23);
+			chkTogether.setBounds(214, 486, 260, 23);
 		}
 		return chkTogether;
+	}
+	private JLabel getLblAttributes() {
+		if (lblAttributes == null) {
+			lblAttributes = new JLabel("No. of attributes per node:");
+			lblAttributes.setVisible(false);
+			lblAttributes.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblAttributes.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblAttributes.setBounds(0, 554, 198, 30);
+		}
+		return lblAttributes;
+	}
+	private JTextField getTxtAttributes() {
+		if (txtAttributes == null) {
+			txtAttributes = new JTextField();
+			txtAttributes.setVisible(false);
+			txtAttributes.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtAttributes.setColumns(10);
+			txtAttributes.setBounds(214, 554, 91, 30);
+		}
+		return txtAttributes;
+	}
+	private JLabel getLblTimePoints() {
+		if (lblTimePoints == null) {
+			lblTimePoints = new JLabel("No. of time points:");
+			lblTimePoints.setVisible(false);
+			lblTimePoints.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblTimePoints.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTimePoints.setBounds(55, 516, 143, 30);
+		}
+		return lblTimePoints;
+	}
+	private JTextField getTxtTimePoints() {
+		if (txtTimePoints == null) {
+			txtTimePoints = new JTextField();
+			txtTimePoints.setVisible(false);
+			txtTimePoints.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtTimePoints.setColumns(10);
+			txtTimePoints.setBounds(214, 516, 91, 30);
+		}
+		return txtTimePoints;
 	}
 }

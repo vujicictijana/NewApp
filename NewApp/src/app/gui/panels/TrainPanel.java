@@ -106,16 +106,16 @@ public class TrainPanel extends JPanel {
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-		if (Reader.checkFile("cfg.txt")) {
-			String result = readParametersFromCfg();
-			if (result != null) {
-				JOptionPane
-						.showMessageDialog(
-								mainFrame,
-								result
-										+ " Please configure parameters values in Settings->Configuration.",
-								"Error", JOptionPane.ERROR_MESSAGE);
-			} else {
+//		if (Reader.checkFile("cfg.txt")) {
+//			String result = readParametersFromCfg();
+//			if (result != null) {
+//				JOptionPane
+//						.showMessageDialog(
+//								mainFrame,
+//								result
+//										+ " Please configure parameters values in Settings->Configuration.",
+//								"Error", JOptionPane.ERROR_MESSAGE);
+//			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
 				add(getLblDataset());
@@ -161,14 +161,14 @@ public class TrainPanel extends JPanel {
 				add(getCmbMethod());
 				add(getLblMethod());
 				add(getCmbDataset());
-			}
-		} else {
-			JOptionPane
-					.showMessageDialog(
-							mainFrame,
-							"Please configure parameters values in Settings->Configuration.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-		}
+//			}
+//		} else {
+//			JOptionPane
+//					.showMessageDialog(
+//							mainFrame,
+//							"Please configure parameters values in Settings->Configuration.",
+//							"Error", JOptionPane.ERROR_MESSAGE);
+//		}
 	}
 
 	private JLabel getLblDataset() {
@@ -176,7 +176,7 @@ public class TrainPanel extends JPanel {
 			lblDataset = new JLabel("Dataset:");
 			lblDataset.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblDataset.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblDataset.setBounds(49, 71, 120, 30);
+			lblDataset.setBounds(49, 63, 120, 30);
 		}
 		return lblDataset;
 	}
@@ -184,7 +184,7 @@ public class TrainPanel extends JPanel {
 	private JButton getBtnQuestionDataset() {
 		if (btnQuestionDataset == null) {
 			btnQuestionDataset = new JButton("");
-			btnQuestionDataset.setBounds(520, 71, 30, 30);
+			btnQuestionDataset.setBounds(510, 66, 30, 30);
 			Style.questionButtonStyle(btnQuestionDataset);
 			btnQuestionDataset.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -208,7 +208,7 @@ public class TrainPanel extends JPanel {
 			lblModelName = new JLabel("Model name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(69, 112, 100, 30);
+			lblModelName.setBounds(69, 104, 100, 30);
 		}
 		return lblModelName;
 	}
@@ -218,7 +218,7 @@ public class TrainPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(185, 112, 315, 30);
+			txtModelName.setBounds(185, 104, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -1022,7 +1022,7 @@ public class TrainPanel extends JPanel {
 	private JComboBox<String> getCmbDataset() {
 		if (cmbDataset == null) {
 			cmbDataset = new JComboBox();
-			cmbDataset.setBounds(185, 74, 315, 30);
+			cmbDataset.setBounds(185, 66, 315, 30);
 			cmbDataset.addItem("choose dataset");
 			URL location = MainFrame.class.getProtectionDomain()
 					.getCodeSource().getLocation();
