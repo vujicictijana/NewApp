@@ -126,77 +126,77 @@ public class TrainTemporalPanel extends JPanel {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
 		readParametersFromCfg();
-		// if (Reader.checkFile("cfg.txt")) {
-		// String result = readParametersFromCfg();
-		// if (result != null) {
-		// JOptionPane
-		// .showMessageDialog(
-		// mainFrame,
-		// result
-		// + " Please configure parameters values in Settings->Configuration.",
-		// "Error", JOptionPane.ERROR_MESSAGE);
-		// } else {
-		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getLblModelName());
-		add(getTxtModelName());
-		add(getLblAlpha());
-		add(getLblBeta());
-		add(getTxtAlpha());
-		add(getTxtBeta());
-		add(getBtnTrain());
-		add(getLblMaxIterations());
-		add(getTxtMaxIter());
-		fc = new JFileChooser();
-		panel = this;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"TEXT FILES", "txt", "text");
-		fc.setFileFilter(filter);
-		this.mainFrame = mainFrame;
-		add(getLblData());
-		add(getLblModel());
-		add(getLblPredictor());
-		add(getLblNoOfHidden());
-		add(getTxtHidden());
+		if (Reader.checkFile("cfg.txt")) {
+			String result = readParametersFromCfg();
+			if (result != null) {
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configuration.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				setBackground(UIManager.getColor("Button.background"));
+				setLayout(null);
+				add(getLblModelName());
+				add(getTxtModelName());
+				add(getLblAlpha());
+				add(getLblBeta());
+				add(getTxtAlpha());
+				add(getTxtBeta());
+				add(getBtnTrain());
+				add(getLblMaxIterations());
+				add(getTxtMaxIter());
+				fc = new JFileChooser();
+				panel = this;
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"TEXT FILES", "txt", "text");
+				fc.setFileFilter(filter);
+				this.mainFrame = mainFrame;
+				add(getLblData());
+				add(getLblModel());
+				add(getLblPredictor());
+				add(getLblNoOfHidden());
+				add(getTxtHidden());
 
-		add(getLblNoOfIterations());
-		add(getTxtIterNN());
-		add(getCmbPredictor());
-		add(getCmbMethod());
-		add(getLblMethod());
-		add(getLblNoOfTime());
-		add(getTxtNoTime());
-		add(getTxtNoTimeTrain());
-		add(getLblNoOfTime_1());
-		add(getChkLearn());
-		add(getBtnQuestionRegAlpha());
-		add(getLblProvideTrainAn());
-		add(getLblLag());
-		add(getTxtLag());
-		add(getBtnQuestionLag());
-		add(getChckUseX());
-		add(getTxtLFSize());
-		add(getTxtLambda());
-		add(getBtnQuestionLambda());
-		add(getTxtNoTest());
-		add(getLblLfSize());
-		add(getLblSseIter());
-		add(getTxtSseIter());
-		add(getLblLsIter());
-		add(getTxtLsIter());
-		add(getLabel());
-		add(getCmbDataset());
-		add(getButton());
+				add(getLblNoOfIterations());
+				add(getTxtIterNN());
+				add(getCmbPredictor());
+				add(getCmbMethod());
+				add(getLblMethod());
+				add(getLblNoOfTime());
+				add(getTxtNoTime());
+				add(getTxtNoTimeTrain());
+				add(getLblNoOfTime_1());
+				add(getChkLearn());
+				add(getBtnQuestionRegAlpha());
+				add(getLblProvideTrainAn());
+				add(getLblLag());
+				add(getTxtLag());
+				add(getBtnQuestionLag());
+				add(getChckUseX());
+				add(getTxtLFSize());
+				add(getTxtLambda());
+				add(getBtnQuestionLambda());
+				add(getTxtNoTest());
+				add(getLblLfSize());
+				add(getLblSseIter());
+				add(getTxtSseIter());
+				add(getLblLsIter());
+				add(getTxtLsIter());
+				add(getLabel());
+				add(getCmbDataset());
+				add(getButton());
 
-		setTxtValues();
-		// }
-		// } else {
-		// JOptionPane
-		// .showMessageDialog(
-		// mainFrame,
-		// "Please configure parameters values in Settings->Configuration.",
-		// "Error", JOptionPane.ERROR_MESSAGE);
-		// }
+				setTxtValues();
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Please configure parameters values in Settings->Configuration.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private JLabel getLblModelName() {
@@ -281,7 +281,7 @@ public class TrainTemporalPanel extends JPanel {
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
 						String mainPathDatasets = path1.substring(0,
 								path1.lastIndexOf("/"))
-								+ "/Datasets";
+								+ "/Datasets/TemporalNetworks";
 
 						xPath = mainPathDatasets + "/"
 								+ cmbDataset.getSelectedItem().toString()
@@ -349,30 +349,13 @@ public class TrainTemporalPanel extends JPanel {
 						if (isMGCRF()) {
 							double[][] s = Reader.readGraph(sPath, noOfNodes);
 
-							String message1 = checkAllFiles(noOfNodes,
-									noOfTime, noOfX, x, y, s);
-
-							if (message1 != null) {
-								JOptionPane.showMessageDialog(mainFrame,
-										message1, "Error",
-										JOptionPane.ERROR_MESSAGE);
-								return;
-							}
 
 							String path = createFolderAndSaveData();
 							runMGCRF(noOfNodes, noOfTime, noOfTimeTrain, noOfX,
 									x, y, s, path);
 						} else {
 							int maxIter = Integer.parseInt(txtIter.getText());
-
-							String yMSg = checkY(noOfNodes, y, noOfX, noOfTime);
-
-							if (yMSg != null) {
-								JOptionPane.showMessageDialog(mainFrame, yMSg,
-										"Error", JOptionPane.ERROR_MESSAGE);
-								return;
-							}
-
+							
 							double[][] yMatrix = Reader.readMatrix(yPath,
 									noOfNodes, noOfTime);
 
@@ -380,29 +363,12 @@ public class TrainTemporalPanel extends JPanel {
 
 								double[][] x1 = null;
 								if (chckUseX.isSelected()) {
-									String xMSg = checkX(noOfNodes, x, noOfX,
-											noOfTime);
-
-									if (xMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, xMSg, "Error",
-												JOptionPane.ERROR_MESSAGE);
-										return;
-									}
-
+									
 									x1 = Reader.readMatrix(xPath, noOfNodes,
 											noOfTime * noOfX);
 								}
 								double[][] s = null;
 								if (!chkLearn.isSelected()) {
-									String sMSg = checkS(noOfNodes, s);
-
-									if (sMSg != null) {
-										JOptionPane.showMessageDialog(
-												mainFrame, sMSg, "Error",
-												JOptionPane.ERROR_MESSAGE);
-										return;
-									}
 									s = Reader.readGraph(sPath, noOfNodes);
 								}
 
@@ -417,16 +383,6 @@ public class TrainTemporalPanel extends JPanel {
 										noOfNodes, lag, noOfX, test);
 							}
 							if (isRLSR()) {
-								String xMSg = checkX(noOfNodes, x, noOfX,
-										noOfTime);
-
-								if (xMSg != null) {
-									JOptionPane.showMessageDialog(mainFrame,
-											xMSg, "Error",
-											JOptionPane.ERROR_MESSAGE);
-									return;
-								}
-
 								double[][] x1 = Reader.readMatrix(xPath,
 										noOfNodes, noOfTime * noOfX);
 
@@ -513,69 +469,10 @@ public class TrainTemporalPanel extends JPanel {
 		t.start();
 	}
 
-	private String checkS(int noOfNodes, double[][] s) {
-		if (s == null) {
-			return "Ordinal number of node can be between 1 and " + noOfNodes
-					+ ".";
-		}
-		return null;
-	}
 
-	private String checkX(int noOfNodes, String[] x, int noOfX, int noOfTime) {
-		int totalX = noOfTime * noOfX;
-		if (x == null) {
-			return "Error while reading file with attributes.";
-		}
+	
 
-		if (x.length != noOfNodes) {
-			return "Number of lines in the file with attributes should be "
-					+ noOfNodes + ".";
-		}
-		for (int i = 0; i < x.length; i++) {
-			if (x[i].split(",").length != totalX) {
-				return "Number of values in each line in the file with attributes should be equal to no. of attributes * no. of time points: "
-						+ totalX;
-			}
-		}
-		return null;
-	}
-
-	private String checkY(int noOfNodes, String[] y, int noOfX, int noOfTime) {
-		if (y == null) {
-			return "Error while reading file with attributes.";
-		}
-		if (y.length != noOfNodes) {
-			return "Number of lines in the file with outputs should be "
-					+ noOfNodes + ".";
-		}
-		for (int i = 0; i < y.length; i++) {
-			if (y[i].split(",").length != noOfTime) {
-				return "Number of values in each line in the file with outputs should be equal to no. of time points: "
-						+ noOfTime;
-			}
-		}
-		return null;
-	}
-
-	private String checkAllFiles(int noOfNodes, int noOfTime, int noOfX,
-			String[] x, String[] y, double[][] s) {
-
-		String xMsg = checkX(noOfNodes, x, noOfX, noOfTime);
-		if (xMsg != null) {
-			return xMsg;
-		}
-
-		String yMsg = checkY(noOfNodes, y, noOfX, noOfTime);
-		if (yMsg != null) {
-			return yMsg;
-		}
-
-		String sMsg = checkS(noOfNodes, s);
-		if (sMsg != null) {
-			return sMsg;
-		}
-		return null;
-	}
+	
 
 	private void runMGCRF(int noOfNodes, int noOfTime, int noOfTimeTrain,
 			int noOfX, String[] x, String[] y, double[][] s, String path) {
@@ -1380,7 +1277,7 @@ public class TrainTemporalPanel extends JPanel {
 
 	public void addMethod(String name) {
 		for (int i = 0; i < cmbMethod.getItemCount(); i++) {
-			if(cmbMethod.getItemAt(i).toString().equalsIgnoreCase(name)){
+			if (cmbMethod.getItemAt(i).toString().equalsIgnoreCase(name)) {
 				return;
 			}
 		}
@@ -1608,19 +1505,19 @@ public class TrainTemporalPanel extends JPanel {
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
 						String mainPathDatasets = path1.substring(0,
 								path1.lastIndexOf("/"))
-								+ "/Datasets";
-						
+								+ "/Datasets/TemporalNetworks";
+
 						String sPath = mainPathDatasets + "/"
 								+ cmbDataset.getSelectedItem().toString()
 								+ "/s.txt";
-						
-						if(Reader.checkFile(sPath)){
+
+						if (Reader.checkFile(sPath)) {
 							addMethod("m-GCRF");
 							chkLearn.setSelected(false);
-						}else{
+						} else {
 							removeMethod("m-GCRF");
 							chkLearn.setSelected(true);
-						} 
+						}
 
 						String readMePath = mainPathDatasets + "/"
 								+ cmbDataset.getSelectedItem().toString()
@@ -1656,7 +1553,7 @@ public class TrainTemporalPanel extends JPanel {
 			String path1 = location.getFile();
 			path1 = path1.substring(1, path1.lastIndexOf("/"));
 			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets");
+			String[] files = Reader.getAllFolders(mainPath + "/Datasets/TemporalNetworks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

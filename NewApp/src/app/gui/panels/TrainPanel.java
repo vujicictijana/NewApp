@@ -106,16 +106,16 @@ public class TrainPanel extends JPanel {
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-//		if (Reader.checkFile("cfg.txt")) {
-//			String result = readParametersFromCfg();
-//			if (result != null) {
-//				JOptionPane
-//						.showMessageDialog(
-//								mainFrame,
-//								result
-//										+ " Please configure parameters values in Settings->Configuration.",
-//								"Error", JOptionPane.ERROR_MESSAGE);
-//			} else {
+		if (Reader.checkFile("cfg.txt")) {
+			String result = readParametersFromCfg();
+			if (result != null) {
+				JOptionPane
+						.showMessageDialog(
+								mainFrame,
+								result
+										+ " Please configure parameters values in Settings->Configuration.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
 				add(getLblDataset());
@@ -161,14 +161,14 @@ public class TrainPanel extends JPanel {
 				add(getCmbMethod());
 				add(getLblMethod());
 				add(getCmbDataset());
-//			}
-//		} else {
-//			JOptionPane
-//					.showMessageDialog(
-//							mainFrame,
-//							"Please configure parameters values in Settings->Configuration.",
-//							"Error", JOptionPane.ERROR_MESSAGE);
-//		}
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							mainFrame,
+							"Please configure parameters values in Settings->Configuration.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private JLabel getLblDataset() {
@@ -307,7 +307,7 @@ public class TrainPanel extends JPanel {
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
 						String mainPath = path1.substring(0,
 								path1.lastIndexOf("/"))
-								+ "/Datasets";
+								+ "/Datasets/Networks/";
 
 						xPath = mainPath + "/"
 								+ cmbDataset.getSelectedItem().toString()
@@ -359,14 +359,7 @@ public class TrainPanel extends JPanel {
 						double[] y = Reader.readArray(yPath, noOfNodes);
 						double[][] s = Reader.readGraph(sPath, noOfNodes);
 
-						String message1 = checkFiles(noOfNodes, x, y, s);
-
-						if (message1 != null) {
-							JOptionPane.showMessageDialog(mainFrame, message1,
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-
+						
 						String path = createFolderAndSaveData(method);
 						double result = callPredictor(path, x, y);
 
@@ -426,28 +419,7 @@ public class TrainPanel extends JPanel {
 
 	}
 
-	private String checkFiles(int noOfNodes, String[] x, double[] y,
-			double[][] s) {
-		if (x == null) {
-			return "Error while reading file with attributes.";
-		}
-
-		if (x.length != noOfNodes) {
-			return "Number of lines in the file with attributes should be "
-					+ noOfNodes + ".";
-		}
-
-		if (y == null) {
-			return "Number of lines in in the file with outputs should be "
-					+ noOfNodes + ".";
-		}
-
-		if (s == null) {
-			return "Ordinal number of node can be between 1 and " + noOfNodes
-					+ ".";
-		}
-		return null;
-	}
+	
 
 	private String createFolderAndSaveData(String method) {
 		File matrixFile = new File(xPath);
@@ -1029,7 +1001,7 @@ public class TrainPanel extends JPanel {
 			String path1 = location.getFile();
 			path1 = path1.substring(1, path1.lastIndexOf("/"));
 			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets");
+			String[] files = Reader.getAllFolders(mainPath + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

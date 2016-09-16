@@ -102,7 +102,7 @@ public class TestPanel extends JPanel {
 						path1 = path1.substring(1, path1.lastIndexOf("/"));
 						String mainPathDatasets = path1.substring(0,
 								path1.lastIndexOf("/"))
-								+ "/Datasets";
+								+ "/Datasets/Networks/";
 
 						xPath = mainPathDatasets + "/"
 								+ cmbDataset.getSelectedItem().toString()
@@ -396,7 +396,7 @@ public class TestPanel extends JPanel {
 			String path1 = location.getFile();
 			path1 = path1.substring(1, path1.lastIndexOf("/"));
 			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets");
+			String[] files = Reader.getAllFolders(mainPath + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

@@ -373,51 +373,137 @@ public class AddDatasetPanel extends JPanel {
 								path1.lastIndexOf("/"))
 								+ "/Datasets";
 						String name = txtName.getText();
-						String dataPath = mainPath + "/" + name;
+						String dataPath = "";
+						if (!chkTogether.isSelected()) {
+							dataPath = mainPath + "/Networks/" + name;
+						} else {
+							dataPath = mainPath + "/TemporalNetworks/" + name;
+						}
+						if (Writer.checkFolder(dataPath)) {
+
+							int selectedOption = JOptionPane
+									.showConfirmDialog(
+											mainFrame,
+
+											"Dataset with name "
+													+ name
+													+ " already exists. Do you want to replace it?",
+											"Question",
+											JOptionPane.YES_NO_OPTION);
+							if (selectedOption == JOptionPane.YES_OPTION) {
+								Reader.deleteFiles(dataPath);
+							}
+							if (selectedOption == JOptionPane.NO_OPTION) {
+								return;
+							}
+						}
 						Writer.createFolder(dataPath);
-						
+
 						String xTrain = txtXFile.getText();
 						String yTrain = txtYFile.getText();
 						String sTrain = txtSFile.getText();
-						
-						if (!chkTogether.isSelected()) {						
+
+						int noOfNodes = Integer.parseInt(txtNodes.getText());
+
+						if (!chkTogether.isSelected()) {
+							String[] x = Reader.read(xTrain);
+							double[] y = Reader.readArray(yTrain, noOfNodes);
+							double[][] s = Reader.readGraph(sTrain, noOfNodes);
+
+							String message1 = checkFilesTrain(noOfNodes, x, y,
+									s,"train");
+
+							if (message1 != null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										message1, "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+
 							String xTest = txtXTestFile.getText();
 							String yTest = txtYTestFile.getText();
 							String sTest = txtSTestFile.getText();
+
+							int noOfNodesTest = Integer.parseInt(txtNodesTest.getText());
 							
-							Writer.copyFile(new File(xTrain), dataPath + "/xTrain.txt");
-							Writer.copyFile(new File(yTrain), dataPath + "/yTrain.txt");
-							Writer.copyFile(new File(sTrain), dataPath + "/sTrain.txt");
-							
-							Writer.copyFile(new File(xTest), dataPath + "/xTest.txt");
-							Writer.copyFile(new File(yTest), dataPath + "/yTest.txt");
-							Writer.copyFile(new File(sTest), dataPath + "/sTest.txt");
-							
-							String[] text = new String[2];
-							text[0] = "Train nodes: " + txtNodes.getText();
-							text[1] = "Test nodes: " + txtNodesTest.getText();
-							
-							Writer.write(text, dataPath + "/readme.txt");
-						}else{
-							Writer.copyFile(new File(xTrain), dataPath + "/x.txt");
-							Writer.copyFile(new File(yTrain), dataPath + "/y.txt");
-							if(!chkLearn.isSelected()){
-							Writer.copyFile(new File(sTrain), dataPath + "/s.txt");
+							String[] x1 = Reader.read(xTest);
+							double[] y1 = Reader.readArray(yTest, noOfNodesTest);
+							double[][] s1 = Reader.readGraph(sTest, noOfNodesTest);
+
+							String message2 = checkFilesTrain(noOfNodesTest, x1,
+									y1, s1, "test");
+
+							if (message2 != null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										message2, "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
 							}
-							
+
+							Writer.copyFile(new File(xTrain), dataPath
+									+ "/xTrain.txt");
+							Writer.copyFile(new File(yTrain), dataPath
+									+ "/yTrain.txt");
+							Writer.copyFile(new File(sTrain), dataPath
+									+ "/sTrain.txt");
+
+							Writer.copyFile(new File(xTest), dataPath
+									+ "/xTest.txt");
+							Writer.copyFile(new File(yTest), dataPath
+									+ "/yTest.txt");
+							Writer.copyFile(new File(sTest), dataPath
+									+ "/sTest.txt");
+
+							String[] text = new String[2];
+							text[0] = "Train nodes: " + noOfNodes;
+							text[1] = "Test nodes: " + noOfNodesTest;
+
+							Writer.write(text, dataPath + "/readme.txt");
+						} else {
+
+							int noOfTime = Integer.parseInt(txtTimePoints
+									.getText());
+							int noOfX = Integer.parseInt(txtAttributes
+									.getText());
+
+							String[] x = Reader.read(xTrain);
+							String[] y = Reader.read(yTrain);
+
+							double[][] s = null;
+							if (!chkLearn.isSelected()) {
+								s = Reader.readGraph(sTrain, noOfNodes);
+							}
+							String message1 = checkAllFiles(noOfNodes,
+									noOfTime, noOfX, x, y, s);
+
+							if (message1 != null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										message1, "Error",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							Writer.copyFile(new File(xTrain), dataPath
+									+ "/x.txt");
+							Writer.copyFile(new File(yTrain), dataPath
+									+ "/y.txt");
+							if (!chkLearn.isSelected()) {
+								Writer.copyFile(new File(sTrain), dataPath
+										+ "/s.txt");
+							}
+
 							String[] text = new String[3];
-							text[0] = "Nodes: " + txtNodes.getText();
-							text[1] = "Time points: " + txtTimePoints.getText();
-							text[2] = "Attributes per node: " + txtAttributes.getText();
+							text[0] = "Nodes: " + noOfNodes;
+							text[1] = "Time points: " + noOfTime;
+							text[2] = "Attributes per node: " + noOfX;
 							Writer.write(text, dataPath + "/readme.txt");
 						}
-						
-						JOptionPane.showMessageDialog(mainFrame, "Dataset is created successfully.",
-								"Error", JOptionPane.INFORMATION_MESSAGE);
+
+						JOptionPane.showMessageDialog(mainFrame,
+								"Dataset is created successfully.", "Error",
+								JOptionPane.INFORMATION_MESSAGE);
 						resetValues();
 					}
 				}
-
 
 			});
 			Style.buttonStyle(btnTrain);
@@ -425,7 +511,6 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return btnTrain;
 	}
-
 
 	private void resetValues() {
 		txtName.setText("");
@@ -441,7 +526,7 @@ public class AddDatasetPanel extends JPanel {
 		txtTimePoints.setText("");
 		txtAttributes.setText("");
 	}
-	
+
 	private String checkFiles(int noOfNodes, String[] x, double[] y,
 			double[][] s) {
 		if (x == null) {
@@ -500,7 +585,7 @@ public class AddDatasetPanel extends JPanel {
 		if (txtXFile.getText().equals("")) {
 			return "Choose file with attributes values for training.";
 		}
-		if (txtYFile.getText().equals("") ) {
+		if (txtYFile.getText().equals("")) {
 			return "Choose file with output values for training.";
 		}
 		try {
@@ -877,11 +962,102 @@ public class AddDatasetPanel extends JPanel {
 		}
 		return txtTimePoints;
 	}
+
 	private JCheckBox getChkLearn() {
 		if (chkLearn == null) {
 			chkLearn = new JCheckBox("Learn similarity");
 			chkLearn.setBounds(711, 99, 140, 23);
 		}
 		return chkLearn;
+	}
+
+	private String checkAllFiles(int noOfNodes, int noOfTime, int noOfX,
+			String[] x, String[] y, double[][] s) {
+
+		String xMsg = checkX(noOfNodes, x, noOfX, noOfTime);
+		if (xMsg != null) {
+			return xMsg;
+		}
+
+		String yMsg = checkY(noOfNodes, y, noOfX, noOfTime);
+		if (yMsg != null) {
+			return yMsg;
+		}
+		if (s != null) {
+			String sMsg = checkS(noOfNodes, s);
+			if (sMsg != null) {
+				return sMsg;
+			}
+		}
+		return null;
+	}
+
+	private String checkFilesTrain(int noOfNodes, String[] x, double[] y,
+			double[][] s, String trainTest) {
+		if (x == null) {
+			return "Error while reading file with attributes for " + trainTest
+					+ ".";
+		}
+
+		if (x.length != noOfNodes) {
+			return "Error while reading file with attributes for " + trainTest
+					+ ": Number of lines should be " + noOfNodes + ".";
+		}
+
+		if (y == null) {
+			return "Error while reading file with outputs for " + trainTest
+					+ ": Number of lines should be " + noOfNodes + ".";
+		}
+
+		if (s == null) {
+			return "Error while reading file with edges for " + trainTest
+					+ ": Ordinal number of node can be between 1 and "
+					+ noOfNodes + ".";
+		}
+		return null;
+	}
+
+	private String checkS(int noOfNodes, double[][] s) {
+		if (s == null) {
+			return "Ordinal number of node can be between 1 and " + noOfNodes
+					+ ".";
+		}
+		return null;
+	}
+
+	private String checkX(int noOfNodes, String[] x, int noOfX, int noOfTime) {
+		int totalX = noOfTime * noOfX;
+		if (x == null) {
+			return "Error while reading file with attributes.";
+		}
+
+		if (x.length != noOfNodes) {
+			return "Number of lines in the file with attributes should be "
+					+ noOfNodes + ".";
+		}
+		for (int i = 0; i < x.length; i++) {
+			if (x[i].split(",").length != totalX) {
+				return "Number of values in each line in the file with attributes should be equal to no. of attributes * no. of time points: "
+						+ totalX;
+			}
+		}
+		return null;
+	}
+
+	private String checkY(int noOfNodes, String[] y, int noOfX, int noOfTime) {
+		if (y == null) {
+			return "Error while reading file with attributes.";
+		}
+		if (y.length != noOfNodes) {
+			return "Number of lines in the file with outputs should be "
+					+ noOfNodes + ".";
+		}
+		for (int i = 0; i < y.length; i++) {
+			if (y[i].split(",").length != noOfTime) {
+				return "Number of values in each line in the file with outputs should be equal to no. of time points: "
+						+ noOfTime;
+			}
+		}
+		return null;
 	}
 }

@@ -133,7 +133,8 @@ public class Reader {
 									.contains("DirGCRF")) {
 								String[] folders = filePath.getParent()
 										.toString().split("\\\\");
-								files.add(folders[folders.length-2] + " - " + folders[folders.length-1]);
+								files.add(folders[folders.length - 2] + " - "
+										+ folders[folders.length - 1]);
 							}
 						}
 					});
@@ -142,14 +143,40 @@ public class Reader {
 			return null;
 		}
 	}
-	
-	public static String[] getAllFolders(String folder){
+
+	// public static String[] getAllFilesInFolder(String folder) {
+	// try {
+	// ArrayList<String> files = new ArrayList<>();
+	// Files.walk(Paths.get(folder)).forEach(filePath -> {
+	// if (Files.isRegularFile(filePath)) {
+	// files.add(filePath.getFileName().toString());
+	//
+	// }
+	// });
+	// return files.toArray(new String[files.size()]);
+	// } catch (IOException e) {
+	// return null;
+	// }
+	// }
+
+	public static String[] getAllFolders(String folder) {
 		File file = new File(folder);
 		String[] directories = file.list(new FilenameFilter() {
-		  @Override
-		  public boolean accept(File current, String name) {
-		    return new File(current, name).isDirectory();
-		  }
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+				// if (new File(current, name).isDirectory());
+				// String[] files = getAllFilesInFolder(new File(current,
+				// name).getPath());
+				// for (int i = 0; i < files.length; i++) {
+				// System.out.println(files[i]);
+				// if(files[i].contains("Train")){
+				// return true;
+				// }
+				//
+				// }
+				// }
+			}
 		});
 		return directories;
 	}
