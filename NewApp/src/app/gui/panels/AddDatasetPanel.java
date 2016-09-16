@@ -14,38 +14,19 @@ import javax.swing.JButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingConstants;
 
-import app.algorithms.basic.BasicCalcs;
-import app.exceptions.ConfigurationParameterseException;
+
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
-import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
-import app.gui.threads.DirGCRFTrainMyModelForGUI;
-import app.gui.threads.GCRFTrainMyModelForGUI;
-import app.gui.threads.UmGCRFTrainMyModelForGUI;
-import app.predictors.helper.Helper;
-import app.predictors.linearregression.MyLR;
-import app.predictors.neuralnetwork.MyNN;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.Map;
-
 import javax.swing.JCheckBox;
-import javax.swing.JSeparator;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-
-import javax.swing.JComboBox;
-
-import org.neuroph.core.data.DataSet;
-
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
@@ -525,54 +506,6 @@ public class AddDatasetPanel extends JPanel {
 		chkTogether.setSelected(false);
 		txtTimePoints.setText("");
 		txtAttributes.setText("");
-	}
-
-	private String checkFiles(int noOfNodes, String[] x, double[] y,
-			double[][] s) {
-		if (x == null) {
-			return "Error while reading file with attributes.";
-		}
-
-		if (x.length != noOfNodes) {
-			return "Number of lines in the file with attributes should be "
-					+ noOfNodes + ".";
-		}
-
-		if (y == null) {
-			return "Number of lines in in the file with outputs should be "
-					+ noOfNodes + ".";
-		}
-
-		if (s == null) {
-			return "Ordinal number of node can be between 1 and " + noOfNodes
-					+ ".";
-		}
-		return null;
-	}
-
-	private String createFolderAndSaveData(String method) {
-		File matrixFile = new File(txtSFile.getText());
-		File xFile = new File(txtXFile.getText());
-		File yFile = new File(txtYFile.getText());
-
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		Writer.createFolder(mainPath + "/MyModels" + method);
-		String path = mainPath + "/MyModels" + method + "/" + txtName.getText();
-		Writer.createFolder(path);
-
-		String dataPath = mainPath + "/MyModels" + method + "/"
-				+ txtName.getText() + "/data";
-		Writer.createFolder(dataPath);
-		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
-		Writer.copyFile(xFile, dataPath + "/x.txt");
-
-		Writer.copyFile(yFile, dataPath + "/y.txt");
-		Writer.createFolder(path);
-		return path;
 	}
 
 	public String validateData() {
