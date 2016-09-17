@@ -13,6 +13,7 @@ import javax.swing.JSeparator;
 import app.file.io.Reader;
 import app.gui.panels.AddDatasetPanel;
 import app.gui.panels.ConfigurePanel;
+import app.gui.panels.ManageDatasetPanel;
 import app.gui.panels.PredictPanel;
 import app.gui.panels.TestPanel;
 import app.gui.panels.TestRandomPanel;
@@ -385,6 +386,22 @@ public class MainFrame extends JFrame {
 		if (menuManageDatasets == null) {
 			menuManageDatasets = new JMenuItem("Manage datasets");
 			menuManageDatasets.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuManageDatasets.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					ManageDatasetPanel t = new ManageDatasetPanel(frame);
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+
+				}
+			});
 		}
 		return menuManageDatasets;
 	}

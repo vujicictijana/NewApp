@@ -106,5 +106,11 @@ public class Writer {
 		}
 	}
 	
+	
+	public static void renameDir(String dirPath,String newName){
+		File dir = new File(dirPath);		
+		File newDir = new File(dir.getParent() + "/" + newName);
+		dir.renameTo(newDir);
+	}
 
 }

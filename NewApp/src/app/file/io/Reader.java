@@ -11,10 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.naming.ConfigurationException;
-
-import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 
 public class Reader {
