@@ -7,12 +7,14 @@ import javax.swing.UIManager;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JLabel;
 
 import app.file.io.Reader;
+import app.gui.frames.MainFrame;
 import app.gui.style.SwingLink;
 
 import javax.swing.SwingConstants;
@@ -71,8 +73,12 @@ public class HelpPanel extends JPanel {
 	}
 
 	public void setLinks() {
-
-		String initialText = getHtml("html/methods.html");
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
+		String path = location.getFile();
+		path = path.substring(1, path.lastIndexOf("/"));
+		path = path.substring(0, path.lastIndexOf("/"));
+		String initialText = getHtml(path + "/html/methods.html");
 		lblText = new JLabel(initialText);
 		lblText.setVerticalAlignment(SwingConstants.TOP);
 		lblText.setBounds(10, 10, 850, 500);

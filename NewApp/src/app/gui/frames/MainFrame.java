@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 
 public class MainFrame extends JFrame {
 
@@ -53,7 +54,6 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuAbout;
 	private JMenuItem menuDatasets;
 	private JMenuItem menuMethods;
-
 	/**
 	 * Launch the application.
 	 */
@@ -83,7 +83,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(getMenuBar_1());
 		setLocationRelativeTo(null);
 		frame = this;
-
+		
 		if (Reader.checkFile("cfg.txt")) {
 
 		} else {
@@ -430,7 +430,12 @@ public class MainFrame extends JFrame {
 			menuAbout.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuAbout.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					HelpPanel t = new HelpPanel(frame,"html/about.html");
+					URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+							.getLocation();
+					String path = location.getFile();
+					path = path.substring(1, path.lastIndexOf("/"));
+					path = path.substring(0, path.lastIndexOf("/"));
+					HelpPanel t = new HelpPanel(frame,path + "/html/about.html");
 					t.setBounds(0, 61, 900, 750);
 					if (mainPanel != null) {
 						contentPane.remove(mainPanel);
@@ -453,7 +458,12 @@ public class MainFrame extends JFrame {
 			menuDatasets.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuDatasets.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					HelpPanel t = new HelpPanel(frame,"html/dataset.html");
+					URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+							.getLocation();
+					String path = location.getFile();
+					path = path.substring(1, path.lastIndexOf("/"));
+					path = path.substring(0, path.lastIndexOf("/"));
+					HelpPanel t = new HelpPanel(frame,path + "/html/dataset.html");
 					t.setBounds(0, 61, 900, 750);
 					if (mainPanel != null) {
 						contentPane.remove(mainPanel);
