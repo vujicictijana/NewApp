@@ -13,6 +13,7 @@ import javax.swing.JSeparator;
 import app.file.io.Reader;
 import app.gui.panels.AddDatasetPanel;
 import app.gui.panels.ConfigurePanel;
+import app.gui.panels.HelpPanel;
 import app.gui.panels.ManageDatasetPanel;
 import app.gui.panels.PredictPanel;
 import app.gui.panels.TestPanel;
@@ -48,6 +49,10 @@ public class MainFrame extends JFrame {
 	private JMenu mnDatasets;
 	private JMenuItem menuAddDataset;
 	private JMenuItem menuManageDatasets;
+	private JMenu mnHelp;
+	private JMenuItem menuAbout;
+	private JMenuItem menuDatasets;
+	private JMenuItem menuMethods;
 
 	/**
 	 * Launch the application.
@@ -119,6 +124,7 @@ public class MainFrame extends JFrame {
 			menuBar.add(getMnPredict());
 			menuBar.add(getMnDatasets());
 			menuBar.add(getMnSettings());
+			menuBar.add(getMnHelp());
 		}
 		return menuBar;
 	}
@@ -404,5 +410,87 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return menuManageDatasets;
+	}
+	private JMenu getMnHelp() {
+		if (mnHelp == null) {
+			mnHelp = new JMenu("Help");
+			mnHelp.setFont(new Font("Segoe UI", Font.BOLD, 17));
+			mnHelp.setIcon(new ImageIcon("images/question-menu.png"));
+			mnHelp.add(getMenuAbout());
+			mnHelp.add(new JSeparator());
+			mnHelp.add(getMenuDatasets());
+			mnHelp.add(new JSeparator());
+			mnHelp.add(getMenuMethods());
+		}
+		return mnHelp;
+	}
+	private JMenuItem getMenuAbout() {
+		if (menuAbout == null) {
+			menuAbout = new JMenuItem("About");
+			menuAbout.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuAbout.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					HelpPanel t = new HelpPanel(frame,"html/about.html");
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+
+				}
+			});
+		}
+		return menuAbout;
+	}
+	private JMenuItem getMenuDatasets() {
+		if (menuDatasets == null) {
+			menuDatasets = new JMenuItem("Datasets");
+			menuDatasets.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuDatasets.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					HelpPanel t = new HelpPanel(frame,"html/dataset.html");
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+
+				}
+			});
+		}
+		return menuDatasets;
+	}
+	private JMenuItem getMenuMethods() {
+		if (menuMethods == null) {
+			menuMethods = new JMenuItem("Methods");
+			menuMethods.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			menuMethods.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					HelpPanel t = new HelpPanel(frame,null);
+					t.setBounds(0, 61, 900, 750);
+					if (mainPanel != null) {
+						contentPane.remove(mainPanel);
+						contentPane.repaint();
+						contentPane.revalidate();
+					}
+					mainPanel = t;
+					contentPane.add(mainPanel);
+					contentPane.repaint();
+					contentPane.revalidate();
+
+				}
+			});
+		}
+		return menuMethods;
 	}
 }

@@ -194,7 +194,7 @@ public class TrainPanel extends JPanel {
 									mainFrame,
 									"Dataset samples are provided by default."
 											+ "\nUse samples or add your own dataset in Datasets -> Add dataset menu item."
-											+ "\nInformation for datasets samples can be found in Help menu item.", "Help",
+											+ "\nInformation for datasets samples can be found in Help -> Datasets menu item.", "Help",
 									JOptionPane.QUESTION_MESSAGE,
 									Style.questionIcon());
 				}
