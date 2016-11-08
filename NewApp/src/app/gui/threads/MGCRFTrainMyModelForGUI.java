@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,6 +32,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 	private int regBeta;
 	private long proxyTime;
 	private boolean cancelTrain;
+	DecimalFormat df = new DecimalFormat("#.##");
 
 	public MGCRFTrainMyModelForGUI(String matlabPath, String modelFolder,
 			ProgressBar frame, JFrame mainFrame, double[][] s, double[][] r,
@@ -94,7 +96,7 @@ public class MGCRFTrainMyModelForGUI extends Thread {
 				maxIter, regAlpha, regBeta, frame, modelFolder, proxyTime);
 		if (!cancelTrain) {
 			long elapsedTime = System.currentTimeMillis() - start;
-			time += Math.round(elapsedTime / 1000);
+			time += df.format((double) elapsedTime / 1000);
 			if (message.contains("R^2")) {
 				message += "\n" + time;
 				JOptionPane.showMessageDialog(mainFrame, message, "Results",

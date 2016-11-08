@@ -38,6 +38,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 	// private JLabel timeLabel;
 	private String time;
 	private Thread thisThread;
+	DecimalFormat df = new DecimalFormat("#.##");
 	
 
 	public DirGCRFTrainMyModelForGUI(String modelFolder, ProgressBar frame,
@@ -95,7 +96,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 			// double[] res = { 0, 0 };
 			// double r2 = 0;
 			long elapsedTime = System.currentTimeMillis() - start;
-			time += "\n* DirGCRF: " + Math.round(elapsedTime / 1000);
+			time += "\n* DirGCRF: " + df.format((double) elapsedTime / 1000);
 			double[] resS = null;
 			double r2S = -1;
 			if (both) {
@@ -111,7 +112,7 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 						resS[1], sS, r, y);
 				r2S = algS.rSquared();
 				elapsedTime = System.currentTimeMillis() - start;
-				time += "\n* GCRF: " + Math.round(elapsedTime / 1000);
+				time += "\n* GCRF: " + df.format((double) elapsedTime / 1000);
 			}
 			// createTable(res, r2, resS, r2S);
 			createFile("DirGCRF.txt", res);
@@ -120,12 +121,12 @@ public class DirGCRFTrainMyModelForGUI extends Thread {
 			}
 			// timeLabel.setText(time);
 			// timeLabel.setVisible(true);
-			DecimalFormat df = new DecimalFormat("#.####");
+			DecimalFormat df1 = new DecimalFormat("#.####");
 			String message = "Testing with same data:\n* R^2 value for DirGCRF is: "
-					+ df.format(r2);
+					+ df1.format(r2);
 			if (resS != null) {
 				message += "\n* R^2 value for standard GCRF is: "
-						+ df.format(r2S);
+						+ df1.format(r2S);
 			}
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",

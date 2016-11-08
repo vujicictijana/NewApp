@@ -1,6 +1,7 @@
 package app.gui.threads;
 
 import java.awt.Color;
+import java.text.DecimalFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,13 +37,14 @@ public class TrainWithRandomForGUI extends Thread {
 	private int yTable;
 	private JLabel timeLabel;
 	private String time;
-	private double alphaGen = 5;
-	private double betaGen = 1;
-
+	private double alphaGen ;
+	private double betaGen ;
+	DecimalFormat df = new DecimalFormat("#.##");
+	
 	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
 			double alpha, double beta, double lr, int maxIter, JPanel panel,
-			boolean both, int xTable, int yTable, JLabel timeLabel) {
+			boolean both, int xTable, int yTable, JLabel timeLabel, double alphaGen, double betaGen) {
 		super();
 		this.frame = frame;
 		this.mainFrame = mainFrame;
@@ -59,6 +61,8 @@ public class TrainWithRandomForGUI extends Thread {
 		this.xTable = xTable;
 		this.yTable = yTable;
 		this.timeLabel = timeLabel;
+		this.alphaGen = alphaGen;
+		this.betaGen = betaGen;
 		time = "Time in seconds: ";
 		// System.out.println(Writer.edges(s));
 	}
@@ -71,7 +75,7 @@ public class TrainWithRandomForGUI extends Thread {
 		long start = System.currentTimeMillis();
 		double[] res = gda.learn(maxIter, false, frame.getCurrent());
 		long elapsedTime = System.currentTimeMillis() - start;
-		time += "DirGCRF: " + Math.round(elapsedTime/1000);
+		time += "DirGCRF: " + df.format((double) elapsedTime/1000);
 
 		AlgorithmAsymmetric alg = new AlgorithmAsymmetric(res[0], res[1], s, r,
 				y);
@@ -96,7 +100,7 @@ public class TrainWithRandomForGUI extends Thread {
 					sS, r, yS);
 			r2S = algS.rSquared();
 			elapsedTime = System.currentTimeMillis() - start;
-			time += " GCRF: " + Math.round(elapsedTime/1000);
+			time += " GCRF: " + df.format((double) elapsedTime/1000);
 		}
 		createTable(res, r2, resS, r2S);
 		createFile("DirGCRF.txt", res);

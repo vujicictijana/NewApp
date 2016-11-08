@@ -30,6 +30,7 @@ public class GCRFTrainMyModelForGUI extends Thread {
 	private String modelFolder;
 	private String time;
 	private Thread thisThread;
+	DecimalFormat df = new DecimalFormat("#.##");
 
 	public GCRFTrainMyModelForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
@@ -80,13 +81,13 @@ public class GCRFTrainMyModelForGUI extends Thread {
 					s, r, y);
 			double r2S = algS.rSquared();
 			long elapsedTime = System.currentTimeMillis() - start;
-			time += Math.round(elapsedTime / 1000);
+			time += df.format((double) elapsedTime / 1000);
 
 			createFile("GCRF.txt", resS);
 
-			DecimalFormat df = new DecimalFormat("#.####");
+			DecimalFormat df1 = new DecimalFormat("#.####");
 			String message = "Testing with same data:\n* R^2 value for standard GCRF is: "
-					+ df.format(r2S);
+					+ df1.format(r2S);
 			message += "\n" + time;
 			JOptionPane.showMessageDialog(mainFrame, message, "Results",
 					JOptionPane.INFORMATION_MESSAGE);

@@ -388,7 +388,7 @@ public class TrainRandomPanel extends JPanel {
 		}
 		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame,
 				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
-				both, 10, 10, lblTime);
+				both, 10, 10, lblTime,alphaGen,betaGen);
 		t.start();
 
 	}

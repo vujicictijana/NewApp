@@ -121,7 +121,7 @@ public class MainFrame extends JFrame {
 			menuBar.setBounds(0, 0, 900, 59);
 			menuBar.add(getMnTrain());
 			menuBar.add(getMnTest());
-			menuBar.add(getMnPredict());
+//			menuBar.add(getMnPredict());
 			menuBar.add(getMnDatasets());
 			menuBar.add(getMnSettings());
 			menuBar.add(getMnHelp());
