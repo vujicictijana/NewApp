@@ -51,26 +51,27 @@ public class TestRandomPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public TestRandomPanel(JFrame mainFrame) {
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane.showMessageDialog(mainFrame,
 						result + " Please configure parameters values in Settings->Configuration.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
+
+				this.mainFrame = mainFrame;
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
 				add(getLblType());
 				add(getLblRArrayFile());
 				add(getTxtNoOfNodes());
 				add(getBtnTrain());
-				add(getCmbModel());
-				this.mainFrame = mainFrame;
 				add(getLabel());
 				add(getTxtProb());
 				add(getLblTimes());
 				add(getTxtTimes());
 				add(getPanelForTable());
+				add(getCmbModel());
 			}
 		}
 	}
@@ -144,6 +145,14 @@ public class TestRandomPanel extends JPanel {
 	private JComboBox<String> getCmbModel() {
 		if (cmbModel == null) {
 			cmbModel = new JComboBox<String>();
+
+			cmbModel.setBounds(181, 39, 417, 30);
+			cmbModel.addItem("choose model");
+
+			String[] files = Reader.getAllFiles(Reader.jarFile()  + "/RandomModels");
+			for (int i = 0; i < files.length; i++) {
+				cmbModel.addItem(files[i]);
+			}			
 			cmbModel.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					if (cmbModel.getSelectedItem().toString().contains("probability")) {
@@ -157,13 +166,6 @@ public class TestRandomPanel extends JPanel {
 					}
 				}
 			});
-			cmbModel.setBounds(181, 39, 417, 30);
-			cmbModel.addItem("choose model");
-
-			String[] files = Reader.getAllFiles(Reader.jarFile()  + "/RandomModels");
-			for (int i = 0; i < files.length; i++) {
-				cmbModel.addItem(files[i]);
-			}
 		}
 		return cmbModel;
 	}
@@ -199,13 +201,6 @@ public class TestRandomPanel extends JPanel {
 		return null;
 	}
 
-	public void createMainFolders() {
-		Writer.createFolder("Models");
-		for (int i = 1; i < cmbModel.getItemCount(); i++) {
-			String folder = Writer.folderName(cmbModel.getItemAt(i).toString());
-			Writer.createFolder(Reader.jarFile() + "/Models/" + folder);
-		}
-	}
 
 	public boolean checkModel(String path) {
 		return Writer.checkFolder(path);

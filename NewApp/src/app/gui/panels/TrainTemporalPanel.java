@@ -125,8 +125,7 @@ public class TrainTemporalPanel extends JPanel {
 	public TrainTemporalPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-		readParametersFromCfg();
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane

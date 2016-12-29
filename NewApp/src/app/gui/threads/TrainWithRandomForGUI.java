@@ -1,10 +1,15 @@
 package app.gui.threads;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -15,6 +20,7 @@ import app.algorithms.symmetric.AlgorithmSymmetric;
 import app.algorithms.symmetric.CalculationsSymmetric;
 import app.algorithms.symmetric.GradientDescentSymmetric;
 import app.data.generators.GraphGenerator;
+import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
@@ -40,6 +46,7 @@ public class TrainWithRandomForGUI extends Thread {
 	private double alphaGen ;
 	private double betaGen ;
 	DecimalFormat df = new DecimalFormat("#.##");
+	private Thread thisThread;
 	
 	public TrainWithRandomForGUI(String modelFolder, ProgressBar frame,
 			JFrame mainFrame, double[][] s, double[] r, double[] y,
@@ -65,11 +72,29 @@ public class TrainWithRandomForGUI extends Thread {
 		this.betaGen = betaGen;
 		time = "Time in seconds: ";
 		// System.out.println(Writer.edges(s));
+		this.thisThread = this;
 	}
 
 	public void run() {
 		mainFrame.setEnabled(false);
 		frame.setTitle("Progress DirGCRF");
+		JButton cancel = new JButton();
+		frame.add(cancel);
+		cancel.setBounds(0, 0, 80, 30);
+		cancel.setText("Cancel");
+		Style.buttonStyle(cancel);
+		cancel.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
+			public void actionPerformed(ActionEvent e) {
+				mainFrame.setEnabled(true);
+				frame.setVisible(false);
+				Reader.deleteDir(new File(modelFolder));
+				thisThread.stop();
+				JOptionPane.showMessageDialog(frame,
+						"Training process is canceled.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
 		GradientDescentAsymmetric gda = new GradientDescentAsymmetric(alpha,
 				beta, lr, s, r, y);
 		long start = System.currentTimeMillis();

@@ -85,7 +85,7 @@ public class MainFrame extends JFrame {
 		setLocationRelativeTo(null);
 		frame = this;
 		
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
 
 		} else {
 

@@ -106,7 +106,8 @@ public class TrainPanel extends JPanel {
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
+			
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane
@@ -116,6 +117,7 @@ public class TrainPanel extends JPanel {
 										+ " Please configure parameters values in Settings->Configuration.",
 								"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
+
 				setBackground(UIManager.getColor("Button.background"));
 				setLayout(null);
 				add(getLblDataset());
@@ -136,8 +138,8 @@ public class TrainPanel extends JPanel {
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
 						"TEXT FILES", "txt", "text");
 				fc.setFileFilter(filter);
+				fc.setCurrentDirectory(Reader.jarFile());
 
-				fc.setCurrentDirectory(Reader.jarFile() );
 				this.mainFrame = mainFrame;
 				add(getChckbxStandard());
 				add(getLblStandard());
@@ -149,14 +151,15 @@ public class TrainPanel extends JPanel {
 				add(getBtnTestPredictr());
 				add(getLblNoOfHidden());
 				add(getTxtHidden());
-
 				add(getLblNoOfIterations());
 				add(getTxtIterNN());
 				setTxtValues();
 				add(getCmbPredictor());
 				add(getCmbMethod());
 				add(getLblMethod());
+
 				add(getCmbDataset());
+
 			}
 		} else {
 			JOptionPane
@@ -378,7 +381,7 @@ public class TrainPanel extends JPanel {
 											"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 
-							double[] r = Reader.readArray(Reader.jarFile()  + "/data/r.txt",
+							double[] r = Reader.readArray(path  + "/data/r.txt",
 									noOfNodes);
 
 							callMethod(method, path, noOfNodes, alpha, beta,
@@ -664,6 +667,10 @@ public class TrainPanel extends JPanel {
 	public String readParametersFromCfg() {
 		try {
 			Map<String, String> params = Reader.readCfg();
+			if(params==null){
+				return "Configuration file reading failed";
+			}
+
 			try {
 				alpha = Integer.parseInt(params.get("Alpha").toString());
 				beta = Integer.parseInt(params.get("Beta").toString());
@@ -978,7 +985,6 @@ public class TrainPanel extends JPanel {
 			cmbDataset = new JComboBox();
 			cmbDataset.setBounds(185, 66, 315, 30);
 			cmbDataset.addItem("choose dataset");
-
 			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);

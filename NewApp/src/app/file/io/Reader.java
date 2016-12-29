@@ -18,17 +18,18 @@ import app.exceptions.ConfigurationParameterseException;
 import app.gui.frames.MainFrame;
 
 public class Reader {
-	
-	public static File jarFile(){
-		 URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
-         File jarPath = null;
-         try {
-             jarPath = new File(location.toURI()).getParentFile();
-         } catch (URISyntaxException e) {
-             // TODO Auto-generated catch block
-             e.printStackTrace();
-         }
-         return jarPath;
+
+	public static File jarFile() {
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
+		File jarPath = null;
+		try {
+			jarPath = new File(location.toURI()).getParentFile();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return jarPath;
 	}
 
 	public static double[][] readGraph(String path, int noOfNodes) {
@@ -143,10 +144,8 @@ public class Reader {
 						if (Files.isRegularFile(filePath)) {
 							if (filePath.getFileName().toString()
 									.contains("DirGCRF")) {
-								String[] folders = filePath.getParent()
-										.toString().split("\\\\");
-								files.add(folders[folders.length - 2] + " - "
-										+ folders[folders.length - 1]);
+								files.add(filePath.getParent().getParent().getFileName()+ " - "
+										+ filePath.getParent().getFileName());
 							}
 						}
 					});
@@ -213,24 +212,28 @@ public class Reader {
 	public static Map<String, String> readCfg()
 			throws ConfigurationParameterseException {
 		Map<String, String> params = new HashMap<>();
-		String[] text = read("cfg.txt");
-		if (text.length != 19) {
-			throw new ConfigurationParameterseException(
-					"Configuration file reading failed. File has wrong format.");
-		}
-		for (int i = 0; i < text.length; i++) {
-			if (!text[i].contains("=")) {
+		String[] text = read(Reader.jarFile() + "/cfg.txt");
+		if (text != null) {
+			if (text.length != 19) {
 				throw new ConfigurationParameterseException(
 						"Configuration file reading failed. File has wrong format.");
 			}
-			String[] line = text[i].split("=");
-			if (line.length == 2) {
-				params.put(line[0], line[1]);
-			} else {
-				params.put(line[0], "");
+			for (int i = 0; i < text.length; i++) {
+				if (!text[i].contains("=")) {
+					throw new ConfigurationParameterseException(
+							"Configuration file reading failed. File has wrong format.");
+				}
+				String[] line = text[i].split("=");
+				if (line.length == 2) {
+					params.put(line[0], line[1]);
+				} else {
+					params.put(line[0], "");
+				}
 			}
+			return params;
+		}else{
+			return null;
 		}
-		return params;
 	}
 
 	public static void deleteDir(File file) {

@@ -169,7 +169,7 @@ public class ConfigurePanel extends JPanel {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"EXE FILES", "exe", "exe");
 		fc.setFileFilter(filter);
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane.showMessageDialog(mainFrame, result
@@ -365,7 +365,7 @@ public class ConfigurePanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						String[] text = prepareForFile();
-						Writer.write(text, "cfg.txt");
+						Writer.write(text, Reader.jarFile() + "/cfg.txt");
 						MainFrame m = (MainFrame) mainFrame;
 						m.enableMenu();
 						panel.removeAll();

@@ -72,7 +72,7 @@ public class TrainRandomPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public TrainRandomPanel(JFrame mainFrame) {
-		if (Reader.checkFile("cfg.txt")) {
+		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane
