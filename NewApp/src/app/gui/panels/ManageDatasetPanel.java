@@ -35,7 +35,6 @@ public class ManageDatasetPanel extends JPanel {
 	private JButton btnDelete1;
 	private JTable table1;
 	private DefaultTableModel model1;
-	private String path;
 	private JButton btnDelete2;
 	private JTable table2;
 	private DefaultTableModel model2;
@@ -51,12 +50,7 @@ public class ManageDatasetPanel extends JPanel {
 
 		this.mainFrame = mainFrame;
 
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		path = location.getFile();
-		path = path.substring(1, path.lastIndexOf("/"));
-
-		model1 = createTable1(path);
+		model1 = createTable1();
 
 		table1 = new JTable(model1);
 		table1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -64,7 +58,7 @@ public class ManageDatasetPanel extends JPanel {
 		table1.setFillsViewportHeight(true);
 		scrollPaneTable1.setBounds(28, 41, 850, 203);
 
-		model2 = createTable2(path);
+		model2 = createTable2();
 		table2 = new JTable(model2);
 		scrollPaneTable2 = new JScrollPane(table2);
 		table2.setFillsViewportHeight(true);
@@ -82,10 +76,10 @@ public class ManageDatasetPanel extends JPanel {
 
 	}
 
-	private DefaultTableModel createTable1(String path) {
+	private DefaultTableModel createTable1() {
 		String[] columnNames = { "Name", "No of nodes train",
 				"No of nodes test" };
-		String mainPath = path.substring(0, path.lastIndexOf("/"))
+		String mainPath = Reader.jarFile() 
 				+ "/Datasets/Networks";
 		String[] files = Reader.getAllFolders(mainPath);
 
@@ -114,10 +108,10 @@ public class ManageDatasetPanel extends JPanel {
 		};
 	}
 
-	private DefaultTableModel createTable2(String path) {
+	private DefaultTableModel createTable2() {
 		String[] columnNames = { "Name", "No of nodes", "No of time points",
 				"No of attributes" };
-		String mainPath = path.substring(0, path.lastIndexOf("/"))
+		String mainPath = Reader.jarFile() 
 				+ "/Datasets/TemporalNetworks";
 		String[] files = Reader.getAllFolders(mainPath);
 
@@ -196,8 +190,7 @@ public class ManageDatasetPanel extends JPanel {
 										+ name + "\" dataset?", "Question",
 								JOptionPane.YES_NO_OPTION);
 						if (selectedOption == JOptionPane.YES_OPTION) {
-							String mainPath = path.substring(0,
-									path.lastIndexOf("/"))
+							String mainPath = Reader.jarFile() 
 									+ "/Datasets/Networks/" + name;
 							Reader.deleteDir(new File(mainPath));
 							model1.removeRow(table1.getSelectedRow());
@@ -235,8 +228,7 @@ public class ManageDatasetPanel extends JPanel {
 										+ name + "\" dataset?", "Question",
 								JOptionPane.YES_NO_OPTION);
 						if (selectedOption == JOptionPane.YES_OPTION) {
-							String mainPath = path.substring(0,
-									path.lastIndexOf("/"))
+							String mainPath = Reader.jarFile() 
 									+ "/Datasets/TemporalNetworks/" + name;
 							Reader.deleteDir(new File(mainPath));
 							model2.removeRow(table2.getSelectedRow());
@@ -267,8 +259,7 @@ public class ManageDatasetPanel extends JPanel {
 								table1.getSelectedRow(), 0).toString();
 						String newName = (String) JOptionPane.showInputDialog(
 								mainFrame, "Insert new name for dataset", name);
-						String mainPath = path.substring(0,
-								path.lastIndexOf("/"))
+						String mainPath = Reader.jarFile() 
 								+ "/Datasets/Networks/" + name;
 						if ((newName != null) && (newName.length() > 0)) {
 							model1.setValueAt(newName, table1.getSelectedRow(), 0);
@@ -300,8 +291,7 @@ public class ManageDatasetPanel extends JPanel {
 								table2.getSelectedRow(), 0).toString();
 						String newName = (String) JOptionPane.showInputDialog(
 								mainFrame, "Insert new name for dataset", name);
-						String mainPath = path.substring(0,
-								path.lastIndexOf("/"))
+						String mainPath = Reader.jarFile() 
 								+ "/Datasets/TemporalNetworks/" + name;
 						if ((newName != null) && (newName.length() > 0)) {
 							model2.setValueAt(newName, table2.getSelectedRow(), 0);

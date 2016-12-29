@@ -96,12 +96,7 @@ public class TestPanel extends JPanel {
 					if (message != null) {
 						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPathDatasets = path1.substring(0,
-								path1.lastIndexOf("/"))
+						String mainPathDatasets = Reader.jarFile() 
 								+ "/Datasets/Networks/";
 
 						xPath = mainPathDatasets + "/"
@@ -139,10 +134,9 @@ public class TestPanel extends JPanel {
 						}
 						
 						String method = cmbMethod.getSelectedItem().toString();
-						
-						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-						Writer.createFolder(mainPath + "/MyModels" + method);
-						String dataPath = mainPath + "/MyModels" + method + "/" + txtModelName.getText();
+
+						Writer.createFolder(Reader.jarFile() + "/MyModels" + method);
+						String dataPath = Reader.jarFile()  + "/MyModels" + method + "/" + txtModelName.getText();
 						File matrixFile = new File(sPath);
 						Writer.copyFile(matrixFile, dataPath + "/data/matrixTest.txt");
 						File xFile = new File(xPath);
@@ -269,11 +263,8 @@ public class TestPanel extends JPanel {
 			return "Insert model name.";
 		}
 		String method = cmbMethod.getSelectedItem().toString();
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		if (!Writer.checkFolder(mainPath + "/MyModels"  + method + "/" + txtModelName.getText())) {
+
+		if (!Writer.checkFolder(Reader.jarFile()  + "/MyModels"  + method + "/" + txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText() + " does not exist.";
 		}
 		return null;
@@ -391,12 +382,7 @@ public class TestPanel extends JPanel {
 			cmbDataset = new JComboBox();
 			cmbDataset.setBounds(177, 71, 315, 30);
 			cmbDataset.addItem("choose dataset");
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
-			String path1 = location.getFile();
-			path1 = path1.substring(1, path1.lastIndexOf("/"));
-			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets/Networks");
+			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

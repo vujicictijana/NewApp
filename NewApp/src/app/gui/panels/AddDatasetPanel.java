@@ -103,12 +103,7 @@ public class AddDatasetPanel extends JPanel {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path = location.getFile();
-		path = path.substring(1, path.lastIndexOf("/"));
-		path = path.substring(0, path.lastIndexOf("/"));
-		fc.setCurrentDirectory(new File(path));
+		fc.setCurrentDirectory(Reader.jarFile());
 		this.mainFrame = mainFrame;
 		// add(getLblTime());
 		add(getLabel());
@@ -346,12 +341,8 @@ public class AddDatasetPanel extends JPanel {
 						JOptionPane.showMessageDialog(mainFrame, message,
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0,
-								path1.lastIndexOf("/"))
+
+						String mainPath = Reader.jarFile() 
 								+ "/Datasets";
 						String name = txtName.getText();
 						String dataPath = "";

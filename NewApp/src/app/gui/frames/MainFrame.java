@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.net.URL;
 
 public class MainFrame extends JFrame {
@@ -132,7 +133,7 @@ public class MainFrame extends JFrame {
 	private JMenu getMnTrain() {
 		if (mnTrain == null) {
 			mnTrain = new JMenu("Train");
-			mnTrain.setIcon(new ImageIcon("images/train.png"));
+			mnTrain.setIcon(new ImageIcon(Reader.jarFile() + "/images/train.png"));
 			mnTrain.setFont(new Font("Segoe UI", Font.BOLD, 17));
 			mnTrain.add(getMenuTrain());
 			mnTrain.add(new JSeparator());
@@ -196,7 +197,7 @@ public class MainFrame extends JFrame {
 		if (mnTest == null) {
 			mnTest = new JMenu("Test");
 			mnTest.setFont(new Font("Segoe UI", Font.BOLD, 17));
-			mnTest.setIcon(new ImageIcon("images/test.png"));
+			mnTest.setIcon(new ImageIcon(Reader.jarFile() +"/images/test.png"));
 			mnTest.add(getMenuTest());
 			mnTest.add(new JSeparator());
 			mnTest.add(getMenuTestRandom());
@@ -256,7 +257,7 @@ public class MainFrame extends JFrame {
 		if (mnSettings == null) {
 			mnSettings = new JMenu("Settings");
 			mnSettings.setFont(new Font("Segoe UI", Font.BOLD, 17));
-			mnSettings.setIcon(new ImageIcon("images/settings.png"));
+			mnSettings.setIcon(new ImageIcon(Reader.jarFile() +"/images/settings.png"));
 			mnSettings.add(getMenuParameters());
 			// mnSettings.add(new JSeparator());
 			// mnSettings.add(getMenuFile());
@@ -303,7 +304,7 @@ public class MainFrame extends JFrame {
 		if (mnPredict == null) {
 			mnPredict = new JMenu("Predict");
 			mnPredict.setFont(new Font("Segoe UI", Font.BOLD, 17));
-			mnPredict.setIcon(new ImageIcon("images/predict.png"));
+			mnPredict.setIcon(new ImageIcon(Reader.jarFile() + "/images/predict.png"));
 			mnPredict.add(getMnPredictYour());
 		}
 		return mnPredict;
@@ -358,7 +359,7 @@ public class MainFrame extends JFrame {
 		if (mnDatasets == null) {
 			mnDatasets = new JMenu("Datasets");
 			mnDatasets.setFont(new Font("Segoe UI", Font.BOLD, 17));
-			mnDatasets.setIcon(new ImageIcon("images/data.png"));
+			mnDatasets.setIcon(new ImageIcon(Reader.jarFile() + "/images/data.png"));
 			mnDatasets.add(getMenuAddDataset());
 			mnDatasets.add(new JSeparator());
 			mnDatasets.add(getMenuManageDatasets());
@@ -415,7 +416,7 @@ public class MainFrame extends JFrame {
 		if (mnHelp == null) {
 			mnHelp = new JMenu("Help");
 			mnHelp.setFont(new Font("Segoe UI", Font.BOLD, 17));
-			mnHelp.setIcon(new ImageIcon("images/question-menu.png"));
+			mnHelp.setIcon(new ImageIcon(Reader.jarFile() +"/images/question-menu.png"));
 			mnHelp.add(getMenuAbout());
 			mnHelp.add(new JSeparator());
 			mnHelp.add(getMenuDatasets());
@@ -430,12 +431,7 @@ public class MainFrame extends JFrame {
 			menuAbout.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuAbout.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-							.getLocation();
-					String path = location.getFile();
-					path = path.substring(1, path.lastIndexOf("/"));
-					path = path.substring(0, path.lastIndexOf("/"));
-					HelpPanel t = new HelpPanel(frame,path + "/html/about.html");
+					HelpPanel t = new HelpPanel(frame,Reader.jarFile()  + "/html/about.html");
 					t.setBounds(0, 61, 900, 750);
 					if (mainPanel != null) {
 						contentPane.remove(mainPanel);
@@ -458,12 +454,8 @@ public class MainFrame extends JFrame {
 			menuDatasets.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			menuDatasets.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-							.getLocation();
-					String path = location.getFile();
-					path = path.substring(1, path.lastIndexOf("/"));
-					path = path.substring(0, path.lastIndexOf("/"));
-					HelpPanel t = new HelpPanel(frame,path + "/html/dataset.html");
+
+					HelpPanel t = new HelpPanel(frame,Reader.jarFile() + "/html/dataset.html");
 					t.setBounds(0, 61, 900, 750);
 					if (mainPanel != null) {
 						contentPane.remove(mainPanel);

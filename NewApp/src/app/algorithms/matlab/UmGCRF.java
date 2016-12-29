@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 
 import app.algorithms.basic.BasicCalcs;
+import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
@@ -27,12 +28,7 @@ public class UmGCRF {
 		MatlabProxy proxy;
 		try {
 			proxy = factory.getProxy();
-
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
-			String path = location.getFile();
-			path = path.substring(1, path.lastIndexOf("/"));
-			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/UMGCRF";
+			String path =  Reader.jarFile() + "/matlab/UMGCRF";
 			proxy.eval("addpath('" + path + "')");
 
 			// random data from matlab

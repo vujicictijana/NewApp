@@ -275,12 +275,7 @@ public class TrainTemporalPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPathDatasets = path1.substring(0,
-								path1.lastIndexOf("/"))
+						String mainPathDatasets = Reader.jarFile() 
 								+ "/Datasets/TemporalNetworks";
 
 						xPath = mainPathDatasets + "/"
@@ -532,16 +527,12 @@ public class TrainTemporalPanel extends JPanel {
 		File yFile = new File(yPath);
 		String method = cmbMethod.getSelectedItem().toString();
 
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		Writer.createFolder(mainPath + "/MyModels" + method);
-		String path = mainPath + "/MyModels" + method + "/"
+		
+		Writer.createFolder(Reader.jarFile()  + "/MyModels" + method);
+		String path = Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText();
 		Writer.createFolder(path);
-		String dataPath = mainPath + "/MyModels" + method + "/"
+		String dataPath = Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText() + "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(xFile, dataPath + "/x.txt");
@@ -656,13 +647,9 @@ public class TrainTemporalPanel extends JPanel {
 				return validate;
 			}
 		}
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+
 		String method = cmbMethod.getSelectedItem().toString();
-		if (Writer.checkFolder(mainPath + "/MyModels" + method + "/"
+		if (Writer.checkFolder(Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
@@ -1499,12 +1486,8 @@ public class TrainTemporalPanel extends JPanel {
 			cmbDataset.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					if (cmbDataset.getSelectedIndex() > 0) {
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPathDatasets = path1.substring(0,
-								path1.lastIndexOf("/"))
+
+						String mainPathDatasets = Reader.jarFile() 
 								+ "/Datasets/TemporalNetworks";
 
 						String sPath = mainPathDatasets + "/"
@@ -1548,12 +1531,8 @@ public class TrainTemporalPanel extends JPanel {
 			});
 			cmbDataset.setBounds(247, 59, 315, 30);
 			cmbDataset.addItem("choose dataset");
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
-			String path1 = location.getFile();
-			path1 = path1.substring(1, path1.lastIndexOf("/"));
-			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets/TemporalNetworks");
+
+			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/TemporalNetworks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

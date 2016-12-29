@@ -272,14 +272,8 @@ public class TrainRandomPanel extends JPanel {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						String model = Writer.folderName(cmbGraphType
 								.getSelectedItem().toString());
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
 
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0,
-								path1.lastIndexOf("/"));
-						String modelFolder = mainPath + "/RandomModels/"
+						String modelFolder = Reader.jarFile()  + "/RandomModels/"
 								+ model + "/" + noOfNodes + "nodes";
 						if (model.contains("Probability")) {
 							double probability = Double.parseDouble(txtProb
@@ -464,17 +458,13 @@ public class TrainRandomPanel extends JPanel {
 	}
 
 	public void createMainFolders() {
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		String path = mainPath + "/RandomModels";
+
+		String path = Reader.jarFile()  + "/RandomModels";
 		Writer.createFolder(path);
 		for (int i = 1; i < cmbGraphType.getItemCount(); i++) {
 			String folder = Writer.folderName(cmbGraphType.getItemAt(i)
 					.toString());
-			Writer.createFolder(mainPath + "/RandomModels/" + folder);
+			Writer.createFolder(Reader.jarFile()  + "/RandomModels/" + folder);
 		}
 	}
 

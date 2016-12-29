@@ -6,14 +6,30 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import app.exceptions.ConfigurationParameterseException;
+import app.gui.frames.MainFrame;
 
 public class Reader {
+	
+	public static File jarFile(){
+		 URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+         File jarPath = null;
+         try {
+             jarPath = new File(location.toURI()).getParentFile();
+         } catch (URISyntaxException e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+         }
+         return jarPath;
+	}
 
 	public static double[][] readGraph(String path, int noOfNodes) {
 		double[][] matrix = new double[noOfNodes][noOfNodes];

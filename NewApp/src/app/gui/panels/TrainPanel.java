@@ -136,12 +136,8 @@ public class TrainPanel extends JPanel {
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
 						"TEXT FILES", "txt", "text");
 				fc.setFileFilter(filter);
-				URL location = MainFrame.class.getProtectionDomain()
-						.getCodeSource().getLocation();
-				String path = location.getFile();
-				path = path.substring(1, path.lastIndexOf("/"));
-				path = path.substring(0, path.lastIndexOf("/"));
-				fc.setCurrentDirectory(new File(path));
+
+				fc.setCurrentDirectory(Reader.jarFile() );
 				this.mainFrame = mainFrame;
 				add(getChckbxStandard());
 				add(getLblStandard());
@@ -301,12 +297,7 @@ public class TrainPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
-						URL location = MainFrame.class.getProtectionDomain()
-								.getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0,
-								path1.lastIndexOf("/"))
+						String mainPath = Reader.jarFile() 
 								+ "/Datasets/Networks/";
 
 						xPath = mainPath + "/"
@@ -387,7 +378,7 @@ public class TrainPanel extends JPanel {
 											"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 
-							double[] r = Reader.readArray(path + "/data/r.txt",
+							double[] r = Reader.readArray(Reader.jarFile()  + "/data/r.txt",
 									noOfNodes);
 
 							callMethod(method, path, noOfNodes, alpha, beta,
@@ -426,17 +417,12 @@ public class TrainPanel extends JPanel {
 		File xFile = new File(yPath);
 		File yFile = new File(sPath);
 
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		Writer.createFolder(mainPath + "/MyModels" + method);
-		String path = mainPath + "/MyModels" + method + "/"
+		Writer.createFolder(Reader.jarFile() + "/MyModels" + method);
+		String path = Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText();
 		Writer.createFolder(path);
 
-		String dataPath = mainPath + "/MyModels" + method + "/"
+		String dataPath = Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText() + "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
@@ -556,12 +542,8 @@ public class TrainPanel extends JPanel {
 			return "Choose method.";
 		}
 		String method = cmbMethod.getSelectedItem().toString();
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		if (Writer.checkFolder(mainPath + "/MyModels" + method + "/"
+
+		if (Writer.checkFolder(Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
@@ -996,12 +978,8 @@ public class TrainPanel extends JPanel {
 			cmbDataset = new JComboBox();
 			cmbDataset.setBounds(185, 66, 315, 30);
 			cmbDataset.addItem("choose dataset");
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
-			String path1 = location.getFile();
-			path1 = path1.substring(1, path1.lastIndexOf("/"));
-			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFolders(mainPath + "/Datasets/Networks");
+
+			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

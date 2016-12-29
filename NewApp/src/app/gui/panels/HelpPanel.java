@@ -73,12 +73,7 @@ public class HelpPanel extends JPanel {
 	}
 
 	public void setLinks() {
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
-				.getLocation();
-		String path = location.getFile();
-		path = path.substring(1, path.lastIndexOf("/"));
-		path = path.substring(0, path.lastIndexOf("/"));
-		String initialText = getHtml(path + "/html/methods.html");
+		String initialText = getHtml(Reader.jarFile() + "/html/methods.html");
 		lblText = new JLabel(initialText);
 		lblText.setVerticalAlignment(SwingConstants.TOP);
 		lblText.setBounds(10, 10, 850, 500);

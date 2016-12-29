@@ -107,10 +107,7 @@ public class PredictPanel extends JPanel {
 					} else {
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						String method = cmbMethod.getSelectedItem().toString();
-						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
+						String mainPath = Reader.jarFile().getAbsolutePath();
 						String dataPath = mainPath + "/MyModels" + method + "/"
 								+ txtModelName.getText();
 						File matrixFile = new File(txtMatrixFile.getText());
@@ -126,7 +123,7 @@ public class PredictPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						
+
 						if (x.length != noOfNodes) {
 							JOptionPane.showMessageDialog(mainFrame,
 									"Number of lines in the file with attributes should be "
@@ -209,7 +206,7 @@ public class PredictPanel extends JPanel {
 		frame.setLocationRelativeTo(null);
 		double[] y = new double[r.length];
 		UmGCRFTestMyModelForGUI test = new UmGCRFTestMyModelForGUI(matlabPath,
-				mainFrame, null, modelFolder, s, r, y, frame,proxy);
+				mainFrame, null, modelFolder, s, r, y, frame, proxy);
 		test.start();
 	}
 
@@ -270,12 +267,10 @@ public class PredictPanel extends JPanel {
 		if (txtModelName.getText().equals("")) {
 			return "Insert model name.";
 		}
-		URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
+		URL location = MainFrame.class.getProtectionDomain().getCodeSource()
+				.getLocation();
 		String method = cmbMethod.getSelectedItem().toString();
-		String path1 = location.getFile();
-		path1 = path1.substring(1, path1.lastIndexOf("/"));
-		String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-		if (!Writer.checkFolder(mainPath + "/MyModels" + method + "/"
+		if (!Writer.checkFolder(Reader.jarFile()  + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " does not exist.";
@@ -490,8 +485,7 @@ public class PredictPanel extends JPanel {
 				useMatlab = false;
 			}
 			matlabPath = params.get("Path").toString();
-			proxy = Integer.parseInt(params.get("Proxy")
-					.toString());
+			proxy = Integer.parseInt(params.get("Proxy").toString());
 		} catch (ConfigurationParameterseException e) {
 			return e.getMessage();
 		}

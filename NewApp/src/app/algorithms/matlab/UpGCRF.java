@@ -2,6 +2,8 @@ package app.algorithms.matlab;
 
 import java.io.IOException;
 import java.net.URL;
+
+import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
@@ -28,11 +30,7 @@ public class UpGCRF {
 		try {
 			proxy = factory.getProxy();
 
-			URL location = MainFrame.class.getProtectionDomain()
-					.getCodeSource().getLocation();
-			String path = location.getFile();
-			path = path.substring(1, path.lastIndexOf("/"));
-			path = path.substring(0, path.lastIndexOf("/")) + "/matlab/upGCRF";
+			String path =  Reader.jarFile() + "/matlab/upGCRF";
 			proxy.eval("addpath('" + path + "')");
 
 			MatlabTypeConverter processor = new MatlabTypeConverter(proxy);

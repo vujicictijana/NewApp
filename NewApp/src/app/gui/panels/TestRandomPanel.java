@@ -116,10 +116,7 @@ public class TestRandomPanel extends JPanel {
 					} else {
 						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
 
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-						String model = mainPath + "/RandomModels/"
+						String model = Reader.jarFile()  + "/RandomModels/"
 								+ cmbModel.getSelectedItem().toString().replaceAll(" - ", "/");
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());
 						int times = Integer.parseInt(txtTimes.getText());
@@ -150,12 +147,8 @@ public class TestRandomPanel extends JPanel {
 			cmbModel.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
 					if (cmbModel.getSelectedItem().toString().contains("probability")) {
-						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
 
-						String path1 = location.getFile();
-						path1 = path1.substring(1, path1.lastIndexOf("/"));
-						String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-						String model = mainPath + "/RandomModels/"
+						String model = Reader.jarFile()  + "/RandomModels/"
 								+ cmbModel.getSelectedItem().toString().replaceAll(" - ", "/");
 						String probModel = model.split("/")[model.split("/").length - 1];
 						probModel = probModel.substring(probModel.indexOf("s") + 1, probModel.indexOf("p"));
@@ -166,12 +159,8 @@ public class TestRandomPanel extends JPanel {
 			});
 			cmbModel.setBounds(181, 39, 417, 30);
 			cmbModel.addItem("choose model");
-			URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
 
-			String path1 = location.getFile();
-			path1 = path1.substring(1, path1.lastIndexOf("/"));
-			String mainPath = path1.substring(0, path1.lastIndexOf("/"));
-			String[] files = Reader.getAllFiles(mainPath + "/RandomModels");
+			String[] files = Reader.getAllFiles(Reader.jarFile()  + "/RandomModels");
 			for (int i = 0; i < files.length; i++) {
 				cmbModel.addItem(files[i]);
 			}
@@ -214,7 +203,7 @@ public class TestRandomPanel extends JPanel {
 		Writer.createFolder("Models");
 		for (int i = 1; i < cmbModel.getItemCount(); i++) {
 			String folder = Writer.folderName(cmbModel.getItemAt(i).toString());
-			Writer.createFolder("Models/" + folder);
+			Writer.createFolder(Reader.jarFile() + "/Models/" + folder);
 		}
 	}
 

@@ -13,6 +13,8 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
+import app.file.io.Reader;
+
 public class Style {
 
 	public static void buttonStyle(JButton button) {
@@ -24,8 +26,8 @@ public class Style {
 	public static void questionButtonStyle(JButton button) {
 		button.setBorder(null);
 		button.setBackground(UIManager.getColor("Button.background"));
-		button.setIcon(new ImageIcon("images/question.png"));
-		button.setRolloverIcon(new ImageIcon("images/question-h.png"));
+		button.setIcon(new ImageIcon(Reader.jarFile() +  "/images/question.png"));
+		button.setRolloverIcon(new ImageIcon(Reader.jarFile() +  "/images/question-h.png"));
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
 		button.setBorderPainted(false);
@@ -68,7 +70,8 @@ public class Style {
 		label.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		label.setOpaque(true);
 	}
+	
 	public static ImageIcon questionIcon() {
-		return new ImageIcon("images/question-icon.png");
+		return new ImageIcon(Reader.jarFile() +  "/images/question-icon.png");
 	}
 }
