@@ -19,7 +19,10 @@ public class Style {
 
 	public static void buttonStyle(JButton button) {
 		button.setBackground(UIManager.getColor("Button.background"));
-		button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+//		button.setBackground(new Color(54, 120, 226));
+		button.setBorder(new RoundedBorder(10));
+		button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
 		button.setFocusPainted(false);
 	}
 

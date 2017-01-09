@@ -680,7 +680,7 @@ public class ConfigurePanel extends JPanel {
 			lblPathToMatlabexe.setEnabled(false);
 			lblPathToMatlabexe.setHorizontalAlignment(SwingConstants.LEFT);
 			lblPathToMatlabexe.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPathToMatlabexe.setBounds(455, 479, 164, 30);
+			lblPathToMatlabexe.setBounds(427, 485, 164, 30);
 		}
 		return lblPathToMatlabexe;
 	}
@@ -707,7 +707,7 @@ public class ConfigurePanel extends JPanel {
 					}
 				}
 			});
-			chckMatlab.setBounds(455, 445, 269, 23);
+			chckMatlab.setBounds(427, 451, 269, 23);
 			
 		}
 		return chckMatlab;
@@ -722,7 +722,7 @@ public class ConfigurePanel extends JPanel {
 					chooseFile(txtPath);
 				}
 			});
-			btnBrowse.setBounds(787, 520, 100, 30);
+			btnBrowse.setBounds(759, 526, 100, 30);
 		}
 		return btnBrowse;
 	}
@@ -740,7 +740,7 @@ public class ConfigurePanel extends JPanel {
 			txtPath.setEnabled(false);
 			txtPath.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtPath.setColumns(10);
-			txtPath.setBounds(455, 520, 315, 30);
+			txtPath.setBounds(427, 526, 315, 30);
 		}
 		return txtPath;
 	}
@@ -750,7 +750,7 @@ public class ConfigurePanel extends JPanel {
 			lblHelp = new JLabel(
 					"Example for Windows: C:/Program Files/MATLAB/Version/bin/matlab.exe");
 			lblHelp.setEnabled(false);
-			lblHelp.setBounds(455, 561, 447, 23);
+			lblHelp.setBounds(427, 567, 447, 23);
 		}
 		return lblHelp;
 	}
@@ -989,7 +989,7 @@ public class ConfigurePanel extends JPanel {
 			lblProxytimeout.setEnabled(false);
 			lblProxytimeout.setHorizontalAlignment(SwingConstants.LEFT);
 			lblProxytimeout.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblProxytimeout.setBounds(455, 595, 223, 30);
+			lblProxytimeout.setBounds(427, 601, 223, 30);
 		}
 		return lblProxytimeout;
 	}
@@ -1000,7 +1000,7 @@ public class ConfigurePanel extends JPanel {
 			txtProxy.setEnabled(false);
 			txtProxy.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtProxy.setColumns(10);
-			txtProxy.setBounds(640, 595, 169, 30);
+			txtProxy.setBounds(612, 601, 169, 30);
 		}
 		return txtProxy;
 	}

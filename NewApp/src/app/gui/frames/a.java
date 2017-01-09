@@ -1,14 +1,21 @@
 package app.gui.frames;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.ImageIcon;
-import javax.swing.JMenuBar;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.border.EmptyBorder;
+
+import java.awt.GridBagLayout;
+
+import javax.swing.JMenuBar;
 
 import app.file.io.Reader;
 import app.gui.panels.AddDatasetPanel;
@@ -22,18 +29,17 @@ import app.gui.panels.TrainPanel;
 import app.gui.panels.TrainRandomPanel;
 import app.gui.panels.TrainTemporalPanel;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionListener;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.net.URL;
+import java.awt.event.ActionListener;
+import java.awt.GridLayout;
+import javax.swing.JButton;
 
-public class MainFrame extends JFrame {
+public class a extends JFrame {
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JMenuBar menuBar;
+	private JPanel panel;
 	private JMenu mnTrain;
 	private JMenuItem menuTrain;
 	private JMenuItem menuTrainRandom;
@@ -55,6 +61,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuAbout;
 	private JMenuItem menuDatasets;
 	private JMenuItem menuMethods;
+	private JPanel panel_1;
 	/**
 	 * Launch the application.
 	 */
@@ -62,7 +69,7 @@ public class MainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame frame = new MainFrame();
+					a frame = new a();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -74,46 +81,36 @@ public class MainFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame() {
+	public a() {
+		setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 906, 800);
+		setBounds(100, 100, 450, 300);
+		setJMenuBar(getMenuBar_1());
 		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		contentPane.add(getMenuBar_1());
-		setLocationRelativeTo(null);
-		frame = this;
-		
-		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
-
-		} else {
-
-			ConfigurePanel c = new ConfigurePanel(frame);
-			c.setBounds(0, 61, 900, 750);
-			if (mainPanel != null) {
-				contentPane.remove(mainPanel);
-				contentPane.repaint();
-				contentPane.revalidate();
-			}
-			mainPanel = c;
-			contentPane.add(mainPanel);
-			contentPane.repaint();
-			contentPane.revalidate();
-
-			menuBar.setEnabled(false);
-			for (int i = 0; i < menuBar.getComponentCount(); i++) {
-				menuBar.getComponent(i).setEnabled(false);
-			}
-		}
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0};
+		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 0;
+		contentPane.add(getPanel(), gbc_panel);
 	}
 
-	public void enableMenu() {
-		menuBar.setEnabled(true);
-		for (int i = 0; i < menuBar.getComponentCount(); i++) {
-			menuBar.getComponent(i).setEnabled(true);
+	
+	private JPanel getPanel() {
+		if (panel == null) {
+			panel = new JPanel();
+			panel.setLayout(new GridLayout(1, 0, 0, 0));
+			panel.add(getPanel_1());
 		}
+		return panel;
 	}
-
 	private JMenuBar getMenuBar_1() {
 		if (menuBar == null) {
 			menuBar = new JMenuBar();
@@ -401,7 +398,7 @@ public class MainFrame extends JFrame {
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = new b();
+					mainPanel = t;
 					contentPane.add(mainPanel);
 					contentPane.repaint();
 					contentPane.revalidate();
@@ -493,5 +490,18 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return menuMethods;
+	}
+	private JPanel getPanel_1() {
+		if (panel_1 == null) {
+			panel_1 = new JPanel();
+			GridBagLayout gbl_panel_1 = new GridBagLayout();
+			gbl_panel_1.columnWidths = new int[]{0};
+			gbl_panel_1.rowHeights = new int[]{0};
+			gbl_panel_1.columnWeights = new double[]{Double.MIN_VALUE};
+			gbl_panel_1.rowWeights = new double[]{Double.MIN_VALUE};
+			panel_1.setLayout(gbl_panel_1);
+			panel_1 = new b();
+		}
+		return panel_1;
 	}
 }
