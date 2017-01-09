@@ -106,8 +106,8 @@ public class TrainPanel extends JPanel {
 	public TrainPanel(JFrame mainFrame) {
 		setBounds(new Rectangle(0, 0, 900, 650));
 		setMinimumSize(new Dimension(500, 500));
-		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
-			
+		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
+
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane
@@ -193,8 +193,8 @@ public class TrainPanel extends JPanel {
 									mainFrame,
 									"Dataset samples are provided by default."
 											+ "\nUse samples or add your own dataset in Datasets -> Add dataset menu item."
-											+ "\nInformation for datasets samples can be found in Help -> Datasets menu item.", "Help",
-									JOptionPane.QUESTION_MESSAGE,
+											+ "\nInformation for datasets samples can be found in Help -> Datasets menu item.",
+									"Help", JOptionPane.QUESTION_MESSAGE,
 									Style.questionIcon());
 				}
 			});
@@ -300,7 +300,7 @@ public class TrainPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
-						String mainPath = Reader.jarFile() 
+						String mainPath = Reader.jarFile()
 								+ "/Datasets/Networks/";
 
 						xPath = mainPath + "/"
@@ -353,7 +353,6 @@ public class TrainPanel extends JPanel {
 						double[] y = Reader.readArray(yPath, noOfNodes);
 						double[][] s = Reader.readGraph(sPath, noOfNodes);
 
-						
 						String path = createFolderAndSaveData(method);
 						double result = callPredictor(path, x, y);
 
@@ -363,6 +362,7 @@ public class TrainPanel extends JPanel {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
+						boolean ok = true;
 						if (result == -3000) {
 							JOptionPane
 									.showMessageDialog(
@@ -371,7 +371,7 @@ public class TrainPanel extends JPanel {
 													.toString()
 													+ " cannot be applied to your data. Choose different predictor.",
 											"Error", JOptionPane.ERROR_MESSAGE);
-							return;
+							ok = false;
 						}
 						if (result == -5000) {
 							JOptionPane
@@ -379,13 +379,28 @@ public class TrainPanel extends JPanel {
 											mainFrame,
 											"File with attributes is not in correct format.",
 											"Error", JOptionPane.ERROR_MESSAGE);
-						} else {
+							ok = false;
+						}
 
-							double[] r = Reader.readArray(path  + "/data/r.txt",
-									noOfNodes);
+						double[] r = Reader.readArray(path + "/data/r.txt",
+								noOfNodes);
 
-							callMethod(method, path, noOfNodes, alpha, beta,
-									lr, maxIter, y, r, s);
+						if (ok) {
+							String okMethod = callMethod(method, path,
+									noOfNodes, alpha, beta, lr, maxIter, y, r,
+									s);
+
+							if (okMethod != null) {
+								JOptionPane.showMessageDialog(mainFrame,
+										okMethod, "Error",
+										JOptionPane.ERROR_MESSAGE);
+								ok = false;
+							}
+						}
+						if (!ok) {
+							String delPath = Reader.jarFile() + "/MyModels" + method + "/"
+									+ txtModelName.getText();
+							Reader.deleteDir(new File(delPath));
 						}
 
 					}
@@ -413,19 +428,17 @@ public class TrainPanel extends JPanel {
 
 	}
 
-	
-
 	private String createFolderAndSaveData(String method) {
 		File matrixFile = new File(xPath);
 		File xFile = new File(yPath);
 		File yFile = new File(sPath);
 
 		Writer.createFolder(Reader.jarFile() + "/MyModels" + method);
-		String path = Reader.jarFile()  + "/MyModels" + method + "/"
+		String path = Reader.jarFile() + "/MyModels" + method + "/"
 				+ txtModelName.getText();
 		Writer.createFolder(path);
 
-		String dataPath = Reader.jarFile()  + "/MyModels" + method + "/"
+		String dataPath = Reader.jarFile() + "/MyModels" + method + "/"
 				+ txtModelName.getText() + "/data";
 		Writer.createFolder(dataPath);
 		Writer.copyFile(matrixFile, dataPath + "/matrix.txt");
@@ -436,7 +449,7 @@ public class TrainPanel extends JPanel {
 		return path;
 	}
 
-	private void callMethod(String method, String path, int noOfNodes,
+	private String callMethod(String method, String path, int noOfNodes,
 			double alpha, double beta, double lr, int maxIter, double[] y,
 			double[] r, double[][] s) {
 		switch (method) {
@@ -447,25 +460,20 @@ public class TrainPanel extends JPanel {
 			if (BasicCalcs.isSymmetric(s)) {
 				trainGCRF(noOfNodes, path, maxIter, alpha, beta, lr, r, y, s);
 			} else {
-				JOptionPane.showMessageDialog(mainFrame,
-						"For GCRF method matrix should be symmetric.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+				return "For GCRF method matrix should be symmetric.";
 			}
 			break;
 		case "UmGCRF":
 			if (BasicCalcs.isSymmetric(s)) {
 				trainUmGCRF(path, r, y, s);
 			} else {
-				JOptionPane.showMessageDialog(mainFrame,
-						"For UmGCRF method matrix should be symmetric.",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				return "For UmGCRF method matrix should be symmetric.";
 			}
 			break;
 		default:
-			JOptionPane.showMessageDialog(mainFrame, "Unknown method.",
-					"Error", JOptionPane.ERROR_MESSAGE);
-			break;
+			return "Unknown method.";
 		}
+		return null;
 
 	}
 
@@ -546,7 +554,7 @@ public class TrainPanel extends JPanel {
 		}
 		String method = cmbMethod.getSelectedItem().toString();
 
-		if (Writer.checkFolder(Reader.jarFile()  + "/MyModels" + method + "/"
+		if (Writer.checkFolder(Reader.jarFile() + "/MyModels" + method + "/"
 				+ txtModelName.getText())) {
 			return "Model with name " + txtModelName.getText()
 					+ " already exists.";
@@ -590,7 +598,9 @@ public class TrainPanel extends JPanel {
 	}
 
 	public String validateDataForTestPredictor() {
-
+		if (cmbDataset.getSelectedIndex() == 0) {
+			return "Choose dataset.";
+		}
 		if (cmbPredictor.getSelectedIndex() == 0) {
 			return "Choose predictor.";
 		}
@@ -667,7 +677,7 @@ public class TrainPanel extends JPanel {
 	public String readParametersFromCfg() {
 		try {
 			Map<String, String> params = Reader.readCfg();
-			if(params==null){
+			if (params == null) {
 				return "Configuration file reading failed";
 			}
 
@@ -804,32 +814,45 @@ public class TrainPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 
-						int noOfNodes = -5;
+						String mainPath = Reader.jarFile()
+								+ "/Datasets/Networks/";
 
-						if (noOfNodes <= 0) {
+						xPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/xTrain.txt";
+						yPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/yTrain.txt";
+						sPath = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/sTrain.txt";
+
+						String readme = mainPath + "/"
+								+ cmbDataset.getSelectedItem().toString()
+								+ "/readme.txt";
+						int noOfNodes = 0;
+						try {
+							String nodesTrain = Reader.read(readme)[0];
+							noOfNodes = Integer.parseInt(nodesTrain
+									.substring(nodesTrain.indexOf(":") + 2));
+							if (noOfNodes <= 0) {
+								JOptionPane
+										.showMessageDialog(
+												mainFrame,
+												"No. of nodes should be greater than 0.",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+						} catch (NumberFormatException e1) {
 							JOptionPane.showMessageDialog(mainFrame,
-									"No. of nodes should be greater than 0.",
-									"Error", JOptionPane.ERROR_MESSAGE);
+									"Reading dataset error.", "Error",
+									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 
 						String[] x = Reader.read(xPath);
-						if (x == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in the file with attributes should be "
-											+ noOfNodes + ".", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-
 						double[] y = Reader.readArray(yPath, noOfNodes);
-						if (y == null) {
-							JOptionPane.showMessageDialog(mainFrame,
-									"Number of lines in in the file with outputs should be "
-											+ noOfNodes + ".", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
 
 						double result = callPredictor(null, x, y);
 						if (result == -7000) {
@@ -985,7 +1008,8 @@ public class TrainPanel extends JPanel {
 			cmbDataset = new JComboBox();
 			cmbDataset.setBounds(185, 66, 315, 30);
 			cmbDataset.addItem("choose dataset");
-			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/Networks");
+			String[] files = Reader.getAllFolders(Reader.jarFile()
+					+ "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
 				cmbDataset.addItem(files[i]);
 			}

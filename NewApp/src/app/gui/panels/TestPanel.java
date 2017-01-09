@@ -165,7 +165,11 @@ public class TestPanel extends JPanel {
 							return;
 						}
 						double result = callPredictor(dataPath, x, y);
-
+						if (result == -9000) {
+							JOptionPane.showMessageDialog(mainFrame, "Selected dataset is not suitable for this model.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						if (result == -7000) {
 							JOptionPane.showMessageDialog(mainFrame, "Unknown predictor.", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -308,7 +312,9 @@ public class TestPanel extends JPanel {
 		if (Writer.checkFolder(path + "/nn")) {
 
 			DataSet testSet = Helper.prepareDataForNN(x, y);
+			
 			return MyNN.test(path, testSet);
+
 		}
 		if (Writer.checkFolder(path + "/mlr")) {
 			double[][] xMlr = Helper.prepareDataForLR(x);

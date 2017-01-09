@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JSeparator;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class ConfigurePanel extends JPanel {
 
@@ -80,7 +82,7 @@ public class ConfigurePanel extends JPanel {
 	private JLabel lblMatlab;
 	private JLabel lblPathToMatlabexe;
 	private JCheckBox chckMatlab;
-	private JButton button;
+	private JButton btnBrowse;
 	private JTextField txtPath;
 	private JFileChooser fc;
 	private JLabel lblHelp;
@@ -138,7 +140,7 @@ public class ConfigurePanel extends JPanel {
 		add(getLblMatlab());
 		add(getLabel_2_1());
 		add(getChckMatlab());
-		add(getButton());
+		add(getBtnBrowse());
 		add(getTxtPath());
 		add(getLblHelp());
 		add(getLblParametersForTraining());
@@ -675,6 +677,7 @@ public class ConfigurePanel extends JPanel {
 	private JLabel getLabel_2_1() {
 		if (lblPathToMatlabexe == null) {
 			lblPathToMatlabexe = new JLabel("Path to MATLAB.exe:");
+			lblPathToMatlabexe.setEnabled(false);
 			lblPathToMatlabexe.setHorizontalAlignment(SwingConstants.LEFT);
 			lblPathToMatlabexe.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblPathToMatlabexe.setBounds(455, 479, 164, 30);
@@ -685,22 +688,43 @@ public class ConfigurePanel extends JPanel {
 	private JCheckBox getChckMatlab() {
 		if (chckMatlab == null) {
 			chckMatlab = new JCheckBox("Use methods implemented in MATLAB");
+			chckMatlab.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent arg0) {
+					if(chckMatlab.isSelected()){
+						txtPath.setEnabled(true);
+						btnBrowse.setEnabled(true);
+						txtProxy.setEnabled(true);
+						lblPathToMatlabexe.setEnabled(true);
+						lblHelp.setEnabled(true);
+						lblProxytimeout.setEnabled(true);
+					}else{
+						txtPath.setEnabled(false);
+						btnBrowse.setEnabled(false);
+						txtProxy.setEnabled(false);
+						lblPathToMatlabexe.setEnabled(false);
+						lblHelp.setEnabled(false);
+						lblProxytimeout.setEnabled(false);
+					}
+				}
+			});
 			chckMatlab.setBounds(455, 445, 269, 23);
+			
 		}
 		return chckMatlab;
 	}
 
-	private JButton getButton() {
-		if (button == null) {
-			button = new JButton("Browse");
-			button.addActionListener(new ActionListener() {
+	private JButton getBtnBrowse() {
+		if (btnBrowse == null) {
+			btnBrowse = new JButton("Browse");
+			btnBrowse.setEnabled(false);
+			btnBrowse.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					chooseFile(txtPath);
 				}
 			});
-			button.setBounds(787, 520, 100, 30);
+			btnBrowse.setBounds(787, 520, 100, 30);
 		}
-		return button;
+		return btnBrowse;
 	}
 
 	public void chooseFile(JTextField txt) {
@@ -713,6 +737,7 @@ public class ConfigurePanel extends JPanel {
 	private JTextField getTxtPath() {
 		if (txtPath == null) {
 			txtPath = new JTextField();
+			txtPath.setEnabled(false);
 			txtPath.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtPath.setColumns(10);
 			txtPath.setBounds(455, 520, 315, 30);
@@ -724,6 +749,7 @@ public class ConfigurePanel extends JPanel {
 		if (lblHelp == null) {
 			lblHelp = new JLabel(
 					"Example for Windows: C:/Program Files/MATLAB/Version/bin/matlab.exe");
+			lblHelp.setEnabled(false);
 			lblHelp.setBounds(455, 561, 447, 23);
 		}
 		return lblHelp;
@@ -960,6 +986,7 @@ public class ConfigurePanel extends JPanel {
 	private JLabel getLblProxytimeout() {
 		if (lblProxytimeout == null) {
 			lblProxytimeout = new JLabel("Proxy timeout (seconds):");
+			lblProxytimeout.setEnabled(false);
 			lblProxytimeout.setHorizontalAlignment(SwingConstants.LEFT);
 			lblProxytimeout.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblProxytimeout.setBounds(455, 595, 223, 30);
@@ -970,6 +997,7 @@ public class ConfigurePanel extends JPanel {
 	private JTextField getTxtProxy() {
 		if (txtProxy == null) {
 			txtProxy = new JTextField();
+			txtProxy.setEnabled(false);
 			txtProxy.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtProxy.setColumns(10);
 			txtProxy.setBounds(640, 595, 169, 30);

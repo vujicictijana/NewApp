@@ -130,23 +130,27 @@ public class MyNN {
 		if (testSet == null) {
 			return -5000;
 		}
-		double[] outputs = new double[testSet.getRows().size()];
-		double[] expectedY = new double[testSet.getRows().size()];
-		String[] rArray = new String[outputs.length];
-		int i = 0;
-		for (DataSetRow row : testSet.getRows()) {
-			neuralNetwork.setInput(row.getInput());
-			neuralNetwork.calculate();
-			outputs[i] = neuralNetwork.getOutput()[0];
-			expectedY[i] = row.getDesiredOutput()[0];
-			rArray[i] = outputs[i] + "";
+		try {
+			double[] outputs = new double[testSet.getRows().size()];
+			double[] expectedY = new double[testSet.getRows().size()];
+			String[] rArray = new String[outputs.length];
+			int i = 0;
+			for (DataSetRow row : testSet.getRows()) {
+				neuralNetwork.setInput(row.getInput());
+				neuralNetwork.calculate();
+				outputs[i] = neuralNetwork.getOutput()[0];
+				expectedY[i] = row.getDesiredOutput()[0];
+				rArray[i] = outputs[i] + "";
 
-			i++;
+				i++;
+			}
+			if (folder != null) {
+				Writer.write(rArray, folder + "/data/rTest.txt");
+			}
+			return BasicCalcs.rSquared(outputs, expectedY);
+		} catch (Exception e) {
+			return -9000;
 		}
-		if (folder != null) {
-			Writer.write(rArray, folder + "/data/rTest.txt");
-		}
-		return BasicCalcs.rSquared(outputs, expectedY);
 	}
 
 	public static double testNoY(String folder, String[] x) {
