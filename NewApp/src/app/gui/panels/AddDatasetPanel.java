@@ -29,6 +29,9 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class AddDatasetPanel extends JPanel {
 
@@ -82,22 +85,267 @@ public class AddDatasetPanel extends JPanel {
 		setMinimumSize(new Dimension(500, 500));
 
 		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getTxtSFile());
-		add(getLblFile());
-		add(getBtnBrowseS());
-		add(getBtnQuestionS());
-		add(getLblModelName());
-		add(getTxtName());
-		add(getLblRArrayFile());
-		add(getTxtXFile());
-		add(getBtnBrowseX());
-		add(getBtnQuestionX());
-		add(getLblYArrayFile());
-		add(getTxtYFile());
-		add(getBtnBrowseY());
-		add(getBtnQuestionY());
-		add(getBtnTrain());
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{198, 91, 212, 100, 30, 190, 0};
+		gridBagLayout.rowHeights = new int[]{30, 32, 32, 30, 30, 31, 33, 30, 30, 30, 30, 31, 23, 30, 30, 45, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		setLayout(gridBagLayout);
+		GridBagConstraints gbc_lblData = new GridBagConstraints();
+		gbc_lblData.gridwidth = 10;
+		gbc_lblData.fill = GridBagConstraints.BOTH;
+		gbc_lblData.insets = new Insets(0, 0, 5, 0);
+		gbc_lblData.gridx = 0;
+		gbc_lblData.gridy = 0;
+		add(getLblData(), gbc_lblData);
+		GridBagConstraints gbc_lblModelName = new GridBagConstraints();
+		gbc_lblModelName.fill = GridBagConstraints.BOTH;
+		gbc_lblModelName.insets = new Insets(0, 0, 5, 5);
+		gbc_lblModelName.gridx = 0;
+		gbc_lblModelName.gridy = 1;
+		add(getLblModelName(), gbc_lblModelName);
+		GridBagConstraints gbc_txtName = new GridBagConstraints();
+		gbc_txtName.fill = GridBagConstraints.BOTH;
+		gbc_txtName.insets = new Insets(0, 0, 5, 5);
+		gbc_txtName.gridwidth = 2;
+		gbc_txtName.gridx = 1;
+		gbc_txtName.gridy = 1;
+		add(getTxtName(), gbc_txtName);
+		GridBagConstraints gbc_lblFile = new GridBagConstraints();
+		gbc_lblFile.anchor = GridBagConstraints.EAST;
+		gbc_lblFile.fill = GridBagConstraints.VERTICAL;
+		gbc_lblFile.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFile.gridx = 0;
+		gbc_lblFile.gridy = 2;
+		add(getLblFile(), gbc_lblFile);
+		GridBagConstraints gbc_txtSFile = new GridBagConstraints();
+		gbc_txtSFile.fill = GridBagConstraints.BOTH;
+		gbc_txtSFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtSFile.gridwidth = 2;
+		gbc_txtSFile.gridx = 1;
+		gbc_txtSFile.gridy = 2;
+		add(getTxtSFile(), gbc_txtSFile);
+		GridBagConstraints gbc_btnBrowseS = new GridBagConstraints();
+		gbc_btnBrowseS.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseS.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseS.gridx = 3;
+		gbc_btnBrowseS.gridy = 2;
+		add(getBtnBrowseS(), gbc_btnBrowseS);
+		GridBagConstraints gbc_btnQuestionS = new GridBagConstraints();
+		gbc_btnQuestionS.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionS.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionS.gridx = 4;
+		gbc_btnQuestionS.gridy = 2;
+		add(getBtnQuestionS(), gbc_btnQuestionS);
+		GridBagConstraints gbc_chkLearn = new GridBagConstraints();
+		gbc_chkLearn.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_chkLearn.insets = new Insets(0, 0, 5, 0);
+		gbc_chkLearn.gridx = 5;
+		gbc_chkLearn.gridy = 2;
+		add(getChkLearn(), gbc_chkLearn);
+		GridBagConstraints gbc_lblRArrayFile = new GridBagConstraints();
+		gbc_lblRArrayFile.anchor = GridBagConstraints.EAST;
+		gbc_lblRArrayFile.fill = GridBagConstraints.VERTICAL;
+		gbc_lblRArrayFile.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRArrayFile.gridx = 0;
+		gbc_lblRArrayFile.gridy = 3;
+		add(getLblRArrayFile(), gbc_lblRArrayFile);
+		GridBagConstraints gbc_txtXFile = new GridBagConstraints();
+		gbc_txtXFile.fill = GridBagConstraints.BOTH;
+		gbc_txtXFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtXFile.gridwidth = 2;
+		gbc_txtXFile.gridx = 1;
+		gbc_txtXFile.gridy = 3;
+		add(getTxtXFile(), gbc_txtXFile);
+		GridBagConstraints gbc_btnBrowseX = new GridBagConstraints();
+		gbc_btnBrowseX.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseX.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseX.gridx = 3;
+		gbc_btnBrowseX.gridy = 3;
+		add(getBtnBrowseX(), gbc_btnBrowseX);
+		GridBagConstraints gbc_btnQuestionX = new GridBagConstraints();
+		gbc_btnQuestionX.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionX.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionX.gridx = 4;
+		gbc_btnQuestionX.gridy = 3;
+		add(getBtnQuestionX(), gbc_btnQuestionX);
+		GridBagConstraints gbc_lblYArrayFile = new GridBagConstraints();
+		gbc_lblYArrayFile.anchor = GridBagConstraints.EAST;
+		gbc_lblYArrayFile.fill = GridBagConstraints.VERTICAL;
+		gbc_lblYArrayFile.insets = new Insets(0, 0, 5, 5);
+		gbc_lblYArrayFile.gridx = 0;
+		gbc_lblYArrayFile.gridy = 4;
+		add(getLblYArrayFile(), gbc_lblYArrayFile);
+		GridBagConstraints gbc_txtYFile = new GridBagConstraints();
+		gbc_txtYFile.fill = GridBagConstraints.BOTH;
+		gbc_txtYFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtYFile.gridwidth = 2;
+		gbc_txtYFile.gridx = 1;
+		gbc_txtYFile.gridy = 4;
+		add(getTxtYFile(), gbc_txtYFile);
+		GridBagConstraints gbc_btnBrowseY = new GridBagConstraints();
+		gbc_btnBrowseY.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseY.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseY.gridx = 3;
+		gbc_btnBrowseY.gridy = 4;
+		add(getBtnBrowseY(), gbc_btnBrowseY);
+		GridBagConstraints gbc_btnQuestionY = new GridBagConstraints();
+		gbc_btnQuestionY.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionY.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionY.gridx = 4;
+		gbc_btnQuestionY.gridy = 4;
+		add(getBtnQuestionY(), gbc_btnQuestionY);
+		// add(getLblTime());
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.anchor = GridBagConstraints.EAST;
+		gbc_label.fill = GridBagConstraints.VERTICAL;
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 0;
+		gbc_label.gridy = 5;
+		add(getLabel(), gbc_label);
+		GridBagConstraints gbc_txtNodes = new GridBagConstraints();
+		gbc_txtNodes.fill = GridBagConstraints.BOTH;
+		gbc_txtNodes.insets = new Insets(0, 0, 5, 5);
+		gbc_txtNodes.gridx = 1;
+		gbc_txtNodes.gridy = 5;
+		add(getTxtNodes(), gbc_txtNodes);
+		GridBagConstraints gbc_lblTestData = new GridBagConstraints();
+		gbc_lblTestData.fill = GridBagConstraints.BOTH;
+		gbc_lblTestData.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTestData.gridwidth = 10;
+		gbc_lblTestData.gridx = 0;
+		gbc_lblTestData.gridy = 7;
+		add(getLblTestData(), gbc_lblTestData);
+		GridBagConstraints gbc_label_1 = new GridBagConstraints();
+		gbc_label_1.anchor = GridBagConstraints.EAST;
+		gbc_label_1.fill = GridBagConstraints.VERTICAL;
+		gbc_label_1.insets = new Insets(0, 0, 5, 5);
+		gbc_label_1.gridx = 0;
+		gbc_label_1.gridy = 8;
+		add(getLabel_1(), gbc_label_1);
+		GridBagConstraints gbc_txtSTestFile = new GridBagConstraints();
+		gbc_txtSTestFile.fill = GridBagConstraints.BOTH;
+		gbc_txtSTestFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtSTestFile.gridwidth = 2;
+		gbc_txtSTestFile.gridx = 1;
+		gbc_txtSTestFile.gridy = 8;
+		add(getTxtSTestFile(), gbc_txtSTestFile);
+		GridBagConstraints gbc_btnBrowseSTest = new GridBagConstraints();
+		gbc_btnBrowseSTest.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseSTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseSTest.gridx = 3;
+		gbc_btnBrowseSTest.gridy = 8;
+		add(getBtnBrowseSTest(), gbc_btnBrowseSTest);
+		GridBagConstraints gbc_btnQuestionSTest = new GridBagConstraints();
+		gbc_btnQuestionSTest.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionSTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionSTest.gridx = 4;
+		gbc_btnQuestionSTest.gridy = 8;
+		add(getBtnQuestionSTest(), gbc_btnQuestionSTest);
+		GridBagConstraints gbc_label_3 = new GridBagConstraints();
+		gbc_label_3.anchor = GridBagConstraints.EAST;
+		gbc_label_3.fill = GridBagConstraints.VERTICAL;
+		gbc_label_3.insets = new Insets(0, 0, 5, 5);
+		gbc_label_3.gridx = 0;
+		gbc_label_3.gridy = 9;
+		add(getLabel_3(), gbc_label_3);
+		GridBagConstraints gbc_txtXTestFile = new GridBagConstraints();
+		gbc_txtXTestFile.fill = GridBagConstraints.BOTH;
+		gbc_txtXTestFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtXTestFile.gridwidth = 2;
+		gbc_txtXTestFile.gridx = 1;
+		gbc_txtXTestFile.gridy = 9;
+		add(getTxtXTestFile(), gbc_txtXTestFile);
+		GridBagConstraints gbc_btnBrowseXTest = new GridBagConstraints();
+		gbc_btnBrowseXTest.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseXTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseXTest.gridx = 3;
+		gbc_btnBrowseXTest.gridy = 9;
+		add(getBtnBrowseXTest(), gbc_btnBrowseXTest);
+		GridBagConstraints gbc_btnQuestionXTest = new GridBagConstraints();
+		gbc_btnQuestionXTest.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionXTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionXTest.gridx = 4;
+		gbc_btnQuestionXTest.gridy = 9;
+		add(getBtnQuestionXTest(), gbc_btnQuestionXTest);
+		GridBagConstraints gbc_label_4 = new GridBagConstraints();
+		gbc_label_4.anchor = GridBagConstraints.EAST;
+		gbc_label_4.fill = GridBagConstraints.VERTICAL;
+		gbc_label_4.insets = new Insets(0, 0, 5, 5);
+		gbc_label_4.gridx = 0;
+		gbc_label_4.gridy = 10;
+		add(getLabel_4(), gbc_label_4);
+		GridBagConstraints gbc_txtYTestFile = new GridBagConstraints();
+		gbc_txtYTestFile.fill = GridBagConstraints.BOTH;
+		gbc_txtYTestFile.insets = new Insets(0, 0, 5, 5);
+		gbc_txtYTestFile.gridwidth = 2;
+		gbc_txtYTestFile.gridx = 1;
+		gbc_txtYTestFile.gridy = 10;
+		add(getTxtYTestFile(), gbc_txtYTestFile);
+		GridBagConstraints gbc_btnBrowseYTest = new GridBagConstraints();
+		gbc_btnBrowseYTest.fill = GridBagConstraints.BOTH;
+		gbc_btnBrowseYTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowseYTest.gridx = 3;
+		gbc_btnBrowseYTest.gridy = 10;
+		add(getBtnBrowseYTest(), gbc_btnBrowseYTest);
+		GridBagConstraints gbc_btnQuestionYTest = new GridBagConstraints();
+		gbc_btnQuestionYTest.fill = GridBagConstraints.BOTH;
+		gbc_btnQuestionYTest.insets = new Insets(0, 0, 5, 5);
+		gbc_btnQuestionYTest.gridx = 4;
+		gbc_btnQuestionYTest.gridy = 10;
+		add(getBtnQuestionYTest(), gbc_btnQuestionYTest);
+		GridBagConstraints gbc_label_5 = new GridBagConstraints();
+		gbc_label_5.anchor = GridBagConstraints.EAST;
+		gbc_label_5.fill = GridBagConstraints.VERTICAL;
+		gbc_label_5.insets = new Insets(0, 0, 5, 5);
+		gbc_label_5.gridx = 0;
+		gbc_label_5.gridy = 11;
+		add(getLabel_5(), gbc_label_5);
+		GridBagConstraints gbc_txtNodesTest = new GridBagConstraints();
+		gbc_txtNodesTest.fill = GridBagConstraints.BOTH;
+		gbc_txtNodesTest.insets = new Insets(0, 0, 5, 5);
+		gbc_txtNodesTest.gridx = 1;
+		gbc_txtNodesTest.gridy = 11;
+		add(getTxtNodesTest(), gbc_txtNodesTest);
+		GridBagConstraints gbc_chkTogether = new GridBagConstraints();
+		gbc_chkTogether.anchor = GridBagConstraints.NORTHWEST;
+		gbc_chkTogether.insets = new Insets(0, 0, 5, 5);
+		gbc_chkTogether.gridwidth = 2;
+		gbc_chkTogether.gridx = 1;
+		gbc_chkTogether.gridy = 12;
+		add(getChkTogether(), gbc_chkTogether);
+		GridBagConstraints gbc_lblTimePoints = new GridBagConstraints();
+		gbc_lblTimePoints.anchor = GridBagConstraints.EAST;
+		gbc_lblTimePoints.fill = GridBagConstraints.VERTICAL;
+		gbc_lblTimePoints.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTimePoints.gridx = 0;
+		gbc_lblTimePoints.gridy = 13;
+		add(getLblTimePoints(), gbc_lblTimePoints);
+		GridBagConstraints gbc_txtTimePoints = new GridBagConstraints();
+		gbc_txtTimePoints.fill = GridBagConstraints.BOTH;
+		gbc_txtTimePoints.insets = new Insets(0, 0, 5, 5);
+		gbc_txtTimePoints.gridx = 1;
+		gbc_txtTimePoints.gridy = 13;
+		add(getTxtTimePoints(), gbc_txtTimePoints);
+		GridBagConstraints gbc_lblAttributes = new GridBagConstraints();
+		gbc_lblAttributes.fill = GridBagConstraints.BOTH;
+		gbc_lblAttributes.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAttributes.gridx = 0;
+		gbc_lblAttributes.gridy = 14;
+		add(getLblAttributes(), gbc_lblAttributes);
+		GridBagConstraints gbc_txtAttributes = new GridBagConstraints();
+		gbc_txtAttributes.fill = GridBagConstraints.BOTH;
+		gbc_txtAttributes.insets = new Insets(0, 0, 5, 5);
+		gbc_txtAttributes.gridx = 1;
+		gbc_txtAttributes.gridy = 14;
+		add(getTxtAttributes(), gbc_txtAttributes);
+		GridBagConstraints gbc_btnTrain = new GridBagConstraints();
+		gbc_btnTrain.anchor = GridBagConstraints.WEST;
+		gbc_btnTrain.fill = GridBagConstraints.BOTH;
+		gbc_btnTrain.insets = new Insets(0, 0, 0, 5);
+		gbc_btnTrain.gridx = 2;
+		gbc_btnTrain.gridy = 15;
+		add(getBtnTrain(), gbc_btnTrain);
 		fc = new JFileChooser();
 		panel = this;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -105,31 +353,6 @@ public class AddDatasetPanel extends JPanel {
 		fc.setFileFilter(filter);
 		fc.setCurrentDirectory(Reader.jarFile());
 		this.mainFrame = mainFrame;
-		// add(getLblTime());
-		add(getLabel());
-		add(getTxtNodes());
-		add(getLblData());
-		add(getLblTestData());
-		add(getTxtSTestFile());
-		add(getLabel_1());
-		add(getBtnBrowseSTest());
-		add(getBtnQuestionSTest());
-		add(getLabel_3());
-		add(getTxtXTestFile());
-		add(getBtnBrowseXTest());
-		add(getBtnQuestionXTest());
-		add(getLabel_4());
-		add(getTxtYTestFile());
-		add(getBtnBrowseYTest());
-		add(getBtnQuestionYTest());
-		add(getLabel_5());
-		add(getTxtNodesTest());
-		add(getChkTogether());
-		add(getLblAttributes());
-		add(getTxtAttributes());
-		add(getLblTimePoints());
-		add(getTxtTimePoints());
-		add(getChkLearn());
 
 	}
 
@@ -137,7 +360,6 @@ public class AddDatasetPanel extends JPanel {
 		if (txtSFile == null) {
 			txtSFile = new JTextField();
 			txtSFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtSFile.setBounds(214, 94, 315, 30);
 			txtSFile.setColumns(10);
 		}
 		return txtSFile;
@@ -148,7 +370,6 @@ public class AddDatasetPanel extends JPanel {
 			lblFile = new JLabel("File with edges:");
 			lblFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblFile.setBounds(78, 92, 120, 30);
 		}
 		return lblFile;
 	}
@@ -162,7 +383,6 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseS);
-			btnBrowseS.setBounds(546, 92, 100, 30);
 
 		}
 		return btnBrowseS;
@@ -171,7 +391,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionS() {
 		if (btnQuestionS == null) {
 			btnQuestionS = new JButton("");
-			btnQuestionS.setBounds(665, 92, 30, 30);
 			Style.questionButtonStyle(btnQuestionS);
 			btnQuestionS.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -199,7 +418,6 @@ public class AddDatasetPanel extends JPanel {
 			lblModelName = new JLabel("Dataset name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(44, 51, 154, 30);
 		}
 		return lblModelName;
 	}
@@ -209,7 +427,6 @@ public class AddDatasetPanel extends JPanel {
 			txtName = new JTextField();
 			txtName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtName.setColumns(10);
-			txtName.setBounds(214, 53, 315, 30);
 		}
 		return txtName;
 	}
@@ -219,7 +436,6 @@ public class AddDatasetPanel extends JPanel {
 			lblRArrayFile = new JLabel("File with attributes:");
 			lblRArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblRArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblRArrayFile.setBounds(58, 132, 140, 30);
 		}
 		return lblRArrayFile;
 	}
@@ -229,7 +445,6 @@ public class AddDatasetPanel extends JPanel {
 			txtXFile = new JTextField();
 			txtXFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtXFile.setColumns(10);
-			txtXFile.setBounds(214, 132, 315, 30);
 		}
 		return txtXFile;
 	}
@@ -243,7 +458,6 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseX);
-			btnBrowseX.setBounds(546, 132, 100, 30);
 		}
 		return btnBrowseX;
 	}
@@ -251,7 +465,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionX() {
 		if (btnQuestionX == null) {
 			btnQuestionX = new JButton("");
-			btnQuestionX.setBounds(665, 132, 30, 30);
 			Style.questionButtonStyle(btnQuestionX);
 			btnQuestionX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -280,7 +493,6 @@ public class AddDatasetPanel extends JPanel {
 			lblYArrayFile = new JLabel("File with outputs:");
 			lblYArrayFile.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblYArrayFile.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblYArrayFile.setBounds(68, 172, 130, 30);
 		}
 		return lblYArrayFile;
 	}
@@ -290,7 +502,6 @@ public class AddDatasetPanel extends JPanel {
 			txtYFile = new JTextField();
 			txtYFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYFile.setColumns(10);
-			txtYFile.setBounds(214, 172, 315, 30);
 		}
 		return txtYFile;
 	}
@@ -304,7 +515,6 @@ public class AddDatasetPanel extends JPanel {
 				}
 			});
 			Style.buttonStyle(btnBrowseY);
-			btnBrowseY.setBounds(546, 172, 100, 30);
 		}
 		return btnBrowseY;
 	}
@@ -312,7 +522,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionY() {
 		if (btnQuestionY == null) {
 			btnQuestionY = new JButton("");
-			btnQuestionY.setBounds(665, 172, 30, 30);
 			Style.questionButtonStyle(btnQuestionY);
 			btnQuestionY.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -479,7 +688,6 @@ public class AddDatasetPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(317, 603, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -569,7 +777,6 @@ public class AddDatasetPanel extends JPanel {
 			label = new JLabel("No. of nodes:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(98, 213, 100, 30);
 		}
 		return label;
 	}
@@ -579,7 +786,6 @@ public class AddDatasetPanel extends JPanel {
 			txtNodes = new JTextField();
 			txtNodes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNodes.setColumns(10);
-			txtNodes.setBounds(214, 212, 91, 30);
 		}
 		return txtNodes;
 	}
@@ -591,7 +797,6 @@ public class AddDatasetPanel extends JPanel {
 			lblData.setBackground(Color.GRAY);
 			lblData.setHorizontalAlignment(SwingConstants.CENTER);
 			lblData.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblData.setBounds(0, 0, 901, 30);
 			lblData.setOpaque(true);
 		}
 		return lblData;
@@ -605,7 +810,6 @@ public class AddDatasetPanel extends JPanel {
 			lblTestData.setForeground(Color.WHITE);
 			lblTestData.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblTestData.setBackground(Color.GRAY);
-			lblTestData.setBounds(0, 276, 901, 30);
 		}
 		return lblTestData;
 	}
@@ -615,7 +819,6 @@ public class AddDatasetPanel extends JPanel {
 			txtSTestFile = new JTextField();
 			txtSTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtSTestFile.setColumns(10);
-			txtSTestFile.setBounds(214, 318, 315, 30);
 		}
 		return txtSTestFile;
 	}
@@ -625,7 +828,6 @@ public class AddDatasetPanel extends JPanel {
 			label_1 = new JLabel("File with edges:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(78, 318, 120, 30);
 		}
 		return label_1;
 	}
@@ -633,12 +835,12 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseSTest() {
 		if (btnBrowseSTest == null) {
 			btnBrowseSTest = new JButton("Browse");
-			btnBrowseSTest.setBounds(546, 318, 100, 30);
 			btnBrowseSTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtSTestFile);
 				}
 			});
+			Style.buttonStyle(btnBrowseSTest);
 		}
 		return btnBrowseSTest;
 	}
@@ -646,7 +848,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionSTest() {
 		if (btnQuestionSTest == null) {
 			btnQuestionSTest = new JButton("");
-			btnQuestionSTest.setBounds(665, 318, 30, 30);
 			Style.questionButtonStyle(btnQuestionSTest);
 			btnQuestionSTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -674,7 +875,6 @@ public class AddDatasetPanel extends JPanel {
 			label_3 = new JLabel("File with attributes:");
 			label_3.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_3.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_3.setBounds(58, 358, 140, 30);
 		}
 		return label_3;
 	}
@@ -684,7 +884,6 @@ public class AddDatasetPanel extends JPanel {
 			txtXTestFile = new JTextField();
 			txtXTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtXTestFile.setColumns(10);
-			txtXTestFile.setBounds(214, 358, 315, 30);
 		}
 		return txtXTestFile;
 	}
@@ -692,12 +891,12 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseXTest() {
 		if (btnBrowseXTest == null) {
 			btnBrowseXTest = new JButton("Browse");
-			btnBrowseXTest.setBounds(546, 358, 100, 30);
 			btnBrowseXTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtXTestFile);
 				}
 			});
+			Style.buttonStyle(btnBrowseXTest);
 		}
 		return btnBrowseXTest;
 	}
@@ -705,7 +904,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionXTest() {
 		if (btnQuestionXTest == null) {
 			btnQuestionXTest = new JButton("");
-			btnQuestionXTest.setBounds(665, 358, 30, 30);
 			Style.questionButtonStyle(btnQuestionXTest);
 			btnQuestionXTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -734,7 +932,6 @@ public class AddDatasetPanel extends JPanel {
 			label_4 = new JLabel("File with outputs:");
 			label_4.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_4.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_4.setBounds(68, 398, 130, 30);
 		}
 		return label_4;
 	}
@@ -744,7 +941,6 @@ public class AddDatasetPanel extends JPanel {
 			txtYTestFile = new JTextField();
 			txtYTestFile.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtYTestFile.setColumns(10);
-			txtYTestFile.setBounds(214, 398, 315, 30);
 		}
 		return txtYTestFile;
 	}
@@ -752,12 +948,12 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnBrowseYTest() {
 		if (btnBrowseYTest == null) {
 			btnBrowseYTest = new JButton("Browse");
-			btnBrowseYTest.setBounds(546, 398, 100, 30);
 			btnBrowseYTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					chooseFile(txtYTestFile);
 				}
 			});
+			Style.buttonStyle(btnBrowseYTest);
 
 		}
 		return btnBrowseYTest;
@@ -766,7 +962,6 @@ public class AddDatasetPanel extends JPanel {
 	private JButton getBtnQuestionYTest() {
 		if (btnQuestionYTest == null) {
 			btnQuestionYTest = new JButton("");
-			btnQuestionYTest.setBounds(665, 398, 30, 30);
 			Style.questionButtonStyle(btnQuestionYTest);
 			btnQuestionYTest.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -790,7 +985,6 @@ public class AddDatasetPanel extends JPanel {
 			label_5 = new JLabel("No. of nodes:");
 			label_5.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_5.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_5.setBounds(98, 440, 100, 30);
 		}
 		return label_5;
 	}
@@ -800,7 +994,6 @@ public class AddDatasetPanel extends JPanel {
 			txtNodesTest = new JTextField();
 			txtNodesTest.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNodesTest.setColumns(10);
-			txtNodesTest.setBounds(214, 439, 91, 30);
 		}
 		return txtNodesTest;
 	}
@@ -838,7 +1031,6 @@ public class AddDatasetPanel extends JPanel {
 					}
 				}
 			});
-			chkTogether.setBounds(214, 486, 260, 23);
 		}
 		return chkTogether;
 	}
@@ -849,7 +1041,6 @@ public class AddDatasetPanel extends JPanel {
 			lblAttributes.setVisible(false);
 			lblAttributes.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAttributes.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAttributes.setBounds(0, 554, 198, 30);
 		}
 		return lblAttributes;
 	}
@@ -860,7 +1051,6 @@ public class AddDatasetPanel extends JPanel {
 			txtAttributes.setVisible(false);
 			txtAttributes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAttributes.setColumns(10);
-			txtAttributes.setBounds(214, 554, 91, 30);
 		}
 		return txtAttributes;
 	}
@@ -871,7 +1061,6 @@ public class AddDatasetPanel extends JPanel {
 			lblTimePoints.setVisible(false);
 			lblTimePoints.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblTimePoints.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblTimePoints.setBounds(55, 516, 143, 30);
 		}
 		return lblTimePoints;
 	}
@@ -882,7 +1071,6 @@ public class AddDatasetPanel extends JPanel {
 			txtTimePoints.setVisible(false);
 			txtTimePoints.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtTimePoints.setColumns(10);
-			txtTimePoints.setBounds(214, 516, 91, 30);
 		}
 		return txtTimePoints;
 	}
@@ -890,7 +1078,6 @@ public class AddDatasetPanel extends JPanel {
 	private JCheckBox getChkLearn() {
 		if (chkLearn == null) {
 			chkLearn = new JCheckBox("Learn similarity");
-			chkLearn.setBounds(711, 99, 140, 23);
 		}
 		return chkLearn;
 	}

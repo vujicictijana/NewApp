@@ -49,6 +49,9 @@ import org.neuroph.core.data.DataSet;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class TrainTemporalPanel extends JPanel {
 
@@ -136,56 +139,308 @@ public class TrainTemporalPanel extends JPanel {
 								"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
-				setLayout(null);
-				add(getLblModelName());
-				add(getTxtModelName());
-				add(getLblAlpha());
-				add(getLblBeta());
-				add(getTxtAlpha());
-				add(getTxtBeta());
-				add(getBtnTrain());
-				add(getLblMaxIterations());
-				add(getTxtMaxIter());
+				GridBagLayout gridBagLayout = new GridBagLayout();
+				gridBagLayout.columnWidths = new int[]{238, 91, 39, 157, 47, 0, 150, 114, 0};
+				gridBagLayout.rowHeights = new int[]{45, 33, 23, 32, 32, 30, 41, 30, 36, 33, 32, 32, 36, 0, 32, 45, 0};
+				gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				setLayout(gridBagLayout);
+				GridBagConstraints gbc_lblProvideTrainAn = new GridBagConstraints();
+				gbc_lblProvideTrainAn.anchor = GridBagConstraints.SOUTH;
+				gbc_lblProvideTrainAn.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblProvideTrainAn.insets = new Insets(0, 0, 5, 0);
+				gbc_lblProvideTrainAn.gridwidth = 11;
+				gbc_lblProvideTrainAn.gridx = 0;
+				gbc_lblProvideTrainAn.gridy = 0;
+				add(getLblProvideTrainAn(), gbc_lblProvideTrainAn);
+				GridBagConstraints gbc_lblData = new GridBagConstraints();
+				gbc_lblData.anchor = GridBagConstraints.NORTH;
+				gbc_lblData.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblData.insets = new Insets(0, 0, 5, 0);
+				gbc_lblData.gridwidth = 11;
+				gbc_lblData.gridx = 0;
+				gbc_lblData.gridy = 0;
+				add(getLblData(), gbc_lblData);
+				GridBagConstraints gbc_label = new GridBagConstraints();
+				gbc_label.anchor = GridBagConstraints.EAST;
+				gbc_label.fill = GridBagConstraints.VERTICAL;
+				gbc_label.insets = new Insets(0, 0, 5, 5);
+				gbc_label.gridx = 0;
+				gbc_label.gridy = 1;
+				add(getLabel(), gbc_label);
+				GridBagConstraints gbc_cmbDataset = new GridBagConstraints();
+				gbc_cmbDataset.fill = GridBagConstraints.BOTH;
+				gbc_cmbDataset.insets = new Insets(0, 0, 5, 5);
+				gbc_cmbDataset.gridwidth = 3;
+				gbc_cmbDataset.gridx = 1;
+				gbc_cmbDataset.gridy = 1;
+				add(getCmbDataset(), gbc_cmbDataset);
+				GridBagConstraints gbc_button = new GridBagConstraints();
+				gbc_button.anchor = GridBagConstraints.WEST;
+				gbc_button.fill = GridBagConstraints.VERTICAL;
+				gbc_button.insets = new Insets(0, 0, 5, 5);
+				gbc_button.gridx = 4;
+				gbc_button.gridy = 1;
+				add(getButton(), gbc_button);
+				GridBagConstraints gbc_chkLearn = new GridBagConstraints();
+				gbc_chkLearn.anchor = GridBagConstraints.NORTH;
+				gbc_chkLearn.fill = GridBagConstraints.HORIZONTAL;
+				gbc_chkLearn.insets = new Insets(0, 0, 5, 5);
+				gbc_chkLearn.gridwidth = 2;
+				gbc_chkLearn.gridx = 1;
+				gbc_chkLearn.gridy = 2;
+				add(getChkLearn(), gbc_chkLearn);
+				GridBagConstraints gbc_lblNoOfTime = new GridBagConstraints();
+				gbc_lblNoOfTime.anchor = GridBagConstraints.EAST;
+				gbc_lblNoOfTime.fill = GridBagConstraints.VERTICAL;
+				gbc_lblNoOfTime.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNoOfTime.gridx = 0;
+				gbc_lblNoOfTime.gridy = 3;
+				add(getLblNoOfTime(), gbc_lblNoOfTime);
+				GridBagConstraints gbc_txtNoTime = new GridBagConstraints();
+				gbc_txtNoTime.fill = GridBagConstraints.BOTH;
+				gbc_txtNoTime.insets = new Insets(0, 0, 5, 5);
+				gbc_txtNoTime.gridx = 1;
+				gbc_txtNoTime.gridy = 3;
+				add(getTxtNoTime(), gbc_txtNoTime);
+				GridBagConstraints gbc_lblNoOfTime_1 = new GridBagConstraints();
+				gbc_lblNoOfTime_1.fill = GridBagConstraints.BOTH;
+				gbc_lblNoOfTime_1.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNoOfTime_1.gridx = 0;
+				gbc_lblNoOfTime_1.gridy = 4;
+				add(getLblNoOfTime_1(), gbc_lblNoOfTime_1);
+				GridBagConstraints gbc_txtNoTimeTrain = new GridBagConstraints();
+				gbc_txtNoTimeTrain.fill = GridBagConstraints.BOTH;
+				gbc_txtNoTimeTrain.insets = new Insets(0, 0, 5, 5);
+				gbc_txtNoTimeTrain.gridx = 1;
+				gbc_txtNoTimeTrain.gridy = 4;
+				add(getTxtNoTimeTrain(), gbc_txtNoTimeTrain);
+				GridBagConstraints gbc_lblModelName = new GridBagConstraints();
+				gbc_lblModelName.anchor = GridBagConstraints.EAST;
+				gbc_lblModelName.fill = GridBagConstraints.VERTICAL;
+				gbc_lblModelName.insets = new Insets(0, 0, 5, 5);
+				gbc_lblModelName.gridx = 0;
+				gbc_lblModelName.gridy = 5;
+				add(getLblModelName(), gbc_lblModelName);
+				GridBagConstraints gbc_txtModelName = new GridBagConstraints();
+				gbc_txtModelName.fill = GridBagConstraints.BOTH;
+				gbc_txtModelName.insets = new Insets(0, 0, 5, 5);
+				gbc_txtModelName.gridwidth = 3;
+				gbc_txtModelName.gridx = 1;
+				gbc_txtModelName.gridy = 5;
+				add(getTxtModelName(), gbc_txtModelName);
+				GridBagConstraints gbc_lblModel = new GridBagConstraints();
+				gbc_lblModel.fill = GridBagConstraints.BOTH;
+				gbc_lblModel.insets = new Insets(0, 0, 5, 0);
+				gbc_lblModel.gridwidth = 11;
+				gbc_lblModel.gridx = 0;
+				gbc_lblModel.gridy = 7;
+				add(getLblModel(), gbc_lblModel);
+				GridBagConstraints gbc_lblMethod = new GridBagConstraints();
+				gbc_lblMethod.anchor = GridBagConstraints.EAST;
+				gbc_lblMethod.fill = GridBagConstraints.VERTICAL;
+				gbc_lblMethod.insets = new Insets(0, 0, 5, 5);
+				gbc_lblMethod.gridx = 0;
+				gbc_lblMethod.gridy = 8;
+				add(getLblMethod(), gbc_lblMethod);
+				GridBagConstraints gbc_cmbMethod = new GridBagConstraints();
+				gbc_cmbMethod.fill = GridBagConstraints.BOTH;
+				gbc_cmbMethod.insets = new Insets(0, 0, 5, 5);
+				gbc_cmbMethod.gridwidth = 3;
+				gbc_cmbMethod.gridx = 1;
+				gbc_cmbMethod.gridy = 8;
+				add(getCmbMethod(), gbc_cmbMethod);
+				GridBagConstraints gbc_lblAlpha = new GridBagConstraints();
+				gbc_lblAlpha.fill = GridBagConstraints.BOTH;
+				gbc_lblAlpha.insets = new Insets(0, 0, 5, 5);
+				gbc_lblAlpha.gridx = 0;
+				gbc_lblAlpha.gridy = 9;
+				add(getLblAlpha(), gbc_lblAlpha);
+				GridBagConstraints gbc_lblLag = new GridBagConstraints();
+				gbc_lblLag.fill = GridBagConstraints.BOTH;
+				gbc_lblLag.insets = new Insets(0, 0, 5, 5);
+				gbc_lblLag.gridx = 0;
+				gbc_lblLag.gridy = 9;
+				add(getLblLag(), gbc_lblLag);
+				GridBagConstraints gbc_txtAlpha = new GridBagConstraints();
+				gbc_txtAlpha.fill = GridBagConstraints.BOTH;
+				gbc_txtAlpha.insets = new Insets(0, 0, 5, 5);
+				gbc_txtAlpha.gridx = 1;
+				gbc_txtAlpha.gridy = 9;
+				add(getTxtAlpha(), gbc_txtAlpha);
+				GridBagConstraints gbc_txtLag = new GridBagConstraints();
+				gbc_txtLag.fill = GridBagConstraints.BOTH;
+				gbc_txtLag.insets = new Insets(0, 0, 5, 5);
+				gbc_txtLag.gridx = 1;
+				gbc_txtLag.gridy = 9;
+				add(getTxtLag(), gbc_txtLag);
+				GridBagConstraints gbc_btnQuestionLag = new GridBagConstraints();
+				gbc_btnQuestionLag.anchor = GridBagConstraints.WEST;
+				gbc_btnQuestionLag.fill = GridBagConstraints.VERTICAL;
+				gbc_btnQuestionLag.insets = new Insets(0, 0, 5, 5);
+				gbc_btnQuestionLag.gridx = 2;
+				gbc_btnQuestionLag.gridy = 9;
+				add(getBtnQuestionLag(), gbc_btnQuestionLag);
+				GridBagConstraints gbc_btnQuestionRegAlpha = new GridBagConstraints();
+				gbc_btnQuestionRegAlpha.anchor = GridBagConstraints.WEST;
+				gbc_btnQuestionRegAlpha.fill = GridBagConstraints.VERTICAL;
+				gbc_btnQuestionRegAlpha.insets = new Insets(0, 0, 5, 5);
+				gbc_btnQuestionRegAlpha.gridx = 2;
+				gbc_btnQuestionRegAlpha.gridy = 9;
+				add(getBtnQuestionRegAlpha(), gbc_btnQuestionRegAlpha);
+				GridBagConstraints gbc_lblPredictor = new GridBagConstraints();
+				gbc_lblPredictor.fill = GridBagConstraints.VERTICAL;
+				gbc_lblPredictor.insets = new Insets(0, 0, 5, 5);
+				gbc_lblPredictor.gridwidth = 2;
+				gbc_lblPredictor.gridx = 3;
+				gbc_lblPredictor.gridy = 9;
+				add(getLblPredictor(), gbc_lblPredictor);
+		
+				GridBagConstraints gbc_txtLambda = new GridBagConstraints();
+				gbc_txtLambda.fill = GridBagConstraints.BOTH;
+				gbc_txtLambda.insets = new Insets(0, 0, 5, 5);
+				gbc_txtLambda.gridx = 6;
+				gbc_txtLambda.gridy = 9;
+				add(getTxtLambda(), gbc_txtLambda);
+				GridBagConstraints gbc_btnQuestionLambda = new GridBagConstraints();
+				gbc_btnQuestionLambda.anchor = GridBagConstraints.WEST;
+				gbc_btnQuestionLambda.fill = GridBagConstraints.VERTICAL;
+				gbc_btnQuestionLambda.insets = new Insets(0, 0, 5, 5);
+				gbc_btnQuestionLambda.gridx = 7;
+				gbc_btnQuestionLambda.gridy = 9;
+				add(getBtnQuestionLambda(), gbc_btnQuestionLambda);
+				GridBagConstraints gbc_lblBeta = new GridBagConstraints();
+				gbc_lblBeta.fill = GridBagConstraints.BOTH;
+				gbc_lblBeta.insets = new Insets(0, 0, 5, 5);
+				gbc_lblBeta.gridx = 0;
+				gbc_lblBeta.gridy = 10;
+				add(getLblBeta(), gbc_lblBeta);
+				GridBagConstraints gbc_txtBeta = new GridBagConstraints();
+				gbc_txtBeta.fill = GridBagConstraints.BOTH;
+				gbc_txtBeta.insets = new Insets(0, 0, 5, 5);
+				gbc_txtBeta.gridx = 1;
+				gbc_txtBeta.gridy = 10;
+				add(getTxtBeta(), gbc_txtBeta);
+				GridBagConstraints gbc_txtNoTest = new GridBagConstraints();
+				gbc_txtNoTest.fill = GridBagConstraints.BOTH;
+				gbc_txtNoTest.insets = new Insets(0, 0, 5, 5);
+				gbc_txtNoTest.gridx = 1;
+				gbc_txtNoTest.gridy = 10;
+				add(getTxtNoTest(), gbc_txtNoTest);
+				GridBagConstraints gbc_lblNoOfHidden = new GridBagConstraints();
+				gbc_lblNoOfHidden.anchor = GridBagConstraints.WEST;
+				gbc_lblNoOfHidden.fill = GridBagConstraints.VERTICAL;
+				gbc_lblNoOfHidden.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNoOfHidden.gridwidth = 2;
+				gbc_lblNoOfHidden.gridx = 3;
+				gbc_lblNoOfHidden.gridy = 10;
+				add(getLblNoOfHidden(), gbc_lblNoOfHidden);
+				GridBagConstraints gbc_txtHidden = new GridBagConstraints();
+				gbc_txtHidden.anchor = GridBagConstraints.WEST;
+				gbc_txtHidden.fill = GridBagConstraints.BOTH;
+				gbc_txtHidden.insets = new Insets(0, 0, 5, 5);
+				gbc_txtHidden.gridx = 6;
+				gbc_txtHidden.gridy = 10;
+				add(getTxtHidden(), gbc_txtHidden);
+				GridBagConstraints gbc_lblMaxIterations = new GridBagConstraints();
+				gbc_lblMaxIterations.anchor = GridBagConstraints.EAST;
+				gbc_lblMaxIterations.fill = GridBagConstraints.VERTICAL;
+				gbc_lblMaxIterations.insets = new Insets(0, 0, 5, 5);
+				gbc_lblMaxIterations.gridx = 0;
+				gbc_lblMaxIterations.gridy = 11;
+				add(getLblMaxIterations(), gbc_lblMaxIterations);
+								GridBagConstraints gbc_txtIter = new GridBagConstraints();
+								gbc_txtIter.fill = GridBagConstraints.BOTH;
+								gbc_txtIter.insets = new Insets(0, 0, 5, 5);
+								gbc_txtIter.gridx = 1;
+								gbc_txtIter.gridy = 11;
+								add(getTxtMaxIter(), gbc_txtIter);
+				
+								GridBagConstraints gbc_lblNoOfIterations = new GridBagConstraints();
+								gbc_lblNoOfIterations.anchor = GridBagConstraints.EAST;
+								gbc_lblNoOfIterations.fill = GridBagConstraints.VERTICAL;
+								gbc_lblNoOfIterations.insets = new Insets(0, 0, 5, 5);
+								gbc_lblNoOfIterations.gridwidth = 2;
+								gbc_lblNoOfIterations.gridx = 3;
+								gbc_lblNoOfIterations.gridy = 11;
+								add(getLblNoOfIterations(), gbc_lblNoOfIterations);
+				GridBagConstraints gbc_txtIterNN = new GridBagConstraints();
+				gbc_txtIterNN.anchor = GridBagConstraints.WEST;
+				gbc_txtIterNN.fill = GridBagConstraints.BOTH;
+				gbc_txtIterNN.insets = new Insets(0, 0, 5, 5);
+				gbc_txtIterNN.gridx = 6;
+				gbc_txtIterNN.gridy = 11;
+				add(getTxtIterNN(), gbc_txtIterNN);
+				GridBagConstraints gbc_lblLfSize = new GridBagConstraints();
+				gbc_lblLfSize.anchor = GridBagConstraints.EAST;
+				gbc_lblLfSize.fill = GridBagConstraints.VERTICAL;
+				gbc_lblLfSize.insets = new Insets(0, 0, 5, 5);
+				gbc_lblLfSize.gridx = 0;
+				gbc_lblLfSize.gridy = 12;
+				add(getLblLfSize(), gbc_lblLfSize);
+				GridBagConstraints gbc_chckUseX = new GridBagConstraints();
+				gbc_chckUseX.anchor = GridBagConstraints.NORTH;
+				gbc_chckUseX.fill = GridBagConstraints.HORIZONTAL;
+				gbc_chckUseX.insets = new Insets(0, 0, 5, 5);
+				gbc_chckUseX.gridwidth = 2;
+				gbc_chckUseX.gridx = 1;
+				gbc_chckUseX.gridy = 12;
+				add(getChckUseX(), gbc_chckUseX);
+				GridBagConstraints gbc_txtLFSize = new GridBagConstraints();
+				gbc_txtLFSize.fill = GridBagConstraints.HORIZONTAL;
+				gbc_txtLFSize.insets = new Insets(0, 0, 5, 5);
+				gbc_txtLFSize.gridx = 1;
+				gbc_txtLFSize.gridy = 12;
+				add(getTxtLFSize(), gbc_txtLFSize);
+				GridBagConstraints gbc_lblSseIter = new GridBagConstraints();
+				gbc_lblSseIter.anchor = GridBagConstraints.EAST;
+				gbc_lblSseIter.fill = GridBagConstraints.VERTICAL;
+				gbc_lblSseIter.insets = new Insets(0, 0, 5, 5);
+				gbc_lblSseIter.gridwidth = 2;
+				gbc_lblSseIter.gridx = 3;
+				gbc_lblSseIter.gridy = 12;
+				add(getLblSseIter(), gbc_lblSseIter);
+				GridBagConstraints gbc_txtSseIter = new GridBagConstraints();
+				gbc_txtSseIter.fill = GridBagConstraints.BOTH;
+				gbc_txtSseIter.anchor = GridBagConstraints.SOUTHWEST;
+				gbc_txtSseIter.insets = new Insets(0, 0, 5, 5);
+				gbc_txtSseIter.gridx = 6;
+				gbc_txtSseIter.gridy = 12;
+				add(getTxtSseIter(), gbc_txtSseIter);
+				GridBagConstraints gbc_lblLsIter = new GridBagConstraints();
+				gbc_lblLsIter.anchor = GridBagConstraints.EAST;
+				gbc_lblLsIter.fill = GridBagConstraints.VERTICAL;
+				gbc_lblLsIter.insets = new Insets(0, 0, 5, 5);
+				gbc_lblLsIter.gridwidth = 2;
+				gbc_lblLsIter.gridx = 3;
+				gbc_lblLsIter.gridy = 13;
+				add(getLblLsIter(), gbc_lblLsIter);
+				GridBagConstraints gbc_txtLsIter = new GridBagConstraints();
+				gbc_txtLsIter.anchor = GridBagConstraints.WEST;
+				gbc_txtLsIter.fill = GridBagConstraints.BOTH;
+				gbc_txtLsIter.insets = new Insets(0, 0, 5, 5);
+				gbc_txtLsIter.gridx = 6;
+				gbc_txtLsIter.gridy = 13;
+				add(getTxtLsIter(), gbc_txtLsIter);
+				GridBagConstraints gbc_btnTrain = new GridBagConstraints();
+				gbc_btnTrain.fill = GridBagConstraints.BOTH;
+				gbc_btnTrain.insets = new Insets(0, 0, 0, 5);
+				gbc_btnTrain.gridwidth = 3;
+				gbc_btnTrain.gridx = 2;
+				gbc_btnTrain.gridy = 15;
+				add(getBtnTrain(), gbc_btnTrain);
+				GridBagConstraints gbc_cmbPredictor = new GridBagConstraints();
+				gbc_cmbPredictor.fill = GridBagConstraints.BOTH;
+				gbc_cmbPredictor.insets = new Insets(0, 0, 5, 5);
+				gbc_cmbPredictor.gridx = 6;
+				gbc_cmbPredictor.gridy = 9;
+				add(getCmbPredictor(), gbc_cmbPredictor);
 				fc = new JFileChooser();
 				panel = this;
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
 						"TEXT FILES", "txt", "text");
 				fc.setFileFilter(filter);
 				this.mainFrame = mainFrame;
-				add(getLblData());
-				add(getLblModel());
-				add(getLblPredictor());
-				add(getLblNoOfHidden());
-				add(getTxtHidden());
-
-				add(getLblNoOfIterations());
-				add(getTxtIterNN());
-				add(getCmbPredictor());
-				add(getCmbMethod());
-				add(getLblMethod());
-				add(getLblNoOfTime());
-				add(getTxtNoTime());
-				add(getTxtNoTimeTrain());
-				add(getLblNoOfTime_1());
-				add(getChkLearn());
-				add(getBtnQuestionRegAlpha());
-				add(getLblProvideTrainAn());
-				add(getLblLag());
-				add(getTxtLag());
-				add(getBtnQuestionLag());
-				add(getChckUseX());
-				add(getTxtLFSize());
-				add(getTxtLambda());
-				add(getBtnQuestionLambda());
-				add(getTxtNoTest());
-				add(getLblLfSize());
-				add(getLblSseIter());
-				add(getTxtSseIter());
-				add(getLblLsIter());
-				add(getTxtLsIter());
-				add(getLabel());
-				add(getCmbDataset());
-				add(getButton());
 
 				setTxtValues();
 			}
@@ -203,7 +458,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblModelName = new JLabel("Model name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(134, 210, 100, 30);
 		}
 		return lblModelName;
 	}
@@ -213,7 +467,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(247, 210, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -224,7 +477,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblAlpha.setVisible(false);
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(37, 392, 197, 30);
 		}
 		return lblAlpha;
 	}
@@ -235,7 +487,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblBeta.setVisible(false);
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(0, 432, 234, 30);
 		}
 		return lblBeta;
 	}
@@ -246,7 +497,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtAlpha.setVisible(false);
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(247, 392, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -257,7 +507,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtBeta.setVisible(false);
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(247, 433, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -409,7 +658,6 @@ public class TrainTemporalPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(348, 603, 188, 45);
 		}
 		return btnTrain;
 	}
@@ -586,7 +834,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblMaxIterations.setVisible(false);
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(102, 473, 132, 30);
 		}
 		return lblMaxIterations;
 	}
@@ -845,7 +1092,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtIter.setVisible(false);
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(247, 472, 91, 30);
 		}
 		return txtIter;
 	}
@@ -923,7 +1169,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblData.setHorizontalAlignment(SwingConstants.CENTER);
 			lblData.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblData.setOpaque(true);
-			lblData.setBounds(0, 0, 901, 23);
 		}
 		return lblData;
 	}
@@ -936,7 +1181,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblModel.setForeground(Color.WHITE);
 			lblModel.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblModel.setBackground(Color.GRAY);
-			lblModel.setBounds(0, 281, 901, 30);
 		}
 		return lblModel;
 	}
@@ -947,7 +1191,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblPredictor.setVisible(false);
 			lblPredictor.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblPredictor.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPredictor.setBounds(430, 391, 188, 30);
 		}
 		return lblPredictor;
 	}
@@ -972,7 +1215,6 @@ public class TrainTemporalPanel extends JPanel {
 					}
 				}
 			});
-			cmbPredictor.setBounds(628, 394, 149, 30);
 			cmbPredictor.addItem("choose predictor");
 			cmbPredictor.addItem("neural network");
 			cmbPredictor.addItem("linear regression");
@@ -986,7 +1228,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfHidden.setVisible(false);
 			lblNoOfHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfHidden.setBounds(405, 431, 214, 30);
 		}
 		return lblNoOfHidden;
 	}
@@ -997,7 +1238,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtHidden.setVisible(false);
 			txtHidden.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtHidden.setColumns(10);
-			txtHidden.setBounds(629, 433, 91, 30);
 		}
 		return txtHidden;
 	}
@@ -1008,7 +1248,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfIterations.setVisible(false);
 			lblNoOfIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfIterations.setBounds(446, 473, 172, 30);
 		}
 		return lblNoOfIterations;
 	}
@@ -1019,7 +1258,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtIterNN.setVisible(false);
 			txtIterNN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIterNN.setColumns(10);
-			txtIterNN.setBounds(629, 474, 91, 30);
 		}
 		return txtIterNN;
 	}
@@ -1027,7 +1265,6 @@ public class TrainTemporalPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(247, 351, 315, 30);
 
 			if (useMatlab) {
 				cmbMethod.addItem("choose method");
@@ -1180,7 +1417,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblMethod = new JLabel("Method:");
 			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMethod.setBounds(134, 351, 100, 30);
 		}
 		return lblMethod;
 	}
@@ -1191,7 +1427,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfTime.setEnabled(false);
 			lblNoOfTime.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfTime.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfTime.setBounds(94, 126, 143, 30);
 		}
 		return lblNoOfTime;
 	}
@@ -1203,7 +1438,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTime.setEditable(false);
 			txtNoTime.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoTime.setColumns(10);
-			txtNoTime.setBounds(247, 128, 91, 30);
 		}
 		return txtNoTime;
 	}
@@ -1213,7 +1447,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTimeTrain = new JTextField();
 			txtNoTimeTrain.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoTimeTrain.setColumns(10);
-			txtNoTimeTrain.setBounds(247, 169, 91, 30);
 		}
 		return txtNoTimeTrain;
 	}
@@ -1223,7 +1456,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblNoOfTime_1 = new JLabel("No. of time points for train:");
 			lblNoOfTime_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfTime_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfTime_1.setBounds(10, 167, 228, 30);
 		}
 		return lblNoOfTime_1;
 	}
@@ -1241,7 +1473,6 @@ public class TrainTemporalPanel extends JPanel {
 					}
 				}
 			});
-			chkLearn.setBounds(247, 96, 140, 23);
 		}
 		return chkLearn;
 	}
@@ -1287,7 +1518,6 @@ public class TrainTemporalPanel extends JPanel {
 									Style.questionIcon());
 				}
 			});
-			btnQuestionRegAlpha.setBounds(348, 391, 30, 30);
 		}
 		return btnQuestionRegAlpha;
 	}
@@ -1301,7 +1531,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblProvideTrainAn.setForeground(Color.WHITE);
 			lblProvideTrainAn.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblProvideTrainAn.setBackground(Color.GRAY);
-			lblProvideTrainAn.setBounds(0, 22, 901, 23);
 		}
 		return lblProvideTrainAn;
 	}
@@ -1312,7 +1541,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblLag.setVisible(false);
 			lblLag.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLag.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLag.setBounds(4, 392, 230, 30);
 		}
 		return lblLag;
 	}
@@ -1323,7 +1551,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtLag.setVisible(false);
 			txtLag.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLag.setColumns(10);
-			txtLag.setBounds(247, 391, 91, 30);
 		}
 		return txtLag;
 	}
@@ -1332,7 +1559,6 @@ public class TrainTemporalPanel extends JPanel {
 		if (btnQuestionLag == null) {
 			btnQuestionLag = new JButton("");
 			btnQuestionLag.setVisible(false);
-			btnQuestionLag.setBounds(348, 391, 30, 30);
 			Style.questionButtonStyle(btnQuestionLag);
 			btnQuestionLag.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -1353,7 +1579,6 @@ public class TrainTemporalPanel extends JPanel {
 			chckUseX = new JCheckBox("Use attributes");
 			chckUseX.setSelected(true);
 			chckUseX.setVisible(false);
-			chckUseX.setBounds(247, 509, 140, 23);
 		}
 		return chckUseX;
 	}
@@ -1364,7 +1589,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtLFSize.setVisible(false);
 			txtLFSize.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLFSize.setColumns(10);
-			txtLFSize.setBounds(247, 513, 91, 30);
 		}
 		return txtLFSize;
 	}
@@ -1375,7 +1599,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtLambda.setVisible(false);
 			txtLambda.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLambda.setColumns(10);
-			txtLambda.setBounds(628, 392, 149, 30);
 		}
 		return txtLambda;
 	}
@@ -1384,7 +1607,6 @@ public class TrainTemporalPanel extends JPanel {
 		if (btnQuestionLambda == null) {
 			btnQuestionLambda = new JButton("");
 			btnQuestionLambda.setVisible(false);
-			btnQuestionLambda.setBounds(787, 392, 30, 30);
 			Style.questionButtonStyle(btnQuestionLambda);
 			btnQuestionLambda.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -1409,7 +1631,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtNoTest.setVisible(false);
 			txtNoTest.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtNoTest.setColumns(10);
-			txtNoTest.setBounds(247, 432, 91, 30);
 		}
 		return txtNoTest;
 	}
@@ -1420,7 +1641,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblLfSize.setVisible(false);
 			lblLfSize.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLfSize.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLfSize.setBounds(134, 511, 100, 30);
 		}
 		return lblLfSize;
 	}
@@ -1431,7 +1651,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblSseIter.setVisible(false);
 			lblSseIter.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblSseIter.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblSseIter.setBounds(469, 514, 149, 30);
 		}
 		return lblSseIter;
 	}
@@ -1442,7 +1661,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtSseIter.setVisible(false);
 			txtSseIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtSseIter.setColumns(10);
-			txtSseIter.setBounds(629, 515, 91, 30);
 		}
 		return txtSseIter;
 	}
@@ -1453,7 +1671,6 @@ public class TrainTemporalPanel extends JPanel {
 			lblLsIter.setVisible(false);
 			lblLsIter.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLsIter.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLsIter.setBounds(457, 555, 161, 30);
 		}
 		return lblLsIter;
 	}
@@ -1464,7 +1681,6 @@ public class TrainTemporalPanel extends JPanel {
 			txtLsIter.setVisible(false);
 			txtLsIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLsIter.setColumns(10);
-			txtLsIter.setBounds(627, 557, 91, 30);
 		}
 		return txtLsIter;
 	}
@@ -1474,7 +1690,6 @@ public class TrainTemporalPanel extends JPanel {
 			label = new JLabel("Dataset:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(116, 56, 120, 30);
 		}
 		return label;
 	}
@@ -1528,7 +1743,6 @@ public class TrainTemporalPanel extends JPanel {
 					}
 				}
 			});
-			cmbDataset.setBounds(247, 59, 315, 30);
 			cmbDataset.addItem("choose dataset");
 
 			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/TemporalNetworks");
@@ -1556,7 +1770,6 @@ public class TrainTemporalPanel extends JPanel {
 									Style.questionIcon());
 				}
 			});
-			button.setBounds(572, 59, 30, 30);
 		}
 		return button;
 	}

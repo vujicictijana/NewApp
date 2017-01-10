@@ -21,6 +21,7 @@ import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
 import app.gui.panels.TrainRandomPanel;
 import app.gui.panels.TrainTemporalPanel;
+import app.gui.panels.ManageDatasetPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -401,7 +402,7 @@ public class MainFrame extends JFrame {
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = new b();
+					mainPanel = t;
 					contentPane.add(mainPanel);
 					contentPane.repaint();
 					contentPane.revalidate();

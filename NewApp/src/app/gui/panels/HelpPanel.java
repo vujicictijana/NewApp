@@ -6,6 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.net.URL;
 import java.util.HashMap;
@@ -19,6 +20,9 @@ import app.gui.style.SwingLink;
 
 import javax.swing.SwingConstants;
 
+import java.awt.CardLayout;
+import java.awt.GridBagLayout;
+
 public class HelpPanel extends JPanel {
 
 	private static final long serialVersionUID = 7542338256284881226L;
@@ -31,29 +35,31 @@ public class HelpPanel extends JPanel {
 		setMinimumSize(new Dimension(500, 500));
 
 		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
 
 		this.mainFrame = mainFrame;
 
 		panel = this;
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0 };
+		gridBagLayout.rowHeights = new int[] { 0 };
+		gridBagLayout.columnWeights = new double[] { Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { Double.MIN_VALUE };
+		setLayout(gridBagLayout);
 		if (fileName != null) {
-			
 			String initialText = getHtml(fileName);
 			lblText = new JLabel(initialText);
-			lblText.setVerticalAlignment(SwingConstants.TOP);
-			lblText.setBounds(10, 10, 850, 750);
-
-			JScrollPane scrollPane = new JScrollPane(lblText);
-			scrollPane.setBounds(10, 10, 850, 700);
-			panel = this;
-			panel.add(scrollPane);
+			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+			gbc_scrollPane.fill = GridBagConstraints.BOTH;
+			gbc_scrollPane.gridx = 0;
+			gbc_scrollPane.gridy = 0;
+			panel.add(lblText, gbc_scrollPane);
 		} else {
 			setLinks();
 		}
 	}
 
 	private String getHtml(String fileName) {
-		String initialText="";
+		String initialText = "";
 		String[] read = Reader.read(fileName);
 		for (int i = 0; i < read.length; i++) {
 			initialText += read[i];
@@ -75,16 +81,17 @@ public class HelpPanel extends JPanel {
 	public void setLinks() {
 		String initialText = getHtml(Reader.jarFile() + "/html/methods.html");
 		lblText = new JLabel(initialText);
-		lblText.setVerticalAlignment(SwingConstants.TOP);
-		lblText.setBounds(10, 10, 850, 500);
-		JScrollPane scrollPane = new JScrollPane(lblText);
-		scrollPane.setBounds(10,10, 850, 500);
-		panel.add(scrollPane);
-		
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		panel.add(lblText, gbc);
+
 		JLabel label = new JLabel("Links:");
-		int y = 520;
-		label.setBounds(20, y, 900, 20);
-		panel.add(label);
+		int y = 1;
+		gbc.gridy = y;
+		panel.add(label, gbc);
 
 		String[] links = generateLinks();
 
@@ -94,12 +101,16 @@ public class HelpPanel extends JPanel {
 						links[j].lastIndexOf(" ") - 2);
 				String link = links[j].substring(links[j].lastIndexOf(" ") + 1);
 				SwingLink linkLabel = new SwingLink(name, link);
-				linkLabel.setBounds(20, y + (20 * (j + 1)), 900, 20);
-				panel.add(linkLabel);
+				// linkLabel.setBounds(20, y + (20 * (j + 1)), 900, 20);
+				y++;
+				gbc.gridy = y;
+				panel.add(linkLabel, gbc);
 			} else {
 				JLabel label1 = new JLabel(links[j]);
-				label1.setBounds(20, y + (20 * (j + 1)), 900, 20);
-				panel.add(label1);
+				// label1.setBounds(20, y + (20 * (j + 1)), 900, 20);
+				y++;
+				gbc.gridy = y;
+				panel.add(label1, gbc);
 			}
 		}
 

@@ -2,14 +2,17 @@ package app.gui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.ScrollPane;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 
@@ -28,18 +31,19 @@ import app.gui.panels.TestRandomPanel;
 import app.gui.panels.TrainPanel;
 import app.gui.panels.TrainRandomPanel;
 import app.gui.panels.TrainTemporalPanel;
+import app.gui.panels.ManageDatasetPanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridLayout;
+
 import javax.swing.JButton;
 
-public class a extends JFrame {
+public class MainFrameNew extends JFrame {
 
 	private JPanel contentPane;
 	private JMenuBar menuBar;
-	private JPanel panel;
 	private JMenu mnTrain;
 	private JMenuItem menuTrain;
 	private JMenuItem menuTrainRandom;
@@ -61,7 +65,8 @@ public class a extends JFrame {
 	private JMenuItem menuAbout;
 	private JMenuItem menuDatasets;
 	private JMenuItem menuMethods;
-	private JPanel panel_1;
+	private JScrollPane scrollPane;
+	private JPanel mainPanel1;
 	/**
 	 * Launch the application.
 	 */
@@ -69,7 +74,7 @@ public class a extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					a frame = new a();
+					MainFrameNew frame = new MainFrameNew();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -81,7 +86,7 @@ public class a extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public a() {
+	public MainFrameNew() {
 		setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -95,21 +100,8 @@ public class a extends JFrame {
 		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 0;
-		contentPane.add(getPanel(), gbc_panel);
-	}
-
-	
-	private JPanel getPanel() {
-		if (panel == null) {
-			panel = new JPanel();
-			panel.setLayout(new GridLayout(1, 0, 0, 0));
-			panel.add(getPanel_1());
-		}
-		return panel;
+		setMinimumSize(new Dimension(900, 500));
+		frame = this;
 	}
 	private JMenuBar getMenuBar_1() {
 		if (menuBar == null) {
@@ -147,14 +139,19 @@ public class a extends JFrame {
 			menuTrain.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					TrainPanel t = new TrainPanel(frame);
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 
@@ -173,14 +170,19 @@ public class a extends JFrame {
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							TrainRandomPanel t = new TrainRandomPanel(frame);
-							t.setBounds(0, 61, 900, 750);
-							if (mainPanel != null) {
-								contentPane.remove(mainPanel);
+							if (mainPanel1 != null) {
+								contentPane.removeAll();
 								contentPane.repaint();
 								contentPane.revalidate();
 							}
-							mainPanel = t;
-							contentPane.add(mainPanel);
+							mainPanel1 = t;
+							scrollPane = new JScrollPane();
+							GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+							gbc_scrollPane.fill = GridBagConstraints.BOTH;
+							gbc_scrollPane.gridx = 0;
+							gbc_scrollPane.gridy = 0;
+							scrollPane.setViewportView(mainPanel1);
+							contentPane.add(getScrollPane(), gbc_scrollPane);
 							contentPane.repaint();
 							contentPane.revalidate();
 						}
@@ -208,14 +210,19 @@ public class a extends JFrame {
 			menuTest.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					TestPanel t = new TestPanel(frame);
-					t.setBounds(0, 61, 900, 500);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 				}
@@ -233,14 +240,19 @@ public class a extends JFrame {
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							TestRandomPanel t = new TestRandomPanel(frame);
-							t.setBounds(0, 61, 900, 500);
-							if (mainPanel != null) {
-								contentPane.remove(mainPanel);
+							if (mainPanel1 != null) {
+								contentPane.removeAll();
 								contentPane.repaint();
 								contentPane.revalidate();
 							}
-							mainPanel = t;
-							contentPane.add(mainPanel);
+							mainPanel1 = t;
+							scrollPane = new JScrollPane();
+							GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+							gbc_scrollPane.fill = GridBagConstraints.BOTH;
+							gbc_scrollPane.gridx = 0;
+							gbc_scrollPane.gridy = 0;
+							scrollPane.setViewportView(mainPanel1);
+							contentPane.add(getScrollPane(), gbc_scrollPane);
 							contentPane.repaint();
 							contentPane.revalidate();
 						}
@@ -335,14 +347,19 @@ public class a extends JFrame {
 			mntmNewMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					TrainTemporalPanel t = new TrainTemporalPanel(frame);
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 				}
@@ -369,14 +386,19 @@ public class a extends JFrame {
 			menuAddDataset.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					AddDatasetPanel t = new AddDatasetPanel(frame);
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 
@@ -392,14 +414,19 @@ public class a extends JFrame {
 			menuManageDatasets.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					ManageDatasetPanel t = new ManageDatasetPanel(frame);
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 
@@ -428,17 +455,21 @@ public class a extends JFrame {
 			menuAbout.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					HelpPanel t = new HelpPanel(frame,Reader.jarFile()  + "/html/about.html");
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
-
 				}
 			});
 		}
@@ -452,14 +483,19 @@ public class a extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 
 					HelpPanel t = new HelpPanel(frame,Reader.jarFile() + "/html/dataset.html");
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 
@@ -475,14 +511,19 @@ public class a extends JFrame {
 			menuMethods.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					HelpPanel t = new HelpPanel(frame,null);
-					t.setBounds(0, 61, 900, 750);
-					if (mainPanel != null) {
-						contentPane.remove(mainPanel);
+					if (mainPanel1 != null) {
+						contentPane.removeAll();
 						contentPane.repaint();
 						contentPane.revalidate();
 					}
-					mainPanel = t;
-					contentPane.add(mainPanel);
+					mainPanel1 = t;
+					scrollPane = new JScrollPane();
+					GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+					gbc_scrollPane.fill = GridBagConstraints.BOTH;
+					gbc_scrollPane.gridx = 0;
+					gbc_scrollPane.gridy = 0;
+					scrollPane.setViewportView(mainPanel1);
+					contentPane.add(getScrollPane(), gbc_scrollPane);
 					contentPane.repaint();
 					contentPane.revalidate();
 
@@ -491,17 +532,17 @@ public class a extends JFrame {
 		}
 		return menuMethods;
 	}
-	private JPanel getPanel_1() {
-		if (panel_1 == null) {
-			panel_1 = new JPanel();
-			GridBagLayout gbl_panel_1 = new GridBagLayout();
-			gbl_panel_1.columnWidths = new int[]{0};
-			gbl_panel_1.rowHeights = new int[]{0};
-			gbl_panel_1.columnWeights = new double[]{Double.MIN_VALUE};
-			gbl_panel_1.rowWeights = new double[]{Double.MIN_VALUE};
-			panel_1.setLayout(gbl_panel_1);
-			panel_1 = new b();
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setViewportView(getPanel_2());
 		}
-		return panel_1;
+		return scrollPane;
+	}
+	private JPanel getPanel_2() {
+		if (mainPanel1 == null) {
+			mainPanel1 = new JPanel(); 
+		}
+		return mainPanel1;
 	}
 }

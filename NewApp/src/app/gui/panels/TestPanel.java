@@ -17,7 +17,6 @@ import app.algorithms.basic.BasicCalcs;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
-import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.GCRFTestMyModelForGUI;
@@ -31,13 +30,17 @@ import app.predictors.neuralnetwork.MyNN;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.URL;
 import java.util.Map;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JComboBox;
 
 import org.neuroph.core.data.DataSet;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Color;
+import java.awt.SystemColor;
 
 public class TestPanel extends JPanel {
 
@@ -63,25 +66,91 @@ public class TestPanel extends JPanel {
 	private String xPath = "";
 	private String yPath = "";
 	private String sPath = "";
+	private JLabel label_2;
+	private JLabel lblTestYourMethod;
 
 	/**
 	 * Create the panel.
 	 */
 	public TestPanel(JFrame mainFrame) {
 		readParametersFromCfg();
-		setBackground(UIManager.getColor("Button.background"));
-		setLayout(null);
-		add(getBtnTrain());
-		panel = this;
 		this.mainFrame = mainFrame;
-		add(getPanelForTable());
-		add(getLabel_1_1());
-		add(getTxtModelName());
+		setBackground(UIManager.getColor("Button.background"));
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{134, 268, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 30, 33, 30, 36, 0, 45, 127, 63, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		setLayout(gridBagLayout);
+		GridBagConstraints gbc_lblTestYourMethod = new GridBagConstraints();
+		gbc_lblTestYourMethod.fill = GridBagConstraints.BOTH;
+		gbc_lblTestYourMethod.gridwidth = 15;
+		gbc_lblTestYourMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTestYourMethod.gridx = 0;
+		gbc_lblTestYourMethod.gridy = 0;
+		add(getLblTestYourMethod(), gbc_lblTestYourMethod);
+		GridBagConstraints gbc_label_2 = new GridBagConstraints();
+		gbc_label_2.gridwidth = 10;
+		gbc_label_2.fill = GridBagConstraints.BOTH;
+		gbc_label_2.insets = new Insets(0, 0, 5, 0);
+		gbc_label_2.gridx = 0;
+		gbc_label_2.gridy = 1;
+		add(getLabel_2(), gbc_label_2);
+		GridBagConstraints gbc_lblMethod = new GridBagConstraints();
+		gbc_lblMethod.fill = GridBagConstraints.BOTH;
+		gbc_lblMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMethod.gridx = 0;
+		gbc_lblMethod.gridy = 2;
+		add(getLblMethod(), gbc_lblMethod);
+		GridBagConstraints gbc_cmbMethod = new GridBagConstraints();
+		gbc_cmbMethod.anchor = GridBagConstraints.WEST;
+		gbc_cmbMethod.fill = GridBagConstraints.BOTH;
+		gbc_cmbMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_cmbMethod.gridx = 1;
+		gbc_cmbMethod.gridy = 2;
+		add(getCmbMethod(), gbc_cmbMethod);
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.fill = GridBagConstraints.BOTH;
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 0;
+		gbc_label.gridy = 3;
+		add(getLabel(), gbc_label);
+		GridBagConstraints gbc_cmbDataset = new GridBagConstraints();
+		gbc_cmbDataset.anchor = GridBagConstraints.WEST;
+		gbc_cmbDataset.fill = GridBagConstraints.BOTH;
+		gbc_cmbDataset.insets = new Insets(0, 0, 5, 5);
+		gbc_cmbDataset.gridx = 1;
+		gbc_cmbDataset.gridy = 3;
+		add(getCmbDataset(), gbc_cmbDataset);
+		GridBagConstraints gbc_label_1 = new GridBagConstraints();
+		gbc_label_1.anchor = GridBagConstraints.EAST;
+		gbc_label_1.fill = GridBagConstraints.VERTICAL;
+		gbc_label_1.insets = new Insets(0, 0, 5, 5);
+		gbc_label_1.gridx = 0;
+		gbc_label_1.gridy = 4;
+		add(getLabel_1_1(), gbc_label_1);
+		GridBagConstraints gbc_txtModelName = new GridBagConstraints();
+		gbc_txtModelName.anchor = GridBagConstraints.WEST;
+		gbc_txtModelName.fill = GridBagConstraints.BOTH;
+		gbc_txtModelName.insets = new Insets(0, 0, 5, 5);
+		gbc_txtModelName.gridx = 1;
+		gbc_txtModelName.gridy = 4;
+		add(getTxtModelName(), gbc_txtModelName);
 		panel = this;
-		add(getLblMethod());
-		add(getCmbMethod());
-		add(getLabel());
-		add(getCmbDataset());
+		panel = this;
+		GridBagConstraints gbc_btnTrain = new GridBagConstraints();
+		gbc_btnTrain.fill = GridBagConstraints.BOTH;
+		gbc_btnTrain.insets = new Insets(0, 0, 5, 5);
+		gbc_btnTrain.gridx = 1;
+		gbc_btnTrain.gridy = 6;
+		add(getBtnTrain(), gbc_btnTrain);
+		GridBagConstraints gbc_panelForTable = new GridBagConstraints();
+		gbc_panelForTable.insets = new Insets(0, 0, 5, 5);
+		gbc_panelForTable.fill = GridBagConstraints.BOTH;
+		gbc_panelForTable.gridwidth = 8;
+		gbc_panelForTable.gridx = 1;
+		gbc_panelForTable.gridy = 8;
+		add(getPanelForTable(), gbc_panelForTable);
 		fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
@@ -205,7 +274,6 @@ public class TestPanel extends JPanel {
 			});
 
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(328, 175, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -281,7 +349,6 @@ public class TestPanel extends JPanel {
 	private JPanel getPanelForTable() {
 		if (panelForTable == null) {
 			panelForTable = new JPanel();
-			panelForTable.setBounds(28, 347, 850, 63);
 			panelForTable.setLayout(null);
 		}
 		return panelForTable;
@@ -292,7 +359,6 @@ public class TestPanel extends JPanel {
 			label_1 = new JLabel("Model name:");
 			label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			label_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label_1.setBounds(61, 109, 100, 30);
 		}
 		return label_1;
 	}
@@ -302,7 +368,6 @@ public class TestPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(177, 109, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -339,7 +404,6 @@ public class TestPanel extends JPanel {
 			lblMethod = new JLabel("Method:");
 			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMethod.setBounds(62, 27, 100, 30);
 		}
 		return lblMethod;
 	}
@@ -364,7 +428,6 @@ public class TestPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(178, 27, 314, 30);
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
@@ -379,14 +442,12 @@ public class TestPanel extends JPanel {
 			label = new JLabel("Dataset:");
 			label.setHorizontalAlignment(SwingConstants.RIGHT);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(41, 68, 120, 30);
 		}
 		return label;
 	}
 	private JComboBox<String> getCmbDataset() {
 		if (cmbDataset == null) {
 			cmbDataset = new JComboBox();
-			cmbDataset.setBounds(177, 71, 315, 30);
 			cmbDataset.addItem("choose dataset");
 			String[] files = Reader.getAllFolders(Reader.jarFile()  + "/Datasets/Networks");
 			for (int i = 0; i < files.length; i++) {
@@ -394,5 +455,27 @@ public class TestPanel extends JPanel {
 			}
 		}
 		return cmbDataset;
+	}
+	private JLabel getLabel_2() {
+		if (label_2 == null) {
+			label_2 = new JLabel("DATA:");
+			label_2.setOpaque(true);
+			label_2.setHorizontalAlignment(SwingConstants.CENTER);
+			label_2.setForeground(SystemColor.control);
+			label_2.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			label_2.setBackground(SystemColor.control);
+		}
+		return label_2;
+	}
+	private JLabel getLblTestYourMethod() {
+		if (lblTestYourMethod == null) {
+			lblTestYourMethod = new JLabel("TEST YOUR METHOD:");
+			lblTestYourMethod.setOpaque(true);
+			lblTestYourMethod.setHorizontalAlignment(SwingConstants.CENTER);
+			lblTestYourMethod.setForeground(Color.WHITE);
+			lblTestYourMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
+			lblTestYourMethod.setBackground(Color.GRAY);
+		}
+		return lblTestYourMethod;
 	}
 }

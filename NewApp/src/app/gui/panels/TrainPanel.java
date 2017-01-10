@@ -48,6 +48,9 @@ import org.neuroph.core.data.DataSet;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class TrainPanel extends JPanel {
 
@@ -85,7 +88,6 @@ public class TrainPanel extends JPanel {
 	private boolean useMatlab;
 	private long proxy;
 	private JLabel lblData;
-	private JSeparator separator_1;
 	private JLabel lblPredictor;
 	private JLabel lblModel;
 	private JLabel lblPredictor_1;
@@ -119,20 +121,206 @@ public class TrainPanel extends JPanel {
 			} else {
 
 				setBackground(UIManager.getColor("Button.background"));
-				setLayout(null);
-				add(getLblDataset());
-				add(getBtnQuestionDataset());
-				add(getLblModelName());
-				add(getTxtModelName());
-				add(getLblAlpha());
-				add(getLblBeta());
-				add(getTxtAlpha());
-				add(getTxtBeta());
-				add(getLblLearningRate());
-				add(getTxtLr());
-				add(getBtnTrain());
-				add(getLblMaxIterations());
-				add(getTxtMaxIter());
+				GridBagLayout gridBagLayout = new GridBagLayout();
+				gridBagLayout.columnWidths = new int[]{169, 3, 227, 2, 43, 112, 266, 0};
+				gridBagLayout.rowHeights = new int[]{30, 33, 33, 30, 50, 30, 30, 31, 38, 30, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0};
+				gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				setLayout(gridBagLayout);
+								GridBagConstraints gbc_lblData = new GridBagConstraints();
+								gbc_lblData.fill = GridBagConstraints.BOTH;
+								gbc_lblData.insets = new Insets(0, 0, 5, 0);
+								gbc_lblData.gridwidth = 10;
+								gbc_lblData.gridx = 0;
+								gbc_lblData.gridy = 0;
+								add(getLblData(), gbc_lblData);
+								GridBagConstraints gbc_lblDataset = new GridBagConstraints();
+								gbc_lblDataset.fill = GridBagConstraints.BOTH;
+								gbc_lblDataset.insets = new Insets(0, 0, 5, 5);
+								gbc_lblDataset.gridx = 0;
+								gbc_lblDataset.gridy = 2;
+								add(getLblDataset(), gbc_lblDataset);
+				
+								GridBagConstraints gbc_cmbDataset = new GridBagConstraints();
+								gbc_cmbDataset.fill = GridBagConstraints.BOTH;
+								gbc_cmbDataset.insets = new Insets(0, 0, 5, 5);
+								gbc_cmbDataset.gridwidth = 4;
+								gbc_cmbDataset.gridx = 1;
+								gbc_cmbDataset.gridy = 2;
+								add(getCmbDataset(), gbc_cmbDataset);
+				GridBagConstraints gbc_btnQuestionDataset = new GridBagConstraints();
+				gbc_btnQuestionDataset.anchor = GridBagConstraints.WEST;
+				gbc_btnQuestionDataset.fill = GridBagConstraints.VERTICAL;
+				gbc_btnQuestionDataset.insets = new Insets(0, 0, 5, 5);
+				gbc_btnQuestionDataset.gridx = 5;
+				gbc_btnQuestionDataset.gridy = 2;
+				GridBagConstraints gbc_btnTestPredictr = new GridBagConstraints();
+				gbc_btnTestPredictr.fill = GridBagConstraints.HORIZONTAL;
+				gbc_btnTestPredictr.anchor = GridBagConstraints.NORTHWEST;
+				gbc_btnTestPredictr.insets = new Insets(0, 0, 5, 5);
+				gbc_btnTestPredictr.gridx = 5;
+				gbc_btnTestPredictr.gridy = 6;
+				add(getBtnTestPredictr(), gbc_btnTestPredictr);
+				GridBagConstraints gbc_lblNoOfHidden = new GridBagConstraints();
+				gbc_lblNoOfHidden.anchor = GridBagConstraints.EAST;
+				gbc_lblNoOfHidden.fill = GridBagConstraints.VERTICAL;
+				gbc_lblNoOfHidden.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNoOfHidden.gridwidth = 2;
+				gbc_lblNoOfHidden.gridx = 0;
+				gbc_lblNoOfHidden.gridy = 7;
+				add(getLblNoOfHidden(), gbc_lblNoOfHidden);
+				add(getBtnQuestionDataset(), gbc_btnQuestionDataset);
+				GridBagConstraints gbc_lblModelName = new GridBagConstraints();
+				gbc_lblModelName.anchor = GridBagConstraints.EAST;
+				gbc_lblModelName.fill = GridBagConstraints.VERTICAL;
+				gbc_lblModelName.insets = new Insets(0, 0, 5, 5);
+				gbc_lblModelName.gridx = 0;
+				gbc_lblModelName.gridy = 3;
+				add(getLblModelName(), gbc_lblModelName);
+				GridBagConstraints gbc_txtModelName = new GridBagConstraints();
+				gbc_txtModelName.fill = GridBagConstraints.BOTH;
+				gbc_txtModelName.insets = new Insets(0, 0, 5, 5);
+				gbc_txtModelName.gridwidth = 4;
+				gbc_txtModelName.gridx = 1;
+				gbc_txtModelName.gridy = 3;
+				add(getTxtModelName(), gbc_txtModelName);
+				GridBagConstraints gbc_lblPredictor = new GridBagConstraints();
+				gbc_lblPredictor.fill = GridBagConstraints.BOTH;
+				gbc_lblPredictor.insets = new Insets(0, 0, 5, 0);
+				gbc_lblPredictor.gridwidth = 10;
+				gbc_lblPredictor.gridx = 0;
+				gbc_lblPredictor.gridy = 5;
+				add(getLblPredictor(), gbc_lblPredictor);
+				GridBagConstraints gbc_lblPredictor_1 = new GridBagConstraints();
+				gbc_lblPredictor_1.fill = GridBagConstraints.BOTH;
+				gbc_lblPredictor_1.insets = new Insets(0, 0, 5, 5);
+				gbc_lblPredictor_1.gridwidth = 2;
+				gbc_lblPredictor_1.gridx = 0;
+				gbc_lblPredictor_1.gridy = 6;
+				add(getLblPredictor_1(), gbc_lblPredictor_1);
+				
+				GridBagConstraints gbc_txtHidden = new GridBagConstraints();
+				gbc_txtHidden.anchor = GridBagConstraints.WEST;
+				gbc_txtHidden.fill = GridBagConstraints.BOTH;
+				gbc_txtHidden.insets = new Insets(0, 0, 5, 5);
+				gbc_txtHidden.gridx = 2;
+				gbc_txtHidden.gridy = 7;
+				add(getTxtHidden(), gbc_txtHidden);
+				GridBagConstraints gbc_lblNoOfIterations = new GridBagConstraints();
+				gbc_lblNoOfIterations.gridwidth = 2;
+				gbc_lblNoOfIterations.anchor = GridBagConstraints.EAST;
+				gbc_lblNoOfIterations.fill = GridBagConstraints.VERTICAL;
+				gbc_lblNoOfIterations.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNoOfIterations.gridx = 0;
+				gbc_lblNoOfIterations.gridy = 8;
+				add(getLblNoOfIterations(), gbc_lblNoOfIterations);
+				GridBagConstraints gbc_txtIterNN = new GridBagConstraints();
+				gbc_txtIterNN.fill = GridBagConstraints.BOTH;
+				gbc_txtIterNN.anchor = GridBagConstraints.SOUTHWEST;
+				gbc_txtIterNN.insets = new Insets(0, 0, 5, 5);
+				gbc_txtIterNN.gridx = 2;
+				gbc_txtIterNN.gridy = 8;
+				add(getTxtIterNN(), gbc_txtIterNN);
+				GridBagConstraints gbc_lblModel = new GridBagConstraints();
+				gbc_lblModel.anchor = GridBagConstraints.NORTH;
+				gbc_lblModel.fill = GridBagConstraints.BOTH;
+				gbc_lblModel.insets = new Insets(0, 0, 5, 0);
+				gbc_lblModel.gridwidth = 10;
+				gbc_lblModel.gridx = 0;
+				gbc_lblModel.gridy = 11;
+				add(getLblModel(), gbc_lblModel);
+				
+						GridBagConstraints gbc_lblMethod = new GridBagConstraints();
+						gbc_lblMethod.gridwidth = 2;
+						gbc_lblMethod.fill = GridBagConstraints.BOTH;
+						gbc_lblMethod.insets = new Insets(0, 0, 5, 5);
+						gbc_lblMethod.gridx = 0;
+						gbc_lblMethod.gridy = 12;
+						add(getLblMethod(), gbc_lblMethod);
+				GridBagConstraints gbc_cmbMethod = new GridBagConstraints();
+				gbc_cmbMethod.anchor = GridBagConstraints.NORTH;
+				gbc_cmbMethod.fill = GridBagConstraints.BOTH;
+				gbc_cmbMethod.insets = new Insets(0, 0, 5, 5);
+				gbc_cmbMethod.gridx = 2;
+				gbc_cmbMethod.gridy = 12;
+				add(getCmbMethod(), gbc_cmbMethod);
+				GridBagConstraints gbc_lblAlpha = new GridBagConstraints();
+				gbc_lblAlpha.gridwidth = 2;
+				gbc_lblAlpha.fill = GridBagConstraints.BOTH;
+				gbc_lblAlpha.insets = new Insets(0, 0, 5, 5);
+				gbc_lblAlpha.gridx = 0;
+				gbc_lblAlpha.gridy = 13;
+				add(getLblAlpha(), gbc_lblAlpha);
+				GridBagConstraints gbc_txtAlpha = new GridBagConstraints();
+				gbc_txtAlpha.anchor = GridBagConstraints.WEST;
+				gbc_txtAlpha.fill = GridBagConstraints.BOTH;
+				gbc_txtAlpha.insets = new Insets(0, 0, 5, 5);
+				gbc_txtAlpha.gridx = 2;
+				gbc_txtAlpha.gridy = 13;
+				add(getTxtAlpha(), gbc_txtAlpha);
+				GridBagConstraints gbc_lblBeta = new GridBagConstraints();
+				gbc_lblBeta.gridwidth = 2;
+				gbc_lblBeta.fill = GridBagConstraints.BOTH;
+				gbc_lblBeta.insets = new Insets(0, 0, 5, 5);
+				gbc_lblBeta.gridx = 0;
+				gbc_lblBeta.gridy = 14;
+				add(getLblBeta(), gbc_lblBeta);
+				GridBagConstraints gbc_txtBeta = new GridBagConstraints();
+				gbc_txtBeta.fill = GridBagConstraints.BOTH;
+				gbc_txtBeta.anchor = GridBagConstraints.WEST;
+				gbc_txtBeta.insets = new Insets(0, 0, 5, 5);
+				gbc_txtBeta.gridx = 2;
+				gbc_txtBeta.gridy = 14;
+				add(getTxtBeta(), gbc_txtBeta);
+				GridBagConstraints gbc_lblLearningRate = new GridBagConstraints();
+				gbc_lblLearningRate.gridwidth = 2;
+				gbc_lblLearningRate.anchor = GridBagConstraints.EAST;
+				gbc_lblLearningRate.fill = GridBagConstraints.VERTICAL;
+				gbc_lblLearningRate.insets = new Insets(0, 0, 5, 5);
+				gbc_lblLearningRate.gridx = 0;
+				gbc_lblLearningRate.gridy = 15;
+				add(getLblLearningRate(), gbc_lblLearningRate);
+				GridBagConstraints gbc_txtLR = new GridBagConstraints();
+				gbc_txtLR.anchor = GridBagConstraints.WEST;
+				gbc_txtLR.fill = GridBagConstraints.BOTH;
+				gbc_txtLR.insets = new Insets(0, 0, 5, 5);
+				gbc_txtLR.gridx = 2;
+				gbc_txtLR.gridy = 15;
+				add(getTxtLr(), gbc_txtLR);
+				GridBagConstraints gbc_lblMaxIterations = new GridBagConstraints();
+				gbc_lblMaxIterations.anchor = GridBagConstraints.EAST;
+				gbc_lblMaxIterations.fill = GridBagConstraints.VERTICAL;
+				gbc_lblMaxIterations.insets = new Insets(0, 0, 5, 5);
+				gbc_lblMaxIterations.gridwidth = 2;
+				gbc_lblMaxIterations.gridx = 0;
+				gbc_lblMaxIterations.gridy = 16;
+				add(getLblMaxIterations(), gbc_lblMaxIterations);
+				GridBagConstraints gbc_txtIter = new GridBagConstraints();
+				gbc_txtIter.anchor = GridBagConstraints.WEST;
+				gbc_txtIter.fill = GridBagConstraints.BOTH;
+				gbc_txtIter.insets = new Insets(0, 0, 5, 5);
+				gbc_txtIter.gridx = 2;
+				gbc_txtIter.gridy = 16;
+				add(getTxtMaxIter(), gbc_txtIter);
+				GridBagConstraints gbc_lblStandard = new GridBagConstraints();
+				gbc_lblStandard.fill = GridBagConstraints.BOTH;
+				gbc_lblStandard.insets = new Insets(0, 0, 5, 5);
+				gbc_lblStandard.gridwidth = 2;
+				gbc_lblStandard.gridx = 0;
+				gbc_lblStandard.gridy = 17;
+				add(getLblStandard(), gbc_lblStandard);
+				GridBagConstraints gbc_chckbxStandard = new GridBagConstraints();
+				gbc_chckbxStandard.anchor = GridBagConstraints.SOUTHWEST;
+				gbc_chckbxStandard.insets = new Insets(0, 0, 5, 5);
+				gbc_chckbxStandard.gridx = 2;
+				gbc_chckbxStandard.gridy = 17;
+				add(getChckbxStandard(), gbc_chckbxStandard);
+				GridBagConstraints gbc_cmbPredictor = new GridBagConstraints();
+				gbc_cmbPredictor.fill = GridBagConstraints.BOTH;
+				gbc_cmbPredictor.insets = new Insets(0, 0, 5, 5);
+				gbc_cmbPredictor.gridx = 2;
+				gbc_cmbPredictor.gridy = 6;
+				add(getCmbPredictor(), gbc_cmbPredictor);
 				fc = new JFileChooser();
 				panel = this;
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -141,24 +329,14 @@ public class TrainPanel extends JPanel {
 				fc.setCurrentDirectory(Reader.jarFile());
 
 				this.mainFrame = mainFrame;
-				add(getChckbxStandard());
-				add(getLblStandard());
-				add(getLblData());
-				add(getSeparator_1());
-				add(getLblPredictor());
-				add(getLblModel());
-				add(getLblPredictor_1());
-				add(getBtnTestPredictr());
-				add(getLblNoOfHidden());
-				add(getTxtHidden());
-				add(getLblNoOfIterations());
-				add(getTxtIterNN());
+				GridBagConstraints gbc_btnTrain = new GridBagConstraints();
+				gbc_btnTrain.insets = new Insets(0, 0, 5, 5);
+				gbc_btnTrain.fill = GridBagConstraints.HORIZONTAL;
+				gbc_btnTrain.anchor = GridBagConstraints.NORTHWEST;
+				gbc_btnTrain.gridx = 2;
+				gbc_btnTrain.gridy = 19;
+				add(getBtnTrain(), gbc_btnTrain);
 				setTxtValues();
-				add(getCmbPredictor());
-				add(getCmbMethod());
-				add(getLblMethod());
-
-				add(getCmbDataset());
 
 			}
 		} else {
@@ -175,7 +353,6 @@ public class TrainPanel extends JPanel {
 			lblDataset = new JLabel("Dataset:");
 			lblDataset.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblDataset.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblDataset.setBounds(49, 63, 120, 30);
 		}
 		return lblDataset;
 	}
@@ -183,7 +360,6 @@ public class TrainPanel extends JPanel {
 	private JButton getBtnQuestionDataset() {
 		if (btnQuestionDataset == null) {
 			btnQuestionDataset = new JButton("");
-			btnQuestionDataset.setBounds(510, 66, 30, 30);
 			Style.questionButtonStyle(btnQuestionDataset);
 			btnQuestionDataset.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -207,7 +383,6 @@ public class TrainPanel extends JPanel {
 			lblModelName = new JLabel("Model name:");
 			lblModelName.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblModelName.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblModelName.setBounds(69, 104, 100, 30);
 		}
 		return lblModelName;
 	}
@@ -217,7 +392,6 @@ public class TrainPanel extends JPanel {
 			txtModelName = new JTextField();
 			txtModelName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtModelName.setColumns(10);
-			txtModelName.setBounds(185, 104, 315, 30);
 		}
 		return txtModelName;
 	}
@@ -228,7 +402,6 @@ public class TrainPanel extends JPanel {
 			lblAlpha.setVisible(false);
 			lblAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblAlpha.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblAlpha.setBounds(522, 281, 100, 30);
 		}
 		return lblAlpha;
 	}
@@ -239,7 +412,6 @@ public class TrainPanel extends JPanel {
 			lblBeta.setVisible(false);
 			lblBeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblBeta.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblBeta.setBounds(522, 321, 100, 30);
 		}
 		return lblBeta;
 	}
@@ -250,7 +422,6 @@ public class TrainPanel extends JPanel {
 			txtAlpha.setVisible(false);
 			txtAlpha.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtAlpha.setColumns(10);
-			txtAlpha.setBounds(638, 282, 91, 30);
 		}
 		return txtAlpha;
 	}
@@ -261,7 +432,6 @@ public class TrainPanel extends JPanel {
 			txtBeta.setVisible(false);
 			txtBeta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtBeta.setColumns(10);
-			txtBeta.setBounds(638, 323, 91, 30);
 		}
 		return txtBeta;
 	}
@@ -272,7 +442,6 @@ public class TrainPanel extends JPanel {
 			lblLearningRate.setVisible(false);
 			lblLearningRate.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblLearningRate.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblLearningRate.setBounds(522, 361, 100, 30);
 		}
 		return lblLearningRate;
 	}
@@ -283,7 +452,6 @@ public class TrainPanel extends JPanel {
 			txtLR.setVisible(false);
 			txtLR.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtLR.setColumns(10);
-			txtLR.setBounds(638, 361, 91, 30);
 		}
 		return txtLR;
 	}
@@ -408,7 +576,6 @@ public class TrainPanel extends JPanel {
 
 			});
 			Style.buttonStyle(btnTrain);
-			btnTrain.setBounds(635, 479, 112, 45);
 		}
 		return btnTrain;
 	}
@@ -532,7 +699,6 @@ public class TrainPanel extends JPanel {
 			lblMaxIterations.setVisible(false);
 			lblMaxIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMaxIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMaxIterations.setBounds(490, 401, 132, 30);
 		}
 		return lblMaxIterations;
 	}
@@ -628,7 +794,6 @@ public class TrainPanel extends JPanel {
 			txtIter.setVisible(false);
 			txtIter.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIter.setColumns(10);
-			txtIter.setBounds(638, 401, 91, 30);
 		}
 		return txtIter;
 	}
@@ -638,7 +803,6 @@ public class TrainPanel extends JPanel {
 			chckbxStandard = new JCheckBox("");
 			chckbxStandard.setVisible(false);
 			chckbxStandard.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-			chckbxStandard.setBounds(636, 449, 91, 23);
 		}
 		return chckbxStandard;
 	}
@@ -649,7 +813,6 @@ public class TrainPanel extends JPanel {
 			lblStandard.setVisible(false);
 			lblStandard.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblStandard.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblStandard.setBounds(457, 442, 165, 30);
 		}
 		return lblStandard;
 	}
@@ -722,21 +885,9 @@ public class TrainPanel extends JPanel {
 			lblData.setBackground(Color.GRAY);
 			lblData.setHorizontalAlignment(SwingConstants.CENTER);
 			lblData.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblData.setBounds(0, 0, 901, 30);
 			lblData.setOpaque(true);
 		}
 		return lblData;
-	}
-
-	private JSeparator getSeparator_1() {
-		if (separator_1 == null) {
-			separator_1 = new JSeparator();
-			separator_1.setOrientation(SwingConstants.VERTICAL);
-			separator_1.setForeground(Color.GRAY);
-			separator_1.setBackground(Color.GRAY);
-			separator_1.setBounds(450, 185, 2, 631);
-		}
-		return separator_1;
 	}
 
 	private JLabel getLblPredictor() {
@@ -747,7 +898,6 @@ public class TrainPanel extends JPanel {
 			lblPredictor.setForeground(Color.WHITE);
 			lblPredictor.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblPredictor.setBackground(Color.GRAY);
-			lblPredictor.setBounds(0, 184, 452, 30);
 		}
 		return lblPredictor;
 	}
@@ -760,7 +910,6 @@ public class TrainPanel extends JPanel {
 			lblModel.setForeground(Color.WHITE);
 			lblModel.setFont(new Font("Segoe UI", Font.BOLD, 15));
 			lblModel.setBackground(Color.GRAY);
-			lblModel.setBounds(450, 184, 451, 30);
 		}
 		return lblModel;
 	}
@@ -770,7 +919,6 @@ public class TrainPanel extends JPanel {
 			lblPredictor_1 = new JLabel("Unstructured predictor:");
 			lblPredictor_1.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblPredictor_1.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblPredictor_1.setBounds(0, 241, 188, 30);
 		}
 		return lblPredictor_1;
 	}
@@ -794,7 +942,6 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			cmbPredictor.setBounds(204, 241, 227, 30);
 			cmbPredictor.addItem("choose predictor");
 			cmbPredictor.addItem("neural network");
 			cmbPredictor.addItem("linear regression");
@@ -890,7 +1037,6 @@ public class TrainPanel extends JPanel {
 					}
 				}
 			});
-			btnTestPredictr.setBounds(204, 479, 140, 45);
 		}
 		return btnTestPredictr;
 	}
@@ -901,7 +1047,6 @@ public class TrainPanel extends JPanel {
 			lblNoOfHidden.setVisible(false);
 			lblNoOfHidden.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfHidden.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfHidden.setBounds(24, 281, 164, 30);
 		}
 		return lblNoOfHidden;
 	}
@@ -912,7 +1057,6 @@ public class TrainPanel extends JPanel {
 			txtHidden.setVisible(false);
 			txtHidden.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtHidden.setColumns(10);
-			txtHidden.setBounds(204, 281, 91, 30);
 		}
 		return txtHidden;
 	}
@@ -923,7 +1067,6 @@ public class TrainPanel extends JPanel {
 			lblNoOfIterations.setVisible(false);
 			lblNoOfIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNoOfIterations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblNoOfIterations.setBounds(58, 321, 130, 30);
 		}
 		return lblNoOfIterations;
 	}
@@ -934,7 +1077,6 @@ public class TrainPanel extends JPanel {
 			txtIterNN.setVisible(false);
 			txtIterNN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtIterNN.setColumns(10);
-			txtIterNN.setBounds(204, 329, 91, 30);
 		}
 		return txtIterNN;
 	}
@@ -942,7 +1084,6 @@ public class TrainPanel extends JPanel {
 	private JComboBox<String> getCmbMethod() {
 		if (cmbMethod == null) {
 			cmbMethod = new JComboBox<String>();
-			cmbMethod.setBounds(638, 241, 227, 30);
 			cmbMethod.addItem("choose method");
 			cmbMethod.addItem("GCRF");
 			cmbMethod.addItem("DirGCRF");
@@ -998,7 +1139,6 @@ public class TrainPanel extends JPanel {
 			lblMethod = new JLabel("Method:");
 			lblMethod.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblMethod.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			lblMethod.setBounds(522, 241, 100, 30);
 		}
 		return lblMethod;
 	}
@@ -1006,7 +1146,6 @@ public class TrainPanel extends JPanel {
 	private JComboBox<String> getCmbDataset() {
 		if (cmbDataset == null) {
 			cmbDataset = new JComboBox();
-			cmbDataset.setBounds(185, 66, 315, 30);
 			cmbDataset.addItem("choose dataset");
 			String[] files = Reader.getAllFolders(Reader.jarFile()
 					+ "/Datasets/Networks");
