@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import app.file.io.Reader;
 import app.gui.panels.AddDatasetPanel;
 import app.gui.panels.ConfigurePanel;
+import app.gui.panels.ConfigurePanel;
 import app.gui.panels.HelpPanel;
 import app.gui.panels.ManageDatasetPanel;
 import app.gui.panels.PredictPanel;
@@ -103,6 +104,15 @@ public class MainFrameNew extends JFrame {
 		setMinimumSize(new Dimension(900, 500));
 		frame = this;
 	}
+	
+	public void enableMenu() {
+		menuBar.setEnabled(true);
+		for (int i = 0; i < menuBar.getComponentCount(); i++) {
+			menuBar.getComponent(i).setEnabled(true);
+		}
+	}
+
+	
 	private JMenuBar getMenuBar_1() {
 		if (menuBar == null) {
 			menuBar = new JMenuBar();
@@ -291,15 +301,20 @@ public class MainFrameNew extends JFrame {
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
-							ConfigurePanel c = new ConfigurePanel(frame);
-							c.setBounds(0, 61, 900, 750);
-							if (mainPanel != null) {
-								contentPane.remove(mainPanel);
+							ConfigurePanel t = new ConfigurePanel(frame);
+							if (mainPanel1 != null) {
+								contentPane.removeAll();
 								contentPane.repaint();
 								contentPane.revalidate();
 							}
-							mainPanel = c;
-							contentPane.add(mainPanel);
+							mainPanel1 = t;
+							scrollPane = new JScrollPane();
+							GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+							gbc_scrollPane.fill = GridBagConstraints.BOTH;
+							gbc_scrollPane.gridx = 0;
+							gbc_scrollPane.gridy = 0;
+							scrollPane.setViewportView(mainPanel1);
+							contentPane.add(getScrollPane(), gbc_scrollPane);
 							contentPane.repaint();
 							contentPane.revalidate();
 						}
