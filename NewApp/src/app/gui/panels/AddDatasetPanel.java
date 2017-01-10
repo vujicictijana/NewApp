@@ -17,12 +17,10 @@ import javax.swing.SwingConstants;
 
 import app.file.io.Reader;
 import app.file.io.Writer;
-import app.gui.frames.MainFrame;
 import app.gui.style.Style;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.URL;
 import javax.swing.JCheckBox;
 import java.awt.Color;
 import java.awt.Dimension;

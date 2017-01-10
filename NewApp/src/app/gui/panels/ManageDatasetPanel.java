@@ -24,10 +24,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.awt.BorderLayout;
 
-import javax.swing.BoxLayout;
 
 import java.awt.Insets;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;
@@ -35,6 +33,8 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 
 public class ManageDatasetPanel extends JPanel {
+
+	private static final long serialVersionUID = 8738206830360856377L;
 	private JFrame mainFrame;
 	private JTabbedPane tabbedPane;
 	private JScrollPane scrollPaneTable2;

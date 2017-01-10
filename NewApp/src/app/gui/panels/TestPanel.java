@@ -137,7 +137,6 @@ public class TestPanel extends JPanel {
 		gbc_txtModelName.gridy = 4;
 		add(getTxtModelName(), gbc_txtModelName);
 		panel = this;
-		panel = this;
 		GridBagConstraints gbc_btnTrain = new GridBagConstraints();
 		gbc_btnTrain.fill = GridBagConstraints.BOTH;
 		gbc_btnTrain.insets = new Insets(0, 0, 5, 5);

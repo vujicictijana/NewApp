@@ -6,19 +6,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import java.awt.GridBagLayout;
 
 import javax.swing.JTabbedPane;
-import javax.swing.table.DefaultTableModel;
 
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
 import app.gui.frames.MainFrame;
-import app.gui.frames.MainFrameNew;
 import app.gui.style.Style;
 
 import java.awt.GridBagConstraints;
@@ -27,19 +23,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.util.Map;
-import java.awt.BorderLayout;
 
-import javax.swing.BoxLayout;
+import java.util.Map;
+
 
 import java.awt.Insets;
 
-import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
-import java.awt.Component;
 
 import javax.swing.JLabel;
 
@@ -53,10 +45,11 @@ import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 
 public class ConfigurePanel extends JPanel {
+
+	private static final long serialVersionUID = -4600085582512410106L;
 	private JFrame mainFrame;
 	private JTabbedPane tabbedPane;
-	private DefaultTableModel model1;
-	private DefaultTableModel model2;
+
 	private JLabel lblManageDatasets;
 	private JLabel label;
 	private JLabel label_1;
@@ -841,7 +834,7 @@ public class ConfigurePanel extends JPanel {
 					} else {
 						String[] text = prepareForFile();
 						Writer.write(text, Reader.jarFile() + "/cfg.txt");
-						MainFrameNew m = (MainFrameNew) mainFrame;
+						MainFrame m = (MainFrame) mainFrame;
 						m.enableMenu();
 						panel.removeAll();
 						panel.repaint();

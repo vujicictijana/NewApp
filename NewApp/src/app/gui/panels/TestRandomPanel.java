@@ -184,8 +184,6 @@ public class TestRandomPanel extends JPanel {
 					if (message != null) {
 						JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						URL location = MainFrame.class.getProtectionDomain().getCodeSource().getLocation();
-
 						String model = Reader.jarFile()  + "/RandomModels/"
 								+ cmbModel.getSelectedItem().toString().replaceAll(" - ", "/");
 						int noOfNodes = Integer.parseInt(txtNoOfNodes.getText());

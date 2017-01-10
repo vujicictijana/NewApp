@@ -18,7 +18,6 @@ import app.data.generators.GraphGenerator;
 import app.exceptions.ConfigurationParameterseException;
 import app.file.io.Reader;
 import app.file.io.Writer;
-import app.gui.frames.MainFrame;
 import app.gui.frames.ProgressBar;
 import app.gui.style.Style;
 import app.gui.threads.TrainWithRandomForGUI;
@@ -26,7 +25,6 @@ import app.gui.threads.TrainWithRandomForGUI;
 import javax.swing.JComboBox;
 
 import java.awt.event.ItemListener;
-import java.net.URL;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

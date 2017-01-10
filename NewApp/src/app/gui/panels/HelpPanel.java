@@ -2,25 +2,17 @@ package app.gui.panels;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JLabel;
 
 import app.file.io.Reader;
-import app.gui.frames.MainFrame;
 import app.gui.style.SwingLink;
 
-import javax.swing.SwingConstants;
-
-import java.awt.CardLayout;
 import java.awt.GridBagLayout;
 
 public class HelpPanel extends JPanel {
