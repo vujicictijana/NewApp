@@ -98,16 +98,20 @@ public class MainFrame extends JFrame {
 		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
 
 		} else {
-
-			ConfigurePanel c = new ConfigurePanel(frame);
-			c.setBounds(0, 61, 900, 750);
+			ConfigurePanel t = new ConfigurePanel(frame);
 			if (mainPanel1 != null) {
-				contentPane.remove(mainPanel);
+				contentPane.removeAll();
 				contentPane.repaint();
 				contentPane.revalidate();
 			}
-			mainPanel = c;
-			contentPane.add(mainPanel);
+			mainPanel1 = t;
+			scrollPane = new JScrollPane();
+			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+			gbc_scrollPane.fill = GridBagConstraints.BOTH;
+			gbc_scrollPane.gridx = 0;
+			gbc_scrollPane.gridy = 0;
+			scrollPane.setViewportView(mainPanel1);
+			contentPane.add(getScrollPane(), gbc_scrollPane);
 			contentPane.repaint();
 			contentPane.revalidate();
 
