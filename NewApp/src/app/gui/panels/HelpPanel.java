@@ -40,11 +40,11 @@ public class HelpPanel extends JPanel {
 		if (fileName != null) {
 			String initialText = getHtml(fileName);
 			lblText = new JLabel(initialText);
-			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-			gbc_scrollPane.fill = GridBagConstraints.BOTH;
-			gbc_scrollPane.gridx = 0;
-			gbc_scrollPane.gridy = 0;
-			panel.add(lblText, gbc_scrollPane);
+			GridBagConstraints label = new GridBagConstraints();
+			label.anchor = GridBagConstraints.NORTHWEST;
+			label.gridx = 0;
+			label.gridy = 0;
+			panel.add(lblText, label);
 		} else {
 			setLinks();
 		}
@@ -75,7 +75,7 @@ public class HelpPanel extends JPanel {
 		lblText = new JLabel(initialText);
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(lblText, gbc);
@@ -83,6 +83,7 @@ public class HelpPanel extends JPanel {
 		JLabel label = new JLabel("Links:");
 		int y = 1;
 		gbc.gridy = y;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
 		panel.add(label, gbc);
 
 		String[] links = generateLinks();
@@ -93,13 +94,11 @@ public class HelpPanel extends JPanel {
 						links[j].lastIndexOf(" ") - 2);
 				String link = links[j].substring(links[j].lastIndexOf(" ") + 1);
 				SwingLink linkLabel = new SwingLink(name, link);
-				// linkLabel.setBounds(20, y + (20 * (j + 1)), 900, 20);
 				y++;
 				gbc.gridy = y;
 				panel.add(linkLabel, gbc);
 			} else {
 				JLabel label1 = new JLabel(links[j]);
-				// label1.setBounds(20, y + (20 * (j + 1)), 900, 20);
 				y++;
 				gbc.gridy = y;
 				panel.add(label1, gbc);
