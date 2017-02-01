@@ -75,7 +75,7 @@ public class TrainRandomPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public TrainRandomPanel(JFrame mainFrame) {
-		if (Reader.checkFile( Reader.jarFile() + "/cfg.txt")) {
+		if (Reader.checkFile(Reader.jarFile() + "/cfg.txt")) {
 			String result = readParametersFromCfg();
 			if (result != null) {
 				JOptionPane
@@ -87,10 +87,15 @@ public class TrainRandomPanel extends JPanel {
 			} else {
 				setBackground(UIManager.getColor("Button.background"));
 				GridBagLayout gridBagLayout = new GridBagLayout();
-				gridBagLayout.columnWidths = new int[]{145, 91, 58, 166, 357, 0};
-				gridBagLayout.rowHeights = new int[]{36, 33, 31, 30, 31, 32, 30, 0, 0, 0, 30, 130, 30, 0};
-				gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-				gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				gridBagLayout.columnWidths = new int[] { 145, 91, 58, 166, 357,
+						0 };
+				gridBagLayout.rowHeights = new int[] { 36, 33, 31, 30, 31, 32,
+						30, 0, 0, 0, 30, 130, 30, 0 };
+				gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0,
+						0.0, 0.0, Double.MIN_VALUE };
+				gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0,
+						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+						Double.MIN_VALUE };
 				setLayout(gridBagLayout);
 				GridBagConstraints gbc_lblTrainDirgcrfOn = new GridBagConstraints();
 				gbc_lblTrainDirgcrfOn.gridwidth = 15;
@@ -106,7 +111,7 @@ public class TrainRandomPanel extends JPanel {
 				gbc_lblType.gridx = 0;
 				gbc_lblType.gridy = 1;
 				add(getLblType(), gbc_lblType);
-		
+
 				GridBagConstraints gbc_btnQuestionType = new GridBagConstraints();
 				gbc_btnQuestionType.anchor = GridBagConstraints.WEST;
 				gbc_btnQuestionType.fill = GridBagConstraints.VERTICAL;
@@ -389,8 +394,9 @@ public class TrainRandomPanel extends JPanel {
 						String model = Writer.folderName(cmbGraphType
 								.getSelectedItem().toString());
 
-						String modelFolder = Reader.jarFile()  + "/RandomModels/"
-								+ model + "/" + noOfNodes + "nodes";
+						String modelFolder = Reader.jarFile()
+								+ "/RandomModels/" + model + "/" + noOfNodes
+								+ "nodes";
 						if (model.contains("Probability")) {
 							double probability = Double.parseDouble(txtProb
 									.getText());
@@ -418,6 +424,7 @@ public class TrainRandomPanel extends JPanel {
 							}
 						} else {
 							train(noOfNodes, modelFolder);
+
 						}
 					}
 				}
@@ -479,23 +486,33 @@ public class TrainRandomPanel extends JPanel {
 		double lr = Double.parseDouble(txtLR.getText());
 		int maxIter = Integer.parseInt(txtIter.getText());
 
-		ProgressBar frame = new ProgressBar(maxIter);
-		frame.pack();
-		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);
 
-		double[][] s = generateGraph(noOfNodes);
-		double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
-		CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
-		double[] y = c.y(alphaGen, betaGen, 0.05);
-		boolean both = false;
-		if (chckbxSymmetric.isSelected()) {
-			both = true;
+
+		try {
+			double[][] s = generateGraph(noOfNodes);
+			ProgressBar frame = new ProgressBar(maxIter);
+			frame.pack();
+			frame.setVisible(true);
+			frame.setLocationRelativeTo(null);
+			double[] r = ArrayGenerator.generateArray(noOfNodes, 5);
+			CalculationsAsymmetric c = new CalculationsAsymmetric(s, r);
+			double[] y = c.y(alphaGen, betaGen, 0.05);
+			boolean both = false;
+			if (chckbxSymmetric.isSelected()) {
+				both = true;
+			}
+			TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder,
+					frame, mainFrame, s, r, y, alpha, beta, lr, maxIter,
+					panelForTable, both, 10, 10, lblTime, alphaGen, betaGen);
+			t.start();
+		} catch (OutOfMemoryError e) {
+
+			JOptionPane
+			.showMessageDialog(
+					mainFrame,
+					"Java heap space - Too many nodes, JVM is out of memory.",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		TrainWithRandomForGUI t = new TrainWithRandomForGUI(modelFolder, frame,
-				mainFrame, s, r, y, alpha, beta, lr, maxIter, panelForTable,
-				both, 10, 10, lblTime,alphaGen,betaGen);
-		t.start();
 
 	}
 
@@ -569,12 +586,12 @@ public class TrainRandomPanel extends JPanel {
 
 	public void createMainFolders() {
 
-		String path = Reader.jarFile()  + "/RandomModels";
+		String path = Reader.jarFile() + "/RandomModels";
 		Writer.createFolder(path);
 		for (int i = 1; i < cmbGraphType.getItemCount(); i++) {
 			String folder = Writer.folderName(cmbGraphType.getItemAt(i)
 					.toString());
-			Writer.createFolder(Reader.jarFile()  + "/RandomModels/" + folder);
+			Writer.createFolder(Reader.jarFile() + "/RandomModels/" + folder);
 		}
 	}
 
@@ -626,6 +643,7 @@ public class TrainRandomPanel extends JPanel {
 		txtLR.setText(lr + "");
 		txtIter.setText(iterations + "");
 	}
+
 	private JLabel getLblTrainDirgcrfOn() {
 		if (lblTrainDirgcrfOn == null) {
 			lblTrainDirgcrfOn = new JLabel("TRAIN DirGCRF ON RANDOM NETWORKS:");

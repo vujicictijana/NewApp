@@ -66,8 +66,7 @@ public class MGCRF {
 				double ubeta = ((double[]) proxy.getVariable("ubeta"))[0];
 
 				Writer.createFolder(modelFolder + "/parameters");
-				String fileName = modelFolder
-						+ "/parameters/mGCRF.mat";
+				String fileName = modelFolder + "/parameters/mGCRF.mat";
 				proxy.setVariable("fileName", fileName);
 
 				proxy.eval("save(fileName,'Data','-v7.3')");
@@ -86,6 +85,7 @@ public class MGCRF {
 				message = "m-GCRF results: \n* R^2 value for test data: "
 						+ df.format(r2) + export;
 				proxy.disconnect();
+				// proxy.exit();
 
 			} catch (Exception e) {
 				message = "An internal MATLAB exception occurred. Please check your data.";

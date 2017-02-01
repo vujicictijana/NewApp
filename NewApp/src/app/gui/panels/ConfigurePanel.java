@@ -128,6 +128,7 @@ public class ConfigurePanel extends JPanel {
 	private int sseIter;
 	private int lsIter;
 	private long proxy;
+	private JLabel lblHelpMac;
 
 	/**
 	 * Create the panel.
@@ -302,9 +303,9 @@ public class ConfigurePanel extends JPanel {
 		JPanel panel = new JPanel(false);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		GridBagConstraints gbc_label_23 = new GridBagConstraints();
 		gbc_label_23.insets = new Insets(0, 0, 5, 5);
@@ -340,21 +341,28 @@ public class ConfigurePanel extends JPanel {
 		gbc_btnBrowse.gridy = 3;
 		panel.add(getBtnBrowse(), gbc_btnBrowse);
 		GridBagConstraints gbc_lblHelp = new GridBagConstraints();
+		gbc_lblHelp.anchor = GridBagConstraints.WEST;
 		gbc_lblHelp.insets = new Insets(0, 0, 5, 5);
 		gbc_lblHelp.gridx = 2;
 		gbc_lblHelp.gridy = 4;
 		panel.add(getLblHelp(), gbc_lblHelp);
+		GridBagConstraints gbc_lblHelpMac = new GridBagConstraints();
+		gbc_lblHelpMac.anchor = GridBagConstraints.WEST;
+		gbc_lblHelpMac.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHelpMac.gridx = 2;
+		gbc_lblHelpMac.gridy = 5;
+		panel.add(getLblHelpMac(), gbc_lblHelpMac);
 		GridBagConstraints gbc_lblProxytimeout = new GridBagConstraints();
 		gbc_lblProxytimeout.insets = new Insets(0, 0, 0, 5);
 		gbc_lblProxytimeout.anchor = GridBagConstraints.EAST;
 		gbc_lblProxytimeout.gridx = 1;
-		gbc_lblProxytimeout.gridy = 5;
+		gbc_lblProxytimeout.gridy = 6;
 		panel.add(getLblProxytimeout(), gbc_lblProxytimeout);
 		GridBagConstraints gbc_txtProxy = new GridBagConstraints();
 		gbc_txtProxy.insets = new Insets(0, 0, 0, 5);
 		gbc_txtProxy.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtProxy.gridx = 2;
-		gbc_txtProxy.gridy = 5;
+		gbc_txtProxy.gridy = 6;
 		panel.add(getTxtProxy(), gbc_txtProxy);
 		return panel;
 	}
@@ -1300,7 +1308,7 @@ public class ConfigurePanel extends JPanel {
 	}
 	private JLabel getLblHelp() {
 		if (lblHelp == null) {
-			lblHelp = new JLabel("Example for Windows: C:/Program Files/MATLAB/Version/bin/matlab.exe");
+			lblHelp = new JLabel("Example for Windows: C:/Program Files/MATLAB/[Version]/bin/matlab.exe");
 			lblHelp.setEnabled(false);
 		}
 		return lblHelp;
@@ -1317,6 +1325,7 @@ public class ConfigurePanel extends JPanel {
 						lblPathToMatlabexe.setEnabled(true);
 						lblHelp.setEnabled(true);
 						lblProxytimeout.setEnabled(true);
+						lblHelpMac.setEnabled(true);
 					}else{
 						txtPath.setEnabled(false);
 						btnBrowse.setEnabled(false);
@@ -1324,10 +1333,18 @@ public class ConfigurePanel extends JPanel {
 						lblPathToMatlabexe.setEnabled(false);
 						lblHelp.setEnabled(false);
 						lblProxytimeout.setEnabled(false);
+						lblHelpMac.setEnabled(false);
 					}
 				}
 			});
 		}
 		return chckMatlab;
+	}
+	private JLabel getLblHelpMac() {
+		if (lblHelpMac == null) {
+			lblHelpMac = new JLabel("For MAC OSx type folowing:  /Applications/MATLAB_[Version].app/bin/matlab");
+			lblHelpMac.setEnabled(false);
+		}
+		return lblHelpMac;
 	}
 }

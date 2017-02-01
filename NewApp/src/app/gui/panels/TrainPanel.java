@@ -547,10 +547,11 @@ public class TrainPanel extends JPanel {
 							ok = false;
 						}
 
-						double[] r = Reader.readArray(path + "/data/r.txt",
-								noOfNodes);
 
 						if (ok) {
+
+							double[] r = Reader.readArray(path + "/data/r.txt",
+									noOfNodes);
 							String okMethod = callMethod(method, path,
 									noOfNodes, alpha, beta, lr, maxIter, y, r,
 									s);
